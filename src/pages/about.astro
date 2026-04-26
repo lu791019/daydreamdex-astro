@@ -40,20 +40,20 @@ const navItems = [
   { label: '文章', href: '/', active: false },
   { label: '關於我', href: '/about', active: true },
   { label: 'Podcast', href: 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T', icon: 'mic' },
-  { label: '職涯諮詢', href: CTA_BOOKING_URL, icon: 'calendar' },
+  { label: '職涯諮詢', href: '/coaching', icon: 'calendar' },
   { label: '免費課程', href: '#', icon: 'graduation' },
   { label: '付費課程', href: CTA_COURSE_URL, icon: 'sparkle' },
   { label: '電子報', href: '#' },
 ];
 
-// 職涯時間軸
+// 職涯時間軸（電影膠片）
 const careerTimeline = [
-  { period: '2026 — Now', company: 'HamaStar', role: 'Staff Engineer / AI 技術總監', highlight: true },
-  { period: '2025 — 2026', company: '水球軟體學院', role: '成長行銷顧問' },
-  { period: '2021 — 2025', company: '緯創資通', role: 'Backend Engineer' },
-  { period: '2021', company: 'Line Bank', role: 'Data Engineer' },
-  { period: '2019 — 2021', company: 'TutorABC', role: 'Big Data Engineer' },
-  { period: '2019 — 2020', company: '台灣美光', role: 'Equipment Engineer' },
+  { period: '2019 — 2020', company: '台灣美光', role: 'Equipment Engineer', desc: '半導體製程，跨界的起點。', gradFrom: '#5391FF', gradTo: '#90B9FF', sceneNo: '01' },
+  { period: '2019 — 2021', company: 'TutorABC', role: 'Big Data Engineer', desc: '走進資料工程的第一站。', gradFrom: '#0891B2', gradTo: '#67E8F9', sceneNo: '02' },
+  { period: '2021', company: 'Line Bank', role: 'Data Engineer', desc: '金融級資料管線實戰。', gradFrom: '#7C3AED', gradTo: '#C4B5FD', sceneNo: '03' },
+  { period: '2021 — 2025', company: '緯創資通', role: 'Backend Engineer', desc: '深耕後端與系統設計。', gradFrom: '#DB2777', gradTo: '#F9A8D4', sceneNo: '04' },
+  { period: '2025 — 2026', company: '水球軟體學院', role: '成長行銷顧問', desc: '從技術走進品牌與成長。', gradFrom: '#D97706', gradTo: '#FCD34D', sceneNo: '05' },
+  { period: '2026 — Now', company: 'HamaStar', role: 'Staff Engineer / AI 技術總監', desc: '帶領 AI 開發，做想做的事。', gradFrom: '#1F1B16', gradTo: '#5391FF', sceneNo: '06', highlight: true },
 ];
 
 const sideRoles = [
@@ -262,15 +262,15 @@ const interests = {
             </div>
           </div>
 
-          {/* 右側 — Dex 大頭像區 */}
+          {/* 右側 — Dex 大頭像區（真實照片）*/}
           <div style="position:relative;height:420px;display:flex;align-items:center;justify-content:center;">
-            {/* D logo 圓形大像 */}
-            <div style={`position:relative;width:300px;height:300px;border-radius:50%;background:linear-gradient(135deg, ${C.accent} 0%, ${C.accentDark} 60%, ${C.warm} 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 24px 60px rgba(83,145,255,0.28), 0 8px 16px rgba(0,0,0,0.08);`}>
-              <div style={`width:240px;height:240px;border-radius:50%;background:${C.bg};display:flex;align-items:center;justify-content:center;position:relative;`}>
-                <span style={`font-family:${serif};font-size:140px;font-weight:700;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-4px;`}>D</span>
-                {/* 小註腳 */}
-                <div style={`position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:${sans};font-size:10px;color:${C.muted};letter-spacing:2px;font-weight:600;`}>DAYDREAM · DEX</div>
-              </div>
+            {/* 漸層光暈背景 */}
+            <div style={`position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:340px;height:340px;border-radius:50%;background:radial-gradient(circle, ${C.accentSoft} 0%, ${C.warmSoft} 60%, transparent 100%);opacity:0.7;`}></div>
+
+            {/* 真實照片 — 圓角矩形 */}
+            <div style={`position:relative;width:300px;height:380px;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(83,145,255,0.22), 0 8px 16px rgba(0,0,0,0.12);border:4px solid #fff;`}>
+              <img src="/photos/dex-portrait-1.png" alt="Dex" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <div style={`position:absolute;bottom:0;left:0;right:0;padding:14px 18px 12px;background:linear-gradient(transparent, rgba(0,0,0,0.55));color:#fff;font-family:${sans};font-size:10.5px;letter-spacing:2px;font-weight:600;`}>DAYDREAM · DEX</div>
             </div>
 
             {/* 浮動小卡 — 38 歲 */}
@@ -333,28 +333,101 @@ const interests = {
         </div>
       </section>
 
-      {/* ===================== 職涯時間軸 ===================== */}
-      <section style="padding:60px 56px;max-width:1120px;margin:0 auto;">
+      {/* ===================== 職涯時間軸（電影膠片）===================== */}
+      <section style="padding:60px 56px 40px;max-width:1240px;margin:0 auto;position:relative;">
+        {/* 場記板裝飾 */}
+        <div style="position:absolute;top:24px;right:48px;transform:rotate(8deg);opacity:0.7;">
+          <svg width="120" height="90" viewBox="0 0 200 150">
+            <rect x="6" y="0" width="188" height="36" rx="3" fill={C.ink}/>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <polygon points={`${10 + i * 24},2 ${28 + i * 24},2 ${22 + i * 24},34 ${4 + i * 24},34`} fill="white"/>
+            ))}
+            <rect x="6" y="42" width="188" height="100" rx="3" fill={C.ink}/>
+            <text x="20" y="72" font-family={sans} font-size="10" fill="#fff" letter-spacing="1" opacity="0.6">SCENE</text>
+            <text x="20" y="98" font-family={sans} font-size="18" font-weight="700" fill="#fff">CAREER</text>
+            <text x="20" y="118" font-family={sans} font-size="9" fill="#fff" opacity="0.6">DIRECTOR · DEX</text>
+          </svg>
+        </div>
+
         <div style="margin-bottom:36px;">
           <div style={`font-family:${serif};font-size:13px;color:${C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— TIMELINE · 跨界 10 年 ——</div>
           <h2 style={`font-family:${sans};font-size:34px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>從半導體到 AI，我走過的這條路</h2>
           <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;`}>
-            6 家公司、4 種專業 —— 每一段都不是速成，但都教了我一些關鍵的事。
+            6 家公司、4 種專業 —— 每一段都不是速成，但都教了我一些關鍵的事。每一格都是一場戲。
           </p>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
-          {/* 左：時間軸 */}
-          <div style="position:relative;padding-left:24px;">
-            <div style={`position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:${C.rule};`}></div>
-            {careerTimeline.map((row) => (
-              <div style="position:relative;margin-bottom:24px;">
-                <div style={`position:absolute;left:-20px;top:6px;width:14px;height:14px;border-radius:50%;background:${row.highlight ? C.warm : C.card};border:2px solid ${row.highlight ? C.warm : C.rule};box-shadow:${row.highlight ? `0 0 0 4px ${C.warmSoft}` : 'none'};`}></div>
-                <div style={`font-family:${serif};font-size:12px;color:${row.highlight ? C.warm : C.faint};font-style:italic;letter-spacing:1px;margin-bottom:4px;font-weight:${row.highlight ? 600 : 400};`}>{row.period}</div>
-                <div style={`font-family:${sans};font-size:16px;font-weight:${row.highlight ? 700 : 600};color:${C.ink};margin-bottom:2px;`}>{row.company}</div>
-                <div style={`font-family:${sans};font-size:14px;color:${C.muted};`}>{row.role}</div>
-              </div>
+        {/* 電影膠片：橫向滾動容器 */}
+        <div style={`position:relative;background:${C.ink};border-radius:14px;padding:18px 0;box-shadow:0 12px 36px rgba(0,0,0,0.18);`}>
+          {/* 上排齒孔 */}
+          <div style="display:flex;justify-content:space-around;padding:0 12px 10px;">
+            {Array.from({ length: 24 }).map(() => (
+              <div style={`width:14px;height:10px;background:${C.bg};border-radius:2px;flex-shrink:0;`}></div>
             ))}
+          </div>
+
+          {/* 影格列 */}
+          <div style="overflow-x:auto;padding:0 16px;">
+            <div style="display:flex;gap:14px;min-width:max-content;padding:6px 0;">
+              {careerTimeline.map((row) => (
+                <div style={`width:230px;flex-shrink:0;background:#fff;border-radius:8px;overflow:hidden;border:3px solid ${row.highlight ? C.warm : '#fff'};box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;`}>
+                  {/* 影格頂部色帶 */}
+                  <div style={`height:96px;background:linear-gradient(135deg, ${row.gradFrom} 0%, ${row.gradTo} 100%);position:relative;display:flex;align-items:center;justify-content:center;`}>
+                    {/* SCENE 標記 */}
+                    <div style={`position:absolute;top:8px;left:8px;padding:3px 8px;background:rgba(0,0,0,0.55);color:#fff;font-family:${sans};font-size:9px;font-weight:700;letter-spacing:1.5px;border-radius:3px;`}>SCENE {row.sceneNo}</div>
+                    {row.highlight && (
+                      <div style={`position:absolute;top:8px;right:8px;padding:3px 8px;background:${C.warm};color:#fff;font-family:${sans};font-size:9px;font-weight:800;letter-spacing:1.5px;border-radius:3px;transform:rotate(4deg);box-shadow:0 2px 6px rgba(217,119,6,0.5);`}>NOW</div>
+                    )}
+                    {/* 公司大字 */}
+                    <div style={`font-family:${serif};font-size:22px;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);text-align:center;padding:0 12px;line-height:1.25;`}>{row.company}</div>
+                  </div>
+                  {/* 資訊區 */}
+                  <div style="padding:14px 16px 16px;">
+                    <div style={`font-family:${serif};font-size:11px;color:${row.highlight ? C.warm : C.faint};font-style:italic;letter-spacing:1px;margin-bottom:6px;font-weight:${row.highlight ? 600 : 500};`}>{row.period}</div>
+                    <div style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};margin-bottom:4px;letter-spacing:-0.2px;`}>{row.role}</div>
+                    <div style={`font-family:${serif};font-size:12px;color:${C.muted};line-height:1.6;`}>{row.desc}</div>
+                  </div>
+                  {/* 影格編號 */}
+                  <div style={`position:absolute;bottom:8px;right:10px;font-family:${serif};font-size:10px;color:${C.faint};font-style:italic;`}>—— {row.sceneNo} / 06 ——</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 下排齒孔 */}
+          <div style="display:flex;justify-content:space-around;padding:10px 12px 0;">
+            {Array.from({ length: 24 }).map(() => (
+              <div style={`width:14px;height:10px;background:${C.bg};border-radius:2px;flex-shrink:0;`}></div>
+            ))}
+          </div>
+        </div>
+
+        {/* 膠片底部說明 */}
+        <div style={`margin-top:18px;display:flex;align-items:center;justify-content:space-between;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
+          <span>—— ROLL · A · 2019 ~ 2026 · 6 SCENES ——</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.faint} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 9l-3 3 3 3"/><path d="M19 9l3 3-3 3"/><path d="M2 12h20" opacity="0.5"/>
+            </svg>
+            橫向滑動 →
+          </span>
+        </div>
+      </section>
+
+      {/* ===================== 斜槓區（從原 timeline 拆出）===================== */}
+      <section style="padding:20px 56px 60px;max-width:1120px;margin:0 auto;">
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start;">
+          {/* 左：雪山照 + 一句話 */}
+          <div style={`padding:0;background:${C.card};border-radius:16px;border:1px solid ${C.rule};overflow:hidden;display:flex;flex-direction:column;`}>
+            <div style="position:relative;height:240px;overflow:hidden;">
+              <img src="/photos/dex-portrait-2.png" alt="Dex 在雪山" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <div style={`position:absolute;top:14px;left:14px;padding:5px 12px;background:rgba(31,27,22,0.75);backdrop-filter:blur(6px);color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:1.5px;border-radius:4px;`}>BTS · 場景外</div>
+            </div>
+            <div style="padding:24px 28px 28px;">
+              <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:8px;`}>—— OFF SET ——</div>
+              <div style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};margin-bottom:8px;letter-spacing:-0.3px;`}>在某個雪山上的我</div>
+              <div style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;`}>跑路、開車、看星空 —— 工程師也需要離開螢幕，才看得清楚自己往哪裡走。</div>
+            </div>
           </div>
 
           {/* 右：斜槓 */}
