@@ -1,86 +1,287 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
+import { SITE_TITLE, SITE_URL, CTA_BOOKING_URL, SOCIAL_LINKS } from '../consts';
+import { Icon } from 'astro-icon/components';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+
+// 文章 OG 圖：有 heroImage 用之，否則 fallback 到預設 OG
+const ogImage = heroImage ? `${SITE_URL}${heroImage}` : '/og-default.png';
+
+// B Warm 設計 token
+const C = {
+  bg: '#FBFAF7',
+  bgSoft: '#F4F1EB',
+  ink: '#1F1B16',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+  faint: '#A39C8C',
+  rule: '#E8E2D4',
+  accent: '#5391FF',
+  accentDark: '#2F6FE0',
+  accentSoft: '#EAF1FF',
+  warm: '#D97706',
+  warmSoft: '#FEF3E7',
+  card: '#FFFFFF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead />
+    <SEO
+      title={`${title} ｜ ${SITE_TITLE}`}
+      description={description}
+      type="article"
+      publishDate={pubDate}
+      modifiedDate={updatedDate}
+      image={heroImage ? ogImage : undefined}
+    />
+    <style is:global>
+      body {
+        margin: 0;
+        background: #FBFAF7;
+        color: #1F1B16;
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      }
+      a { color: inherit; }
+      .post-prose {
+        font-family: "Noto Serif TC", "Source Han Serif TC", serif;
+        font-size: 18px;
+        line-height: 1.95;
+        color: #3D3A33;
+      }
+      .post-prose h1,
+      .post-prose h2,
+      .post-prose h3,
+      .post-prose h4 {
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+        color: #1F1B16;
+        letter-spacing: -0.4px;
+        line-height: 1.4;
+        margin-top: 2.2em;
+        margin-bottom: 0.7em;
+      }
+      .post-prose h2 { font-size: 28px; font-weight: 700; }
+      .post-prose h3 { font-size: 22px; font-weight: 700; }
+      .post-prose h4 { font-size: 18px; font-weight: 600; }
+      .post-prose p { margin: 1.1em 0; }
+      .post-prose a {
+        color: #2F6FE0;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+      .post-prose a:hover { color: #5391FF; }
+      .post-prose blockquote {
+        margin: 1.6em 0;
+        padding: 1em 1.4em;
+        border-left: 3px solid #D97706;
+        background: #FEF3E7;
+        font-style: italic;
+        color: #1F1B16;
+        border-radius: 0 10px 10px 0;
+      }
+      .post-prose code {
+        font-family: "JetBrains Mono", "Fira Code", monospace;
+        font-size: 0.92em;
+        background: #F4F1EB;
+        padding: 0.15em 0.4em;
+        border-radius: 4px;
+        color: #1F1B16;
+      }
+      .post-prose pre {
+        background: #1F1B16;
+        color: #F4F1EB;
+        padding: 1.2em 1.4em;
+        border-radius: 12px;
+        overflow-x: auto;
+        line-height: 1.65;
+        font-size: 14px;
+        margin: 1.6em 0;
+      }
+      .post-prose pre code {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+      }
+      .post-prose img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin: 1.6em auto;
+        display: block;
+      }
+      .post-prose ul,
+      .post-prose ol { padding-left: 1.6em; margin: 1.1em 0; }
+      .post-prose li { margin: 0.5em 0; }
+      .post-prose hr {
+        border: 0;
+        border-top: 1px dashed #E8E2D4;
+        margin: 2.4em 0;
+      }
+      .post-prose table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1.6em 0;
+        font-size: 15px;
+      }
+      .post-prose th,
+      .post-prose td {
+        border: 1px solid #E8E2D4;
+        padding: 0.6em 0.9em;
+        text-align: left;
+      }
+      .post-prose th {
+        background: #F4F1EB;
+        font-family: "Noto Sans TC", system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;`}>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+      {/* ===================== TopBar (簡化版) ===================== */}
+      <div style={`position:sticky;top:0;z-index:50;background:rgba(251,250,247,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid ${C.rule};`}>
+        <div style="max-width:1240px;margin:0 auto;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+          <a href="/" style="display:flex;align-items:center;gap:12px;flex-shrink:0;text-decoration:none;">
+            <div style={`width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;position:relative;`}>
+              <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="6" r="3.2"/>
+                <circle cx="9" cy="6" r="0.9" fill="#fff"/>
+                <circle cx="17" cy="6" r="3.2"/>
+                <circle cx="17" cy="6" r="0.9" fill="#fff"/>
+                <path d="M9 9.2v2M17 9.2v2"/>
+                <rect x="3" y="11" width="18" height="11" rx="1.4"/>
+                <circle cx="12" cy="16.5" r="3"/>
+                <circle cx="12" cy="16.5" r="1.2" fill="#fff" opacity="0.4"/>
+                <rect x="18" y="13" width="2" height="2" rx="0.3" fill="#fff"/>
+                <path d="M21 14l5-2v8l-5-2z"/>
+              </svg>
+              <div style={`position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:${C.warm};border:2px solid ${C.bg};`}></div>
+            </div>
+            <div>
+              <div style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};line-height:1;letter-spacing:-0.2px;`}>{SITE_TITLE}</div>
+              <div style={`font-family:${serif};font-size:10.5px;color:${C.muted};margin-top:3px;font-style:italic;`}>白日夢的塵世筆記</div>
+            </div>
+          </a>
+
+          <nav style={`display:flex;align-items:center;gap:2px;font-family:${sans};font-size:13.5px;`}>
+            <a href="/" style={`color:${C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:500;`}>文章</a>
+            <a href="/about" style={`color:${C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:500;`}>關於我</a>
+            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`color:${C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:500;`}>職涯諮詢</a>
+          </nav>
+
+          <div style="display:flex;align-items:center;gap:6px;">
+            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`padding:9px 16px;background:${C.ink};color:#fff;font-size:13px;font-weight:500;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;`}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4z"/>
+              </svg>
+              一起聊聊
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================== Article ===================== */}
+      <main style="padding:60px 24px 40px;max-width:720px;margin:0 auto;">
+        <article>
+          {/* 文章頭 */}
+          <header style={`margin-bottom:36px;padding-bottom:28px;border-bottom:1px dashed ${C.rule};`}>
+            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:14px;`}>
+              —— A LETTER FROM DEX ——
+            </div>
+            <h1 style={`font-family:${sans};font-size:36px;line-height:1.35;font-weight:800;color:${C.ink};letter-spacing:-0.8px;margin:0 0 18px;`}>
+              {title}
+            </h1>
+            <p style={`font-family:${serif};font-size:17px;color:${C.muted};line-height:1.85;margin:0 0 20px;font-style:italic;`}>
+              {description}
+            </p>
+            <div style={`display:flex;align-items:center;gap:12px;font-family:${sans};font-size:13px;color:${C.muted};`}>
+              <span style="display:inline-flex;align-items:center;gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+                <FormattedDate date={pubDate} />
+              </span>
+              {updatedDate && (
+                <span style={`font-family:${serif};font-style:italic;color:${C.faint};`}>
+                  · 更新於 <FormattedDate date={updatedDate} />
+                </span>
+              )}
+              <span style="display:inline-flex;align-items:center;gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                </svg>
+                Dex
+              </span>
+            </div>
+          </header>
+
+          {heroImage && (
+            <div style="margin:0 0 36px;">
+              <img src={heroImage} alt={title} style={`width:100%;height:auto;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,0.08);border:1px solid ${C.rule};`} />
+            </div>
+          )}
+
+          <div class="post-prose">
+            <slot />
+          </div>
+
+          {/* 文章尾 — CTA 區 */}
+          <div style={`margin-top:60px;padding:28px;background:${C.card};border:1px solid ${C.rule};border-radius:16px;`}>
+            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:10px;`}>
+              —— THE END · 謝謝你讀完 ——
+            </div>
+            <h3 style={`font-family:${sans};font-size:20px;font-weight:700;color:${C.ink};margin:0 0 10px;letter-spacing:-0.3px;`}>
+              如果你也正在這條路上
+            </h3>
+            <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
+              我每兩週寫一封信給你，聊聊程式、職涯與 AI。也歡迎預約 1:1 諮詢，50 分鐘陪你想清楚。
+            </p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.ink};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;`}>
+                預約諮詢
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
+              <a href="/about" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.card};color:${C.ink};border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;border:1px solid ${C.rule};`}>
+                認識 Dex
+              </a>
+            </div>
+          </div>
+        </article>
+      </main>
+
+      {/* ===================== Footer ===================== */}
+      <footer style={`padding:60px 24px 32px;max-width:720px;margin:40px auto 0;border-top:1px solid ${C.rule};`}>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style={`width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;`}>D</div>
+          <span style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};`}>{SITE_TITLE}</span>
+        </div>
+        <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
+          Dex 的塵世筆記 — 寫給每個正在軟體和資料職涯路上的你。<br/>
+          <span style="font-style:italic;font-size:13px;">慢慢走，我們有的是時間。</span>
+        </p>
+        <div style="display:flex;gap:8px;">
+          {SOCIAL_LINKS.map((s) => (
+            <a href={s.url} title={s.name} target="_blank" rel="noopener noreferrer" style={`width:36px;height:36px;border-radius:8px;background:${C.card};border:1px solid ${C.rule};display:flex;align-items:center;justify-content:center;color:${C.ink2};text-decoration:none;`}>
+              <Icon name={s.icon} width={14} height={14} />
+            </a>
+          ))}
+        </div>
+        <div style={`margin-top:24px;padding-top:18px;border-top:1px solid ${C.rule};font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
+          © 2026 {SITE_TITLE} · 採 CC BY-NC 4.0 授權 · Made with care in Taipei
+        </div>
+      </footer>
+
+    </div>
+  </body>
 </html>

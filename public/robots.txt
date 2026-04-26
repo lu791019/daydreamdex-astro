@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block WordPress system paths (legacy from migration)
+Disallow: /wp-admin/
+Disallow: /wp-login.php
+Disallow: /wp-content/
+Disallow: /feed/
+
+Sitemap: https://daydreamdex.com/sitemap-index.xml

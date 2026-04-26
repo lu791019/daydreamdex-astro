@@ -1,49 +1,1089 @@
 ---
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
 import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import SEO from '../components/SEO.astro';
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  HERO_TAGLINE,
+  SOCIAL_LINKS,
+  FEATURED_POST_SLUGS,
+  CTA_BOOKING_URL,
+} from '../consts';
+
+// ===== Color & Font tokens (對應 W_C / W_sans / W_serif) =====
+const C = {
+  bg: '#FBFAF7',
+  bgSoft: '#F4F1EB',
+  ink: '#1F1B16',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+  faint: '#A39C8C',
+  rule: '#E8E2D4',
+  accent: '#5391FF',
+  accentDark: '#2F6FE0',
+  accentSoft: '#EAF1FF',
+  accentBg: '#F3F7FF',
+  warm: '#D97706',
+  warmSoft: '#FEF3E7',
+  card: '#FFFFFF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+
+// ===== 撈文章 =====
+const allPostsRaw = await getCollection('blog', (p) => !p.data.draft);
+const allPosts = allPostsRaw.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// 取出 URL slug（保留完整 id，含日期前綴 — 對應 [...slug].astro 的 getStaticPaths）
+function postUrlSlug(id: string): string {
+  return id.replace(/\.mdx?$/, '');
+}
+
+// 分類映射：根據 title + description 推斷 tag
+type TagInfo = { tag: string; tagColor: string };
+function inferTag(title: string, desc: string): TagInfo {
+  const text = (title + desc).toLowerCase();
+  if (/ai|llm|langchain|機器學習|machine learning/.test(text)) {
+    return { tag: 'AI', tagColor: '#DB2777' };
+  }
+  if (/資料工程|data engineer|nosql|spark|sql|資料分析|data analyst/.test(text)) {
+    return { tag: '資料工程', tagColor: '#0891B2' };
+  }
+  if (/轉職|python|career|程式|入門|新手/.test(text)) {
+    return { tag: '轉職', tagColor: '#5391FF' };
+  }
+  if (/休息|時間|志業|人生|長期/.test(text)) {
+    return { tag: '心法', tagColor: '#D97706' };
+  }
+  return { tag: '職涯', tagColor: '#5391FF' };
+}
+
+// Featured 5 篇
+const coverIds = ['g1', 'g2', 'g3', 'g4', 'g5'];
+const iconNames = ['clapper', 'seed', 'filmreel', 'lamp', 'paperplane'];
+const featured = FEATURED_POST_SLUGS.map((slug, i) => {
+  const post = allPosts.find((p) => p.id.includes(slug));
+  if (!post) return null;
+  const tagInfo = inferTag(post.data.title, post.data.description);
+  return {
+    slug: postUrlSlug(post.id),
+    title: post.data.title,
+    desc: post.data.description,
+    tag: tagInfo.tag,
+    tagColor: tagInfo.tagColor,
+    cover: coverIds[i],
+    iconName: iconNames[i],
+    stats: `${10 + i * 3} 分鐘 · 真心話`,
+  };
+}).filter((p): p is NonNullable<typeof p> => p !== null);
+
+// 全部文章列表
+const posts = allPosts.map((p) => {
+  const d = p.data.pubDate;
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const tagInfo = inferTag(p.data.title, p.data.description);
+  return {
+    slug: postUrlSlug(p.id),
+    title: p.data.title,
+    desc: p.data.description,
+    date: `${mm} / ${dd}`,
+    year: String(d.getFullYear()),
+    tag: tagInfo.tag,
+    tagColor: tagInfo.tagColor,
+  };
+});
+
+const totalPosts = posts.length;
+const remainingPosts = Math.max(0, totalPosts - 9);
+
+// 分類計數
+const catCount = {
+  轉職: posts.filter((p) => p.tag === '轉職').length,
+  資料工程: posts.filter((p) => p.tag === '資料工程').length,
+  AI: posts.filter((p) => p.tag === 'AI').length,
+  心法: posts.filter((p) => p.tag === '心法').length,
+};
+
+// Cinema 區假影評（保留設計值）
+const reviews = [
+  { title: '《進擊的鼓手》看「夠不夠好」的執念', tag: '影評 × 心法', mood: '#DB2777', moodSoft: '#FCE7F3', meta: '12 分鐘 · 8.4k 閱讀' },
+  { title: '《教父》教我的職場政治學', tag: '影評 × 職涯', mood: '#7C3AED', moodSoft: '#F5F3FF', meta: '15 分鐘 · 6.1k 閱讀' },
+  { title: '《模仿遊戲》與當代 AI 工程師', tag: '影評 × AI', mood: '#0891B2', moodSoft: '#E0F2FE', meta: '18 分鐘 · 11.2k 閱讀' },
+];
+
+// 漸層卡片色配對
+const grads: Record<string, [string, string]> = {
+  g1: ['#5391FF', '#90B9FF'],
+  g2: ['#7C3AED', '#C4B5FD'],
+  g3: ['#0891B2', '#67E8F9'],
+  g4: ['#DB2777', '#F9A8D4'],
+  g5: ['#D97706', '#FCD34D'],
+};
+
+// 主選單
+const navItems = [
+  { label: '文章', icon: null, active: true, href: '#' },
+  { label: '關於我', icon: null, href: '/about' },
+  { label: 'Podcast', icon: 'mic', href: '#' },
+  { label: '職涯諮詢', icon: 'calendar', href: CTA_BOOKING_URL },
+  { label: '免費課程', icon: 'graduation', href: '#' },
+  { label: '付費課程', icon: 'sparkle', href: '#' },
+  { label: '電子報', icon: null, href: '#' },
+];
+
+// Hero 漂浮卡 - 本週新文 (取最新一篇)
+const latest = posts[0];
+
+// 給正在轉職的你 區塊 CTA 用第一篇 featured
+const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+<html lang="zh-TW">
+  <head>
+    <BaseHead />
+    <SEO title={SITE_TITLE} description={SITE_DESCRIPTION} type="website" />
+    <style is:global>
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+      body {
+        margin: 0;
+        background: #FBFAF7;
+        color: #1F1B16;
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      }
+      a { color: inherit; }
+      input::placeholder { color: #A39C8C; }
+    </style>
+  </head>
+  <body>
+    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100%;width:100%;`}>
+
+      {/* ===================== W_TopBar ===================== */}
+      <div style={`position:sticky;top:0;z-index:50;background:rgba(251,250,247,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid ${C.rule};`}>
+        <div style="max-width:1240px;margin:0 auto;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+          {/* Logo */}
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <div style={`width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;position:relative;`}>
+              {/* SVGMovieCamera */}
+              <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="6" r="3.2"/>
+                <circle cx="9" cy="6" r="0.9" fill="#fff"/>
+                <circle cx="17" cy="6" r="3.2"/>
+                <circle cx="17" cy="6" r="0.9" fill="#fff"/>
+                <path d="M9 9.2v2M17 9.2v2"/>
+                <rect x="3" y="11" width="18" height="11" rx="1.4"/>
+                <circle cx="12" cy="16.5" r="3"/>
+                <circle cx="12" cy="16.5" r="1.2" fill="#fff" opacity="0.4"/>
+                <rect x="18" y="13" width="2" height="2" rx="0.3" fill="#fff"/>
+                <path d="M21 14l5-2v8l-5-2z"/>
+                <rect x="1" y="13.5" width="2" height="3" rx="0.3"/>
+                <path d="M11 22v3M9 25l4-2 4 2"/>
+              </svg>
+              <div style={`position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:${C.warm};border:2px solid ${C.bg};`}></div>
+            </div>
+            <div>
+              <div style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};line-height:1;letter-spacing:-0.2px;`}>{SITE_TITLE}</div>
+              <div style={`font-family:${serif};font-size:10.5px;color:${C.muted};margin-top:3px;font-style:italic;`}>白日夢的塵世筆記</div>
+            </div>
+          </div>
+
+          {/* 主選單 */}
+          <nav style={`display:flex;align-items:center;gap:2px;font-family:${sans};font-size:13.5px;flex:1;justify-content:center;`}>
+            {navItems.map((it) => (
+              <a href={it.href} style={`color:${it.active ? C.ink : C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:${it.active ? 600 : 500};background:${it.active ? C.accentSoft : 'transparent'};display:inline-flex;align-items:center;gap:6px;white-space:nowrap;cursor:pointer;`}>
+                {it.icon === 'mic' && (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M9 21h6"/>
+                  </svg>
+                )}
+                {it.icon === 'calendar' && (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                  </svg>
+                )}
+                {it.icon === 'graduation' && (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11v5c3.5 2 8.5 2 12 0v-5"/>
+                  </svg>
+                )}
+                {it.icon === 'sparkle' && (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+                  </svg>
+                )}
+                {it.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* 右側:社群 + CTA */}
+          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+            <div style={`display:flex;align-items:center;gap:2px;padding:4px 6px;background:${C.bgSoft};border-radius:999px;`}>
+              {SOCIAL_LINKS.map((s) => (
+                <a href={s.url} title={s.name} target="_blank" rel="noopener noreferrer" style={`width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:${C.muted};cursor:pointer;text-decoration:none;`}>
+                  <Icon name={s.icon} width={14} height={14} />
+                </a>
+              ))}
+            </div>
+            <span style={`width:1px;height:18px;background:${C.rule};margin:0 6px;`}></span>
+            <button title="搜尋" style={`width:34px;height:34px;border-radius:8px;border:none;background:transparent;color:${C.muted};cursor:pointer;display:flex;align-items:center;justify-content:center;`}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+            </button>
+            <button title="暗色模式" style={`width:34px;height:34px;border-radius:8px;border:none;background:transparent;color:${C.muted};cursor:pointer;display:flex;align-items:center;justify-content:center;`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            </button>
+            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`margin-left:6px;padding:9px 16px;background:${C.ink};color:#fff;font-size:13px;font-weight:500;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;`}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4z"/>
+                <path d="M11 6v12" stroke-dasharray="1.5 2"/>
+              </svg>
+              一起聊聊
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================== W_Hero ===================== */}
+      <section style="padding:90px 56px 70px;max-width:1240px;margin:0 auto;position:relative;overflow:hidden;">
+        {/* 背景手繪小裝飾 */}
+        <svg width="180" height="60" viewBox="0 0 180 60" style="position:absolute;top:60px;left:30px;opacity:0.5;">
+          <path d="M5 30 Q 30 10, 60 28 T 120 28 T 175 25" fill="none" stroke={C.accent} stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
+        </svg>
+
+        {/* 背景超大號攝影機輪廓水印 */}
+        <svg width="640" height="640" viewBox="0 0 32 32" style="position:absolute;top:-40px;right:-120px;opacity:0.05;pointer-events:none;">
+          <g fill="none" stroke={C.ink} stroke-width="0.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="6" r="3.2"/><circle cx="9" cy="6" r="0.9"/>
+            <circle cx="17" cy="6" r="3.2"/><circle cx="17" cy="6" r="0.9"/>
+            <path d="M9 9.2v2M17 9.2v2"/>
+            <rect x="3" y="11" width="18" height="11" rx="1.4"/>
+            <circle cx="12" cy="16.5" r="3"/>
+            <circle cx="12" cy="16.5" r="1.2"/>
+            <rect x="18" y="13" width="2" height="2" rx="0.3"/>
+            <path d="M21 14l5-2v8l-5-2z"/>
+          </g>
+        </svg>
+
+        <div style="display:grid;grid-template-columns:1fr 460px;gap:56px;align-items:center;position:relative;">
+          <div>
+            {/* 大型場記板 */}
+            <div style="position:relative;width:fit-content;margin-bottom:18px;transform:rotate(-3deg);">
+              <svg width="200" height="150" viewBox="0 0 200 150" style="filter:drop-shadow(0 8px 16px rgba(0,0,0,0.12));">
+                <g transform="translate(0 0)">
+                  <rect x="6" y="0" width="188" height="36" rx="3" fill={C.ink}/>
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <polygon points={`${10 + i * 24},2 ${28 + i * 24},2 ${22 + i * 24},34 ${4 + i * 24},34`} fill="white"/>
+                  ))}
+                  <circle cx="14" cy="40" r="3" fill={C.ink}/>
+                  <rect x="6" y="36" width="188" height="6" fill={C.ink}/>
+                </g>
+                <rect x="6" y="42" width="188" height="100" rx="3" fill={C.ink}/>
+                <g font-family={sans} fill="white">
+                  <text x="20" y="66" font-size="9" opacity="0.55" letter-spacing="1">PROD.</text>
+                  <text x="20" y="82" font-size="14" font-weight="700">DAYDREAM DEX</text>
+                  <line x1="20" y1="90" x2="180" y2="90" stroke="white" stroke-width="0.5" opacity="0.3"/>
+                  <text x="20" y="105" font-size="8" opacity="0.55" letter-spacing="1">SCENE</text>
+                  <text x="55" y="106" font-size="11" font-family={serif}>132</text>
+                  <text x="100" y="105" font-size="8" opacity="0.55" letter-spacing="1">TAKE</text>
+                  <text x="135" y="106" font-size="11" font-family={serif}>01</text>
+                  <line x1="20" y1="113" x2="180" y2="113" stroke="white" stroke-width="0.5" opacity="0.3"/>
+                  <text x="20" y="128" font-size="8" opacity="0.55" letter-spacing="1">DIRECTOR</text>
+                  <text x="68" y="129" font-family={serif} font-size="10" font-style="italic">Dex</text>
+                  <text x="100" y="128" font-size="8" opacity="0.55" letter-spacing="1">ROLL</text>
+                  <text x="135" y="129" font-family={serif} font-size="10" font-style="italic">2026</text>
+                </g>
+              </svg>
+              {/* ACTION! 印章 */}
+              <div style={`position:absolute;top:-8px;right:-34px;transform:rotate(15deg);padding:4px 10px;background:#DC2626;color:#fff;font-family:${sans};font-size:11px;font-weight:800;letter-spacing:2px;border:2px solid #fff;box-shadow:0 3px 8px rgba(220,38,38,0.4);`}>ACTION!</div>
+            </div>
+
+            <div style={`display:inline-flex;align-items:center;gap:10px;padding:8px 16px;background:${C.warmSoft};color:${C.warm};border-radius:999px;font-family:${sans};font-size:12px;font-weight:500;margin-bottom:28px;`}>
+              {/* SVGSpotlight */}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l-5 7h10z"/>
+                <ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2"/>
+                <path d="M12 10v3"/>
+              </svg>
+              工程師 × 影評人 · {totalPosts} 篇給工程師的長信
+            </div>
+            <h1 style={`font-family:${sans};font-size:64px;line-height:1.08;font-weight:800;color:${C.ink};letter-spacing:-1.8px;margin:0;`}>
+              慢慢走,<br/>
+              一起把<span style="position:relative;display:inline-block;">
+                <span style={`background:linear-gradient(135deg, ${C.accent} 0%, ${C.accentDark} 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;`}>軟體職涯</span>
+                <svg width="260" height="10" viewBox="0 0 260 10" style="display:block;margin-top:-6px;">
+                  <path d="M2 6 Q 65 1, 130 5 T 258 4" fill="none" stroke={C.accent} stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+                </svg>
+              </span><br/>
+              走成一條長路。
+            </h1>
+
+            {/* 第一句電影台詞 SCENE 01 */}
+            <div style={`margin-top:28px;padding:16px 20px;background:rgba(255,255,255,0.6);border-left:3px solid ${C.warm};border-radius:0 10px 10px 0;max-width:560px;`}>
+              <div style={`display:flex;align-items:center;gap:8px;font-family:${serif};font-size:11px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:6px;`}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2.5" y="8" width="19" height="12" rx="1.4"/>
+                  <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4"/>
+                  <path d="M2.5 12h19" opacity="0.4"/>
+                </svg>
+                SCENE 01 · 起點
+              </div>
+              <div style={`font-family:${serif};font-size:16px;color:${C.ink2};line-height:1.7;font-style:italic;`}>
+                “Now you can know everything in the world, but the only way you're finding out that one is by giving it a shot.”
+              </div>
+            </div>
+
+            <p style={`font-family:${serif};font-size:19px;line-height:1.85;color:${C.ink2};margin-top:28px;font-weight:400;max-width:560px;`}>
+              這裡是 Dex 的塵世筆記 —— 寫給每個正在<br/>
+              軟體工程、資料工程、AI 路上的你。<br/>
+              <span style={`color:${C.muted};font-size:17px;`}>偶爾,我們也聊聊電影裡的人生。</span>
+            </p>
+
+            <div style={`display:flex;gap:12px;margin-top:36px;font-family:${sans};align-items:center;`}>
+              <a href="#all-posts" style={`display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:${C.accent};color:#fff;font-size:14px;font-weight:600;border-radius:10px;text-decoration:none;box-shadow:0 6px 20px rgba(83, 145, 255, 0.32);`}>
+                從一篇文章開始
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
+              <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:${C.card};color:${C.ink};font-size:14px;font-weight:600;border-radius:10px;border:1px solid ${C.rule};text-decoration:none;`}>
+                {/* SVGPaperPlane */}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.ink} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+                預約一場諮詢
+              </a>
+              <span style={`font-family:${serif};font-size:13px;color:${C.faint};font-style:italic;margin-left:4px;`}>· 50 分鐘,不催促</span>
+            </div>
+
+            {/* 三個小承諾 */}
+            <div style={`margin-top:48px;padding-top:32px;border-top:1px dashed ${C.rule};`}>
+              <div style={`font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;margin-bottom:14px;`}>—— 在這裡,我答應你 ——</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                {[
+                  '不寫 SEO 廢文,每篇都是真心話',
+                  '不販賣轉職焦慮,只談長期可持續的路徑',
+                  '回信慢一點,但每一封都會親自回',
+                ].map((t) => (
+                  <div style={`display:flex;align-items:center;gap:10px;font-family:${sans};font-size:14px;color:${C.ink2};`}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.accent} stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Hero 右側大攝影機 */}
+          <div style="position:relative;height:540px;">
+            <svg width="460" height="380" viewBox="0 0 320 260" style="position:absolute;top:20px;right:0;filter:drop-shadow(0 24px 40px rgba(83,145,255,0.18)) drop-shadow(0 6px 12px rgba(0,0,0,0.06));">
+              {/* 三腳架 */}
+              <g stroke={C.ink} stroke-width="3" stroke-linecap="round" fill="none">
+                <line x1="160" y1="195" x2="160" y2="245"/>
+                <line x1="160" y1="245" x2="120" y2="258"/>
+                <line x1="160" y1="245" x2="200" y2="258"/>
+                <line x1="160" y1="245" x2="160" y2="258"/>
+                <line x1="125" y1="258" x2="195" y2="258"/>
+              </g>
+              <rect x="148" y="185" width="24" height="14" rx="2" fill={C.ink}/>
+
+              {/* 機身 */}
+              <rect x="40" y="80" width="200" height="105" rx="6" fill="#fff" stroke={C.ink} stroke-width="2.5"/>
+              <rect x="44" y="84" width="192" height="97" rx="4" fill={C.accentBg}/>
+
+              {/* 上方雙膠片盤 */}
+              <g>
+                <circle cx="80" cy="55" r="34" fill="#fff" stroke={C.ink} stroke-width="2.5"/>
+                <circle cx="80" cy="55" r="28" fill="none" stroke={C.ink} stroke-width="1" opacity="0.3"/>
+                <circle cx="80" cy="55" r="6" fill={C.ink}/>
+                {Array.from({ length: 6 }).map((_, i) => {
+                  const a = (i * 60) * Math.PI / 180;
+                  return <circle cx={80 + Math.cos(a) * 18} cy={55 + Math.sin(a) * 18} r="2.5" fill={C.ink} opacity="0.7"/>;
+                })}
+                <circle cx="180" cy="55" r="34" fill="#fff" stroke={C.ink} stroke-width="2.5"/>
+                <circle cx="180" cy="55" r="28" fill="none" stroke={C.ink} stroke-width="1" opacity="0.3"/>
+                <circle cx="180" cy="55" r="6" fill={C.ink}/>
+                {Array.from({ length: 6 }).map((_, i) => {
+                  const a = (i * 60 + 30) * Math.PI / 180;
+                  return <circle cx={180 + Math.cos(a) * 18} cy={55 + Math.sin(a) * 18} r="2.5" fill={C.ink} opacity="0.7"/>;
+                })}
+                <line x1="80" y1="89" x2="80" y2="100" stroke={C.ink} stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="180" y1="89" x2="180" y2="100" stroke={C.ink} stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+
+              {/* 鏡頭 */}
+              <g>
+                <circle cx="125" cy="132" r="38" fill={C.ink}/>
+                <circle cx="125" cy="132" r="32" fill="#1A1410"/>
+                <circle cx="125" cy="132" r="26" fill="none" stroke="#444" stroke-width="1"/>
+                <circle cx="125" cy="132" r="20" fill={C.accentDark}/>
+                <ellipse cx="118" cy="124" rx="8" ry="5" fill={C.accent} opacity="0.7"/>
+                <ellipse cx="115" cy="121" rx="3" ry="2" fill="#fff" opacity="0.9"/>
+                {Array.from({ length: 12 }).map((_, i) => {
+                  const a = (i * 30) * Math.PI / 180;
+                  return <line x1={125 + Math.cos(a) * 30} y1={132 + Math.sin(a) * 30} x2={125 + Math.cos(a) * 34} y2={132 + Math.sin(a) * 34} stroke="#fff" stroke-width="1.2" opacity="0.5"/>;
+                })}
+              </g>
+
+              {/* 右側肩扛把手/監視器 */}
+              <g>
+                <rect x="240" y="100" width="50" height="40" rx="4" fill="#fff" stroke={C.ink} stroke-width="2.5"/>
+                <rect x="245" y="105" width="40" height="26" rx="2" fill={C.ink}/>
+                <rect x="248" y="108" width="34" height="20" fill={C.accent} opacity="0.7"/>
+                <text x="265" y="121" font-family={sans} font-size="6" fill="#fff" text-anchor="middle" font-weight="700">REC ●</text>
+                <rect x="234" y="115" width="8" height="10" fill={C.ink}/>
+              </g>
+
+              {/* 機身上的旋鈕 + REC 燈 */}
+              <g>
+                <circle cx="60" cy="105" r="4" fill="#DC2626"/>
+                <circle cx="60" cy="105" r="6" fill="none" stroke="#DC2626" stroke-width="1" opacity="0.4"/>
+                <text x="68" y="108" font-family={sans} font-size="6" fill={C.ink} font-weight="700">REC</text>
+                <circle cx="200" cy="160" r="10" fill="#fff" stroke={C.ink} stroke-width="1.5"/>
+                <circle cx="200" cy="160" r="6" fill={C.ink}/>
+                {Array.from({ length: 8 }).map((_, i) => {
+                  const a = (i * 45) * Math.PI / 180;
+                  return <line x1={200 + Math.cos(a) * 7} y1={160 + Math.sin(a) * 7} x2={200 + Math.cos(a) * 9} y2={160 + Math.sin(a) * 9} stroke="#fff" stroke-width="0.8"/>;
+                })}
+                <rect x="55" y="155" width="80" height="20" rx="2" fill="#fff" stroke={C.ink} stroke-width="0.8"/>
+                <text x="95" y="166" font-family={sans} font-size="6" fill={C.muted} text-anchor="middle" letter-spacing="1.5">DAYDREAM</text>
+                <text x="95" y="173" font-family={serif} font-size="7" fill={C.ink} text-anchor="middle" font-weight="700" letter-spacing="2">DEX · STUDIO</text>
+              </g>
+            </svg>
+
+            {/* 漂浮膠捲帶 */}
+            <svg width="500" height="120" viewBox="0 0 500 120" style="position:absolute;bottom:-40px;right:-50px;opacity:0.85;">
+              <defs>
+                <path id="filmpath" d="M 10 70 Q 100 30, 200 65 T 480 50"/>
+              </defs>
+              <g>
+                <use href="#filmpath" stroke={C.ink} stroke-width="38" fill="none" stroke-linecap="round"/>
+                <use href="#filmpath" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.3"/>
+              </g>
+              {Array.from({ length: 14 }).map((_, i) => {
+                const t = i / 13;
+                const x = 10 + t * 470;
+                const y = 70 - Math.sin(t * Math.PI) * 30;
+                return <rect x={x - 6} y={y - 6} width="12" height="12" fill={C.bg} rx="1.5"/>;
+              })}
+            </svg>
+
+            {/* 浮動小卡 — 132 位讀者 */}
+            <div style={`position:absolute;top:0;left:0;padding:12px 16px;background:${C.card};border-radius:12px;border:1px solid ${C.rule};box-shadow:0 8px 24px rgba(0,0,0,0.08);transform:rotate(-4deg);display:flex;align-items:center;gap:10px;z-index:5;`}>
+              <div style="display:flex;">
+                {['#FCA5A5', '#FDE68A', '#A7F3D0'].map((c, i) => (
+                  <div style={`width:24px;height:24px;border-radius:50%;background:${c};border:2px solid white;margin-left:${i ? '-8px' : '0'};`}></div>
+                ))}
+              </div>
+              <div>
+                <div style={`font-family:${sans};font-size:12px;font-weight:600;color:${C.ink};`}>132 位工程師</div>
+                <div style={`font-family:${serif};font-size:11px;color:${C.muted};font-style:italic;`}>正在訂閱本月電子報</div>
+              </div>
+            </div>
+
+            {/* 浮動小卡 — 諮詢狀態 */}
+            <div style={`position:absolute;bottom:80px;left:-10px;padding:12px 16px;background:${C.ink};color:#fff;border-radius:12px;font-family:${sans};font-size:12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);transform:rotate(3deg);z-index:5;`}>
+              {/* SVGDirectorChair */}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4l16 16M20 4L4 20"/>
+                <path d="M3 9h18"/>
+                <path d="M5.5 9v3l-1 9M18.5 9v3l1 9"/>
+                <path d="M5 12h14l-1 3H6z"/>
+              </svg>
+              <div>
+                <div style="font-weight:600;">本月還有 3 個時段</div>
+                <div style="opacity:0.7;font-size:10px;margin-top:1px;">不勉強,有需要再來</div>
+              </div>
+            </div>
+
+            {/* 浮動小卡 — 本週新文 */}
+            {latest && (
+              <a href={`/blog/${latest.slug}`} style={`position:absolute;top:175px;right:-20px;padding:14px 16px;background:${C.card};border:1px solid ${C.rule};border-radius:12px;box-shadow:0 12px 28px rgba(83,145,255,0.16);transform:rotate(2.5deg);max-width:220px;z-index:5;text-decoration:none;display:block;`}>
+                <div style={`display:flex;align-items:center;gap:6px;font-family:${serif};font-size:10px;color:${C.muted};letter-spacing:1px;margin-bottom:6px;font-style:italic;`}>
+                  <span style="width:6px;height:6px;border-radius:50%;background:#DC2626;animation:pulse 1.5s infinite;display:inline-block;"></span>
+                  NOW SHOWING · 本週新文
+                </div>
+                <div style={`font-family:${sans};font-size:14px;color:${C.ink};font-weight:600;line-height:1.4;`}>
+                  {latest.title}
+                </div>
+                <div style={`margin-top:8px;font-family:${sans};font-size:10px;color:${C.muted};`}>
+                  <span style={`padding:2px 6px;background:#E0F2FE;color:${latest.tagColor};border-radius:3px;font-weight:500;margin-right:4px;`}>{latest.tag}</span>
+                  慢讀 18 分鐘
+                </div>
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== W_LetterToReader ===================== */}
+      <section style="padding:80px 56px;max-width:880px;margin:0 auto;position:relative;">
+        <div style={`position:absolute;top:60px;left:30px;font-family:${serif};font-size:120px;color:${C.accentSoft};line-height:1;font-weight:600;`}>“</div>
+        <div style="position:relative;text-align:left;">
+          <div style={`display:inline-flex;align-items:center;gap:10px;font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;letter-spacing:3px;margin-bottom:28px;`}>
+            {/* SVGFilmReel */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.muted} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="1.6" fill={C.muted}/>
+              <circle cx="12" cy="6" r="1.4"/><circle cx="12" cy="18" r="1.4"/>
+              <circle cx="6" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>
+            </svg>
+            —— A LETTER TO YOU ——
+          </div>
+          <h2 style={`font-family:${sans};font-size:38px;line-height:1.55;font-weight:600;color:${C.ink};margin:0;letter-spacing:-0.8px;max-width:760px;`}>
+            當所有人都在喊<span style={`color:${C.warm};font-weight:700;`}>「快」</span>的時候,<br/>
+            你需要的,可能是<span style={`color:${C.accent};font-weight:700;position:relative;display:inline-block;`}>一段慢慢走的路<svg width="210" height="10" viewBox="0 0 210 10" style="display:block;margin-top:-6px;"><path d="M2 6 Q 52 1, 105 5 T 208 4" fill="none" stroke={C.accent} stroke-width="2.5" stroke-linecap="round" opacity="0.55"/></svg></span>。
+          </h2>
+          <div style={`margin-top:36px;font-family:${serif};font-size:18px;line-height:2;color:${C.ink2};max-width:720px;`}>
+            我懂你的猶豫。30 多歲還能轉職嗎、沒有資工背景行不行、AI 取代了我怎麼辦……<br/>
+            這些問題,我自己也問過自己很多次。<br/><br/>
+            所以這個部落格,不是給你<span style={`background:linear-gradient(transparent 70%, ${C.warmSoft} 70%);`}>「七天速成資料工程師」</span>那種速食。<br/>
+            我寫的是 ——<span style={`font-weight:600;color:${C.ink};`}>那些工程師職涯裡,真正會陪你走十年的東西</span>。
+          </div>
+          {/* 第二句電影台詞 SCENE 02 */}
+          <div style={`margin-top:44px;padding:24px 28px;background:${C.bgSoft};border-radius:14px;position:relative;border:1px dashed ${C.rule};`}>
+            <div style={`display:flex;align-items:center;gap:8px;font-family:${serif};font-size:11px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:10px;`}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l-5 7h10z"/>
+                <ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2"/>
+                <path d="M12 10v3"/>
+              </svg>
+              SCENE 02 · 信念
+            </div>
+            <div style={`font-family:${serif};font-size:18px;color:${C.ink};line-height:1.75;font-style:italic;font-weight:500;`}>
+              “It's not who you are underneath, it's what you do that defines you.”
+            </div>
+            <div style={`margin-top:8px;font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;`}>
+              —— 履歷不是你寫了什麼,是你做過什麼。
+            </div>
+          </div>
+          <div style={`margin-top:40px;display:flex;align-items:center;gap:14px;font-family:${serif};font-size:14px;color:${C.muted};font-style:italic;`}>
+            <div style={`width:40px;height:1px;background:${C.rule};`}></div>
+            Dex,寫於 2026 春天的台北戲院散場後
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== W_Values ===================== */}
+      <section style="padding:40px 56px 80px;max-width:1120px;margin:0 auto;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+          {/* Card 1 - Compass */}
+          <div style={`padding:32px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};position:relative;overflow:hidden;`}>
+            <div style="width:52px;height:52px;border-radius:14px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
+            </div>
+            <h3 style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};margin:0 0 10px;letter-spacing:-0.3px;`}>長期主義的職涯思考</h3>
+            <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.8;margin:0;`}>不追熱門技術,我們聊的是「十年後你會在哪裡」這種問題。</p>
+          </div>
+          {/* Card 2 - Seed */}
+          <div style={`padding:32px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};position:relative;overflow:hidden;`}>
+            <div style="width:52px;height:52px;border-radius:14px;background:#ECFDF5;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-12a8 8 0 10-16 0c0 8 8 12 8 12z"/>
+                <path d="M12 13c0-3 1.5-5 4-6"/>
+              </svg>
+            </div>
+            <h3 style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};margin:0 0 10px;letter-spacing:-0.3px;`}>可實踐的學習路徑</h3>
+            <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.8;margin:0;`}>從零到第一份工作,每一步都有人走過 —— 你不是一個人。</p>
+          </div>
+          {/* Card 3 - Clapper */}
+          <div style={`padding:32px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};position:relative;overflow:hidden;`}>
+            <div style={`width:52px;height:52px;border-radius:14px;background:${C.warmSoft};display:flex;align-items:center;justify-content:center;margin-bottom:18px;`}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2.5" y="8" width="19" height="12" rx="1.4"/>
+                <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4"/>
+                <path d="M2.5 12h19" opacity="0.4"/>
+              </svg>
+            </div>
+            <h3 style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};margin:0 0 10px;letter-spacing:-0.3px;`}>電影裡的職涯隱喻</h3>
+            <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.8;margin:0;`}>我也是個影評人。一部電影裡,常常藏著一段你正在走的路。</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== W_Featured ===================== */}
+      <section style="padding:40px 56px 60px;max-width:1120px;margin:0 auto;">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;">
+          <div>
+            <div style={`font-family:${serif};font-size:13px;color:${C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— FIVE ESSENTIAL READS ——</div>
+            <h2 style={`font-family:${sans};font-size:38px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>如果你只能讀五篇,我推薦這幾篇</h2>
+            <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;`}>讀者們最常分享、最常回頭再讀的核心長文。從這裡開始,就足夠陪你度過接下來幾個月的迷茫。</p>
+          </div>
+          <a href="#all-posts" style={`font-family:${sans};font-size:13px;color:${C.ink};padding:10px 18px;border:1px solid ${C.rule};border-radius:8px;background:${C.card};text-decoration:none;`}>看全部精選 →</a>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:auto auto;gap:16px;">
+          {/* 大卡 (第一篇) */}
+          {featured[0] && (
+            <a href={`/blog/${featured[0].slug}`} style={`grid-row:1 / 3;background:${C.card};border-radius:16px;overflow:hidden;border:1px solid ${C.rule};text-decoration:none;cursor:pointer;display:flex;flex-direction:column;`}>
+              <div style="height:280px;">
+                <div style={`width:100%;height:100%;background:linear-gradient(135deg, ${grads[featured[0].cover][0]} 0%, ${grads[featured[0].cover][1]} 100%);position:relative;overflow:hidden;`}>
+                  <svg width="100%" height="100%" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;opacity:0.3;">
+                    <defs><pattern id="wpg1big" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="11" cy="11" r="1" fill="white"/></pattern></defs>
+                    <rect width="200" height="120" fill="url(#wpg1big)"/>
+                  </svg>
+                  <div style="position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+                    {/* SVGClapper for first */}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F1B16" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2.5" y="8" width="19" height="12" rx="1.4"/>
+                      <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4"/>
+                      <path d="M2.5 12h19" opacity="0.4"/>
+                    </svg>
+                  </div>
+                  <div style={`position:absolute;bottom:14px;left:14px;color:#fff;font-family:${sans};font-size:11px;font-weight:500;letter-spacing:1.5px;opacity:0.92;`}>DAYDREAM · DEX</div>
+                </div>
+              </div>
+              <div style="padding:28px;flex:1;">
+                <div style={`display:inline-block;padding:4px 10px;background:${C.accentSoft};color:${C.accentDark};font-size:11px;font-weight:600;border-radius:4px;font-family:${sans};letter-spacing:0.5px;margin-bottom:14px;`}>{featured[0].tag}</div>
+                <div style={`font-family:${sans};font-size:26px;font-weight:700;color:${C.ink};line-height:1.35;margin-bottom:12px;letter-spacing:-0.5px;`}>{featured[0].title}</div>
+                <div style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.8;margin-bottom:16px;`}>{featured[0].desc}</div>
+                <div style={`font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>{featured[0].stats}</div>
+              </div>
+            </a>
+          )}
+
+          {/* 小卡 (第 2-5 篇) */}
+          {featured.slice(1).map((p, i) => (
+            <a href={`/blog/${p.slug}`} style={`background:${C.card};border-radius:14px;overflow:hidden;border:1px solid ${C.rule};text-decoration:none;cursor:pointer;display:flex;flex-direction:column;`}>
+              <div style="height:100px;">
+                <div style={`width:100%;height:100%;background:linear-gradient(135deg, ${grads[p.cover][0]} 0%, ${grads[p.cover][1]} 100%);position:relative;overflow:hidden;`}>
+                  <svg width="100%" height="100%" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;opacity:0.3;">
+                    <defs><pattern id={`wpsmall${i}`} x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="11" cy="11" r="1" fill="white"/></pattern></defs>
+                    <rect width="200" height="120" fill={`url(#wpsmall${i})`}/>
+                  </svg>
+                  <div style="position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+                    {p.iconName === 'seed' && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F1B16" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-12a8 8 0 10-16 0c0 8 8 12 8 12z"/>
+                        <path d="M12 13c0-3 1.5-5 4-6"/>
+                      </svg>
+                    )}
+                    {p.iconName === 'filmreel' && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F1B16" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"/>
+                        <circle cx="12" cy="12" r="1.6" fill="#1F1B16"/>
+                        <circle cx="12" cy="6" r="1.4"/><circle cx="12" cy="18" r="1.4"/>
+                        <circle cx="6" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>
+                      </svg>
+                    )}
+                    {p.iconName === 'lamp' && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F1B16" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18h6"/><path d="M10 22h4"/>
+                        <path d="M12 2a7 7 0 00-4 12.7c.8.6 1 1.3 1 2.3v1h6v-1c0-1 .2-1.7 1-2.3A7 7 0 0012 2z"/>
+                      </svg>
+                    )}
+                    {p.iconName === 'paperplane' && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F1B16" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div style={`position:absolute;bottom:14px;left:14px;color:#fff;font-family:${sans};font-size:11px;font-weight:500;letter-spacing:1.5px;opacity:0.92;`}>DAYDREAM · DEX</div>
+                </div>
+              </div>
+              <div style="padding:18px;flex:1;display:flex;flex-direction:column;">
+                <div style={`display:inline-block;align-self:flex-start;padding:3px 8px;background:#F3F4F6;color:${p.tagColor};font-size:10px;font-weight:600;border-radius:4px;font-family:${sans};margin-bottom:10px;`}>{p.tag}</div>
+                <div style={`font-family:${sans};font-size:15px;font-weight:600;color:${C.ink};line-height:1.5;margin-bottom:6px;letter-spacing:-0.2px;`}>{p.title}</div>
+                <div style={`font-family:${serif};font-size:12px;color:${C.muted};line-height:1.7;margin-bottom:10px;`}>{p.desc}</div>
+                <div style={`font-family:${serif};font-size:11px;color:${C.faint};font-style:italic;margin-top:auto;`}>{p.stats}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* ===================== W_Cinema ===================== */}
+      <section style="padding:60px 56px;max-width:1120px;margin:0 auto;">
+        <div style={`background:linear-gradient(135deg, ${C.ink} 0%, #2A2520 100%);border-radius:24px;padding:0 0 56px;position:relative;overflow:hidden;color:#fff;`}>
+          {/* 頂部膠捲條 */}
+          <div style="padding:0 0 40px;">
+            <svg width="100%" height="24" viewBox="0 0 1100 24" preserveAspectRatio="none" style="display:block;opacity:0.12;">
+              <rect x="0" y="3" width="1100" height="18" fill="#fff"/>
+              {Array.from({ length: 50 }).map((_, i) => (
+                <rect x={6 + i * 22} y="7" width="14" height="10" fill={C.ink} rx="1"/>
+              ))}
+            </svg>
+          </div>
+          {/* 頂部 NOW SHOWING */}
+          <div style={`position:absolute;top:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:8px 22px;background:${C.warm};color:${C.ink};border-radius:999px;font-family:${sans};font-size:12px;font-weight:700;letter-spacing:3px;box-shadow:0 8px 24px rgba(217,119,6,0.4);`}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.ink} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="1.6" fill={C.ink}/>
+              <circle cx="12" cy="6" r="1.4"/><circle cx="12" cy="18" r="1.4"/>
+              <circle cx="6" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>
+            </svg>
+            NOW SHOWING
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.ink} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="1.6" fill={C.ink}/>
+              <circle cx="12" cy="6" r="1.4"/><circle cx="12" cy="18" r="1.4"/>
+              <circle cx="6" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>
+            </svg>
+          </div>
+
+          <div style="padding:0 56px;position:relative;">
+            {/* 背景大圈聚光燈 */}
+            <div style={`position:absolute;top:-120px;right:-80px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle, ${C.warm}30 0%, transparent 70%);pointer-events:none;`}></div>
+            {/* 背景膠捲穿過 */}
+            <svg width="100%" height="36" viewBox="0 0 1100 36" preserveAspectRatio="none" style="position:absolute;top:18px;left:0;opacity:0.08;">
+              <rect x="0" y="4" width="1100" height="28" fill="#fff" rx="2"/>
+              {Array.from({ length: 40 }).map((_, i) => (
+                <rect x={8 + i * 27} y="9" width="18" height="18" fill="#1F1B16" rx="1"/>
+              ))}
+            </svg>
+
+            <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;">
+              <div>
+                <div style={`display:inline-flex;align-items:center;gap:10px;padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:999px;font-family:${sans};font-size:11px;color:${C.warm};font-weight:600;margin-bottom:20px;letter-spacing:2px;`}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2.5" y="8" width="19" height="12" rx="1.4"/>
+                    <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4"/>
+                    <path d="M2.5 12h19" opacity="0.4"/>
+                  </svg>
+                  CINEMA × CAREER
+                </div>
+                <h2 style={`font-family:${sans};font-size:38px;font-weight:700;margin:0 0 18px;letter-spacing:-0.8px;line-height:1.35;`}>
+                  工程師的人生,<br/>
+                  和一部好電影一樣 ——<br/>
+                  <span style={`color:${C.warm};`}>需要時間慢慢顯影。</span>
+                </h2>
+                <p style={`font-family:${serif};font-size:16px;color:rgba(255,255,255,0.75);line-height:1.95;margin:0 0 24px;max-width:480px;`}>
+                  我也是個影評人。除了程式和職涯,這裡也寫電影 —— 因為很多時候,一部電影能講清楚的東西,程式碼說不出來。
+                </p>
+                {/* FINAL SCENE */}
+                <div style="padding:22px 26px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:14px;position:relative;">
+                  <div style={`position:absolute;top:-14px;left:22px;padding:4px 12px;background:${C.warm};color:${C.ink};font-family:${sans};font-size:11px;font-weight:700;border-radius:6px;letter-spacing:1px;display:inline-flex;align-items:center;gap:6px;`}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.ink} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3l-5 7h10z"/>
+                      <ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2"/>
+                      <path d="M12 10v3"/>
+                    </svg>
+                    FINAL SCENE
+                  </div>
+                  <div style={`font-family:${serif};font-size:19px;line-height:1.7;font-style:italic;color:#fff;font-weight:500;`}>
+                    “You need to believe that something extraordinary is possible.”
+                  </div>
+                  <div style={`margin-top:10px;font-family:${serif};font-size:13px;color:rgba(255,255,255,0.55);font-style:italic;`}>
+                    —— 寫給每個還在「會不會太晚」的你。
+                  </div>
+                </div>
+                <a href="#all-posts" style={`display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:12px 22px;background:${C.warm};color:${C.ink};border-radius:10px;font-family:${sans};font-size:14px;font-weight:700;text-decoration:none;`}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={C.ink} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4z"/>
+                    <path d="M11 6v12" stroke-dasharray="1.5 2"/>
+                  </svg>
+                  進入影評專區
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+
+              {/* 右側影評卡 */}
+              <div style="position:relative;height:420px;">
+                {reviews.map((r, i) => (
+                  <div style={`position:absolute;top:${i * 100}px;right:${i * 20}px;left:${i * 20}px;background:#fff;border-radius:16px;padding:22px;color:${C.ink};box-shadow:0 16px 40px rgba(0,0,0,0.32);transform:rotate(${(i - 1) * 1.5}deg);border:1px solid ${C.rule};`}>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                      <div style={`display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:${r.moodSoft};color:${r.mood};border-radius:999px;font-family:${sans};font-size:11px;font-weight:600;`}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={r.mood} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="2.5" y="8" width="19" height="12" rx="1.4"/>
+                          <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4"/>
+                          <path d="M2.5 12h19" opacity="0.4"/>
+                        </svg>
+                        {r.tag}
+                      </div>
+                      <div style="display:flex;gap:2px;">
+                        {Array.from({ length: 5 }).map(() => (
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill={C.warm} stroke="none"><path d="M12 2l3 7h7l-5.5 4.5 2 7-6.5-4.5-6.5 4.5 2-7-5.5-4.5h7z"/></svg>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={`font-family:${sans};font-size:17px;font-weight:700;line-height:1.45;color:${C.ink};margin-bottom:8px;`}>{r.title}</div>
+                    <div style={`font-family:${serif};font-size:12px;color:${C.muted};font-style:italic;`}>{r.meta}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 膠捲分隔線 */}
+      <div style="max-width:1120px;margin:0 auto;padding:40px 56px 0;">
+        <svg width="100%" height="24" viewBox="0 0 1100 24" preserveAspectRatio="none" style="display:block;opacity:0.08;">
+          <rect x="0" y="3" width="1100" height="18" fill={C.ink}/>
+          {Array.from({ length: 50 }).map((_, i) => (
+            <rect x={6 + i * 22} y="7" width="14" height="10" fill={C.bg} rx="1"/>
+          ))}
+        </svg>
+      </div>
+
+      {/* ===================== W_AllPosts ===================== */}
+      <section id="all-posts" style="padding:60px 56px 40px;max-width:1120px;margin:0 auto;">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;">
+          <div>
+            <div style={`font-family:${serif};font-size:13px;color:${C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— ARCHIVE ——</div>
+            <h2 style={`font-family:${sans};font-size:38px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>所有的塵世筆記</h2>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};margin:10px 0 0;`}>{totalPosts} 篇長文,慢慢讀,不必急。</p>
+          </div>
+          <div style={`display:flex;gap:6px;font-family:${sans};font-size:13px;flex-wrap:wrap;`}>
+            <button style={`padding:8px 14px;border-radius:8px;border:none;background:${C.ink};color:#fff;font-weight:600;cursor:pointer;font-family:${sans};font-size:13px;display:flex;align-items:center;gap:6px;`}>
+              全部<span style="font-size:11px;opacity:0.7;font-weight:400;">{totalPosts}</span>
+            </button>
+            <button style={`padding:8px 14px;border-radius:8px;border:none;background:${C.card};color:${C.ink2};font-weight:500;cursor:pointer;font-family:${sans};font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:inset 0 0 0 1px ${C.rule};`}>
+              轉職<span style="font-size:11px;opacity:0.7;font-weight:400;">{catCount.轉職}</span>
+            </button>
+            <button style={`padding:8px 14px;border-radius:8px;border:none;background:${C.card};color:${C.ink2};font-weight:500;cursor:pointer;font-family:${sans};font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:inset 0 0 0 1px ${C.rule};`}>
+              資料工程<span style="font-size:11px;opacity:0.7;font-weight:400;">{catCount.資料工程}</span>
+            </button>
+            <button style={`padding:8px 14px;border-radius:8px;border:none;background:${C.card};color:${C.ink2};font-weight:500;cursor:pointer;font-family:${sans};font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:inset 0 0 0 1px ${C.rule};`}>
+              AI<span style="font-size:11px;opacity:0.7;font-weight:400;">{catCount.AI}</span>
+            </button>
+            <button style={`padding:8px 14px;border-radius:8px;border:none;background:${C.card};color:${C.ink2};font-weight:500;cursor:pointer;font-family:${sans};font-size:13px;display:flex;align-items:center;gap:6px;box-shadow:inset 0 0 0 1px ${C.rule};`}>
+              心法<span style="font-size:11px;opacity:0.7;font-weight:400;">{catCount.心法}</span>
+            </button>
+          </div>
+        </div>
+
+        <div style={`background:${C.card};border-radius:14px;border:1px solid ${C.rule};overflow:hidden;`}>
+          {posts.map((p, i) => (
+            <a href={`/blog/${p.slug}`} style={`display:grid;grid-template-columns:90px 1fr 120px 24px;gap:24px;align-items:center;padding:22px 24px;border-bottom:${i < posts.length - 1 ? `1px solid ${C.rule}` : 'none'};text-decoration:none;cursor:pointer;`}>
+              <div style={`font-family:${sans};font-size:13px;color:${C.muted};font-variant-numeric:tabular-nums;`}>
+                <div style={`font-weight:600;color:${C.ink2};`}>{p.date}</div>
+                <div style={`font-size:11px;color:${C.faint};margin-top:1px;`}>{p.year}</div>
+              </div>
+              <div>
+                <div style={`font-family:${sans};font-size:16px;color:${C.ink};font-weight:600;margin-bottom:4px;letter-spacing:-0.2px;`}>{p.title}</div>
+                <div style={`font-family:${serif};font-size:13px;color:${C.muted};line-height:1.7;`}>{p.desc}</div>
+              </div>
+              <div>
+                <span style={`display:inline-block;padding:4px 10px;background:#F3F4F6;color:${p.tagColor};font-size:11px;font-weight:600;border-radius:4px;font-family:${sans};`}>{p.tag}</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.faint} stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+          ))}
+        </div>
+
+        <div style="text-align:center;margin-top:24px;">
+          <a href="/blog" style={`display:inline-flex;align-items:center;gap:8px;font-family:${sans};font-size:14px;color:${C.ink};padding:12px 24px;border:1px solid ${C.rule};border-radius:10px;background:${C.card};text-decoration:none;font-weight:500;`}>
+            繼續往下讀 (還有 {remainingPosts} 篇)
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+        </div>
+      </section>
+
+      {/* ===================== W_About ===================== */}
+      <section style="padding:60px 56px;max-width:1120px;margin:0 auto;">
+        <div style="margin-bottom:24px;">
+          <svg width="100%" height="24" viewBox="0 0 1100 24" preserveAspectRatio="none" style="display:block;opacity:0.08;">
+            <rect x="0" y="3" width="1100" height="18" fill={C.ink}/>
+            {Array.from({ length: 50 }).map((_, i) => (
+              <rect x={6 + i * 22} y="7" width="14" height="10" fill={C.bg} rx="1"/>
+            ))}
+          </svg>
+        </div>
+
+        <div style={`background:${C.card};border-radius:24px;padding:56px;position:relative;overflow:hidden;border:1px solid ${C.rule};box-shadow:0 4px 24px rgba(0,0,0,0.04);`}>
+          <div style={`position:absolute;top:20px;right:20px;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:${C.warmSoft};color:${C.warm};border-radius:999px;font-family:${sans};font-size:10px;font-weight:700;letter-spacing:1.5px;`}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="8" width="13" height="10" rx="1.4"/>
+              <path d="M15 11.5l5-2.5v8l-5-2.5z"/>
+              <circle cx="6" cy="6" r="1.6"/><circle cx="10" cy="6" r="1.2"/>
+            </svg>
+            BEHIND THE SCENES
+          </div>
+
+          <svg width="200" height="200" viewBox="0 0 200 200" style="position:absolute;top:-20px;right:-20px;opacity:0.4;">
+            <circle cx="100" cy="100" r="80" fill="none" stroke={C.accentSoft} stroke-width="40"/>
+          </svg>
+
+          <div style="display:grid;grid-template-columns:180px 1fr;gap:48px;align-items:center;position:relative;">
+            <div style="text-align:center;">
+              <div style={`width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;font-family:${serif};font-size:72px;color:#fff;font-weight:700;box-shadow:0 16px 40px rgba(83,145,255,0.32);position:relative;margin:0 auto;`}>
+                D
+                <div style="position:absolute;bottom:8px;right:8px;width:36px;height:36px;border-radius:50%;background:#10B981;border:4px solid white;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">👋</div>
+              </div>
+              <div style={`margin-top:16px;font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;`}>—— Dex,38 歲 ——</div>
+            </div>
+
+            <div>
+              <div style={`display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:${C.warmSoft};color:${C.warm};border-radius:999px;font-family:${sans};font-size:11px;font-weight:600;margin-bottom:16px;letter-spacing:1px;`}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4l16 16M20 4L4 20"/>
+                  <path d="M3 9h18"/>
+                  <path d="M5.5 9v3l-1 9M18.5 9v3l1 9"/>
+                  <path d="M5 12h14l-1 3H6z"/>
+                </svg>
+                HI,我是這個部落格的導演
+              </div>
+              <h2 style={`font-family:${sans};font-size:30px;color:${C.ink};font-weight:700;margin:0 0 16px;letter-spacing:-0.5px;line-height:1.4;`}>
+                一個從半導體跨到 AI 的<br/>長期主義者。
+              </h2>
+              <p style={`font-family:${serif};font-size:17px;color:${C.ink2};line-height:1.95;margin:0 0 14px;max-width:620px;`}>
+                我是 Dex,AI 技術總監兼職涯教練。半導體製程做了 5 年、後端工程 3 年、現在帶 AI 團隊。<span style={`color:${C.muted};font-size:15px;`}>跨界十年,做過四種專業,踩過你正在踩的那些坑。</span>
+              </p>
+              <p style={`font-family:${serif};font-size:17px;color:${C.ink2};line-height:1.95;margin:0;max-width:620px;`}>
+                這幾年陪 200+ 學員走過轉職這條路。如果你正在迷茫,<span style={`background:linear-gradient(transparent 70%, ${C.accentSoft} 70%);font-weight:600;`}>我想告訴你,慢慢來,真的會走到的</span>。
+              </p>
+              <div style="display:flex;gap:14px;margin-top:28px;">
+                <a href="/about" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.accent};color:#fff;font-size:14px;font-weight:600;border-radius:10px;text-decoration:none;font-family:${sans};`}>
+                  認識完整的我
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
+                <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:transparent;color:${C.ink2};font-size:14px;font-weight:500;border-radius:10px;text-decoration:none;font-family:${sans};border:1px solid ${C.rule};`}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.ink2} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                  </svg>
+                  寫信給我
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== W_ForYou ===================== */}
+      <section style="padding:40px 56px 60px;max-width:1120px;margin:0 auto;">
+        <div style={`background:linear-gradient(135deg, ${C.bgSoft} 0%, ${C.accentSoft} 100%);border-radius:24px;padding:48px;position:relative;overflow:hidden;`}>
+          <div style="position:absolute;top:30px;right:40px;font-size:60px;opacity:0.15;">🌱</div>
+          <div style="max-width:720px;position:relative;">
+            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:2px;margin-bottom:14px;`}>—— FOR YOU ——</div>
+            <h2 style={`font-family:${sans};font-size:32px;font-weight:700;color:${C.ink};margin:0 0 18px;letter-spacing:-0.6px;line-height:1.4;`}>
+              如果你正在轉職的路上 ——<br/>
+              這幾件事,我想先告訴你。
+            </h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;margin-top:28px;">
+              {[
+                ['你不孤單', '至少 200 個讀者跟你一樣 30+ 才開始學程式。'],
+                ['你不需要學完所有東西', '只需要學「對的那 20%」,我會帶你找到。'],
+                ['你不必證明自己', '你願意開始,就已經夠勇敢了。'],
+                ['你不會被 AI 取代', '只要你願意學會,如何跟 AI 一起工作。'],
+              ].map(([t, d]) => (
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <div style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.accent} stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <div>
+                    <div style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin-bottom:4px;`}>{t}</div>
+                    <div style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;`}>{d}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style="margin-top:32px;display:flex;align-items:center;gap:16px;">
+              <a href={forYouLink} style={`display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:${C.ink};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;`}>
+                從「Python 轉職指南」開始讀 →
+              </a>
+              <span style={`font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;`}>· 18 分鐘,慢慢看</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== W_Newsletter ===================== */}
+      <section style="padding:40px 56px 60px;max-width:1120px;margin:0 auto;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          {/* Newsletter */}
+          <div style={`padding:36px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};position:relative;`}>
+            <div style={`width:48px;height:48px;border-radius:12px;background:${C.accentSoft};color:${C.accentDark};display:flex;align-items:center;justify-content:center;margin-bottom:20px;`}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.accentDark} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+              </svg>
+            </div>
+            <h3 style={`font-family:${sans};font-size:22px;font-weight:700;color:${C.ink};margin:0 0 8px;letter-spacing:-0.3px;`}>每兩週,寫一封信給你</h3>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
+              一封關於程式、職涯、AI 的長思考。3,420+ 工程師讀者一起在路上 —— 這封信不會販賣焦慮,只想陪你想清楚。
+            </p>
+            <div style="display:flex;gap:8px;">
+              <input placeholder="your@email.com" style={`flex:1;padding:12px 16px;border:1px solid ${C.rule};border-radius:10px;font-family:${sans};font-size:14px;outline:none;background:${C.bg};`} />
+              <button style={`padding:0 22px;background:${C.accent};color:#fff;border:none;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;cursor:pointer;`}>訂閱</button>
+            </div>
+            <div style={`margin-top:14px;display:flex;align-items:center;gap:14px;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
+              <span style="display:flex;align-items:center;gap:6px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                隨時可以退訂
+              </span>
+              <span style="display:flex;align-items:center;gap:6px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                不會被分享給任何人
+              </span>
+            </div>
+          </div>
+
+          {/* 1:1 諮詢 */}
+          <div style={`padding:36px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
+            <div style={`width:48px;height:48px;border-radius:12px;background:${C.warmSoft};color:${C.warm};display:flex;align-items:center;justify-content:center;margin-bottom:20px;`}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18h6"/><path d="M10 22h4"/>
+                <path d="M12 2a7 7 0 00-4 12.7c.8.6 1 1.3 1 2.3v1h6v-1c0-1 .2-1.7 1-2.3A7 7 0 0012 2z"/>
+              </svg>
+            </div>
+            <h3 style={`font-family:${sans};font-size:22px;font-weight:700;color:${C.ink};margin:0 0 8px;letter-spacing:-0.3px;`}>1:1 諮詢,我陪你想清楚</h3>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
+              50 分鐘深度對談 —— 轉職策略、履歷與作品集、職涯卡關。我不會給你標準答案,但會幫你問對問題。
+            </p>
+            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.ink};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;`}>
+              看看時段
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <div style={`margin-top:14px;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
+              · 諮詢前如果你想先聊聊,寫信給我也可以。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== W_Footer ===================== */}
+      <footer style={`padding:60px 56px 32px;max-width:1120px;margin:0 auto;border-top:1px solid ${C.rule};`}>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+              <div style={`width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;`}>D</div>
+              <span style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};`}>{SITE_TITLE}</span>
+            </div>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0;max-width:340px;`}>
+              Dex 的塵世筆記 — 寫給每個正在軟體和資料職涯路上的你。<br/>
+              <span style="font-style:italic;font-size:13px;">慢慢走,我們有的是時間。</span>
+            </p>
+            <div style="display:flex;gap:8px;margin-top:20px;">
+              {SOCIAL_LINKS.map((s) => (
+                <a href={s.url} title={s.name} target="_blank" rel="noopener noreferrer" style={`width:36px;height:36px;border-radius:8px;background:${C.card};border:1px solid ${C.rule};display:flex;align-items:center;justify-content:center;color:${C.ink2};font-family:${sans};font-size:12px;font-weight:600;text-decoration:none;`}>
+                  <Icon name={s.icon} width={14} height={14} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {[
+            { t: '頁面', items: [['關於我', '/about'], ['所有文章', '/blog'], ['電子報', '#'], ['RSS', '/rss.xml']] },
+            { t: '主題', items: [['轉職', '#'], ['資料工程', '#'], ['AI', '#'], ['心法', '#']] },
+            { t: '聯絡', items: [['寫信給我', '#'], ['預約諮詢', CTA_BOOKING_URL], ['訪談邀約', '#'], ['Sitemap', '/sitemap-index.xml']] },
+          ].map((g) => (
+            <div>
+              <div style={`font-family:${sans};font-size:11px;color:${C.faint};font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;`}>{g.t}</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                {g.items.map(([label, href]) => (
+                  <a href={href} style={`font-family:${sans};font-size:13px;color:${C.ink2};text-decoration:none;`}>{label}</a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={`padding-top:24px;border-top:1px solid ${C.rule};display:flex;justify-content:space-between;align-items:center;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
+          <span>© 2026 {SITE_TITLE} · 採 CC BY-NC 4.0 授權</span>
+          <span>Made with care in Taipei · 謝謝你讀到這裡 ♡</span>
+        </div>
+      </footer>
+
+    </div>
+  </body>
 </html>
