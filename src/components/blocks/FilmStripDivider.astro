@@ -1,0 +1,31 @@
+---
+/**
+ * 50 個齒孔的膠捲分隔線
+ * 三頁的 inline 版本完全一致；用 wrapper 容器再外包 padding。
+ */
+interface Props {
+  color?: string;
+  bgColor?: string;
+  opacity?: number;
+  class?: string;
+}
+const {
+  color = '#1F1B16',
+  bgColor = '#FBFAF7',
+  opacity = 0.15,
+  class: className,
+} = Astro.props;
+---
+<svg
+  width="100%"
+  height="24"
+  viewBox="0 0 1100 24"
+  preserveAspectRatio="none"
+  style={`display:block;opacity:${opacity};`}
+  class={className}
+>
+  <rect x="0" y="3" width="1100" height="18" fill={color} />
+  {Array.from({ length: 50 }).map((_, i) => (
+    <rect x={6 + i * 22} y="7" width="14" height="10" fill={bgColor} rx="1" />
+  ))}
+</svg>

@@ -1,0 +1,57 @@
+---
+import { Icon } from 'astro-icon/components';
+import { SOCIAL_LINKS } from '../../consts';
+
+/**
+ * 社群 icon 列表（Threads / IG / LinkedIn / FB / Spotify）
+ * variant:
+ *  - 'topbar': 圓形按鈕、灰底膠囊（沿用 index/about/coaching TopBar 的樣式）
+ *  - 'footer': 方形圓角邊框（沿用 footer 樣式）
+ */
+interface Props {
+  variant?: 'topbar' | 'footer';
+  iconSize?: number;
+  class?: string;
+}
+const C = {
+  bgSoft: '#F4F1EB',
+  card: '#FFFFFF',
+  rule: '#E8E2D4',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+};
+const { variant = 'topbar', iconSize = 14, class: className } = Astro.props;
+---
+{variant === 'topbar' && (
+  <div
+    style={`display:flex;align-items:center;gap:2px;padding:4px 6px;background:${C.bgSoft};border-radius:999px;`}
+    class={className}
+  >
+    {SOCIAL_LINKS.map((s) => (
+      <a
+        href={s.url}
+        title={s.name}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={`width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:${C.muted};text-decoration:none;`}
+      >
+        <Icon name={s.icon} width={iconSize} height={iconSize} />
+      </a>
+    ))}
+  </div>
+)}
+{variant === 'footer' && (
+  <div style="display:flex;gap:8px;margin-top:20px;" class={className}>
+    {SOCIAL_LINKS.map((s) => (
+      <a
+        href={s.url}
+        title={s.name}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={`width:36px;height:36px;border-radius:8px;background:${C.card};border:1px solid ${C.rule};display:flex;align-items:center;justify-content:center;color:${C.ink2};text-decoration:none;`}
+      >
+        <Icon name={s.icon} width={iconSize} height={iconSize} />
+      </a>
+    ))}
+  </div>
+)}

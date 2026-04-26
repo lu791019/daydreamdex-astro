@@ -1,0 +1,25 @@
+---
+interface Props {
+  size?: number;
+  color?: string;
+  class?: string;
+  opacity?: number;
+}
+const { size = 24, color = '#1F1B16', class: className, opacity } = Astro.props;
+---
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke={color}
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  style={opacity != null ? `opacity:${opacity};` : undefined}
+>
+  <rect x="2.5" y="8" width="19" height="12" rx="1.4" />
+  <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4" />
+  <path d="M2.5 12h19" opacity="0.4" />
+</svg>

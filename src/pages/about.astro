@@ -1,10 +1,11 @@
 ---
-import { Icon } from 'astro-icon/components';
 import BaseHead from '../components/BaseHead.astro';
 import SEO from '../components/SEO.astro';
+import TopBar from '../components/blocks/TopBar.astro';
+import Footer from '../components/blocks/Footer.astro';
+import FilmStripDivider from '../components/blocks/FilmStripDivider.astro';
 import {
   SITE_TITLE,
-  SOCIAL_LINKS,
   CTA_BOOKING_URL,
   CTA_COURSE_URL,
   CTA_COURSE_DISCOUNT_CODE,
@@ -34,17 +35,6 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
 const aboutTitle = `關於我 ｜ ${SITE_TITLE}`;
 const aboutDescription =
   'Dex，Daydream Dex 創辦人。轉職顧問 × AI 技術總監，10 年跨界 4 種專業，從半導體到資料工程、軟體、AI。輔導學員打造作品集、撰寫履歷、規劃職涯，陪你達到軟體和資料職涯目標。';
-
-// 主選單
-const navItems = [
-  { label: '文章', href: '/', active: false },
-  { label: '關於我', href: '/about', active: true },
-  { label: 'Podcast', href: 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T', icon: 'mic' },
-  { label: '職涯諮詢', href: '/coaching', icon: 'calendar' },
-  { label: '免費課程', href: '#', icon: 'graduation' },
-  { label: '付費課程', href: CTA_COURSE_URL, icon: 'sparkle' },
-  { label: '電子報', href: '#' },
-];
 
 // 職涯時間軸（電影膠片）
 const careerTimeline = [
@@ -131,80 +121,7 @@ const interests = {
   <body>
     <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100%;`}>
 
-      {/* ===================== TopBar ===================== */}
-      <div style={`position:sticky;top:0;z-index:50;background:rgba(251,250,247,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid ${C.rule};`}>
-        <div style="max-width:1240px;margin:0 auto;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
-          {/* Logo */}
-          <a href="/" style="display:flex;align-items:center;gap:12px;flex-shrink:0;text-decoration:none;">
-            <div style={`width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;position:relative;`}>
-              <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="6" r="3.2"/>
-                <circle cx="9" cy="6" r="0.9" fill="#fff"/>
-                <circle cx="17" cy="6" r="3.2"/>
-                <circle cx="17" cy="6" r="0.9" fill="#fff"/>
-                <path d="M9 9.2v2M17 9.2v2"/>
-                <rect x="3" y="11" width="18" height="11" rx="1.4"/>
-                <circle cx="12" cy="16.5" r="3"/>
-                <circle cx="12" cy="16.5" r="1.2" fill="#fff" opacity="0.4"/>
-                <rect x="18" y="13" width="2" height="2" rx="0.3" fill="#fff"/>
-                <path d="M21 14l5-2v8l-5-2z"/>
-              </svg>
-              <div style={`position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:${C.warm};border:2px solid ${C.bg};`}></div>
-            </div>
-            <div>
-              <div style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};line-height:1;letter-spacing:-0.2px;`}>{SITE_TITLE}</div>
-              <div style={`font-family:${serif};font-size:10.5px;color:${C.muted};margin-top:3px;font-style:italic;`}>白日夢的塵世筆記</div>
-            </div>
-          </a>
-
-          {/* 主選單 */}
-          <nav style={`display:flex;align-items:center;gap:2px;font-family:${sans};font-size:13.5px;flex:1;justify-content:center;`}>
-            {navItems.map((it) => (
-              <a href={it.href} style={`color:${it.active ? C.ink : C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:${it.active ? 600 : 500};background:${it.active ? C.accentSoft : 'transparent'};display:inline-flex;align-items:center;gap:6px;white-space:nowrap;`}>
-                {it.icon === 'mic' && (
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M9 21h6"/>
-                  </svg>
-                )}
-                {it.icon === 'calendar' && (
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-                  </svg>
-                )}
-                {it.icon === 'graduation' && (
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11v5c3.5 2 8.5 2 12 0v-5"/>
-                  </svg>
-                )}
-                {it.icon === 'sparkle' && (
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={it.active ? C.accent : C.muted} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
-                  </svg>
-                )}
-                {it.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* 右側 */}
-          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-            <div style={`display:flex;align-items:center;gap:2px;padding:4px 6px;background:${C.bgSoft};border-radius:999px;`}>
-              {SOCIAL_LINKS.map((s) => (
-                <a href={s.url} title={s.name} target="_blank" rel="noopener noreferrer" style={`width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:${C.muted};text-decoration:none;`}>
-                  <Icon name={s.icon} width={14} height={14} />
-                </a>
-              ))}
-            </div>
-            <span style={`width:1px;height:18px;background:${C.rule};margin:0 6px;`}></span>
-            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`margin-left:6px;padding:9px 16px;background:${C.ink};color:#fff;font-size:13px;font-weight:500;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;`}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4z"/>
-              </svg>
-              一起聊聊
-            </a>
-          </div>
-        </div>
-      </div>
+      <TopBar activePage="關於我" logoVariant="medium" />
 
       {/* ===================== Hero ===================== */}
       <section style="padding:90px 56px 60px;max-width:1240px;margin:0 auto;position:relative;overflow:hidden;">
@@ -298,12 +215,7 @@ const interests = {
 
       {/* ===================== 膠捲分隔線 ===================== */}
       <div style="max-width:1120px;margin:0 auto;padding:0 56px;">
-        <svg width="100%" height="24" viewBox="0 0 1100 24" preserveAspectRatio="none" style="display:block;opacity:0.15;">
-          <rect x="0" y="3" width="1100" height="18" fill={C.ink}/>
-          {Array.from({ length: 50 }).map((_, i) => (
-            <rect x={6 + i * 22} y="7" width="14" height="10" fill={C.bg} rx="1"/>
-          ))}
-        </svg>
+        <FilmStripDivider />
       </div>
 
       {/* ===================== 自介長版 (CV-Story) ===================== */}
@@ -417,16 +329,44 @@ const interests = {
       {/* ===================== 斜槓區（從原 timeline 拆出）===================== */}
       <section style="padding:20px 56px 60px;max-width:1120px;margin:0 auto;">
         <div style="display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start;">
-          {/* 左：雪山照 + 一句話 */}
-          <div style={`padding:0;background:${C.card};border-radius:16px;border:1px solid ${C.rule};overflow:hidden;display:flex;flex-direction:column;`}>
-            <div style="position:relative;height:240px;overflow:hidden;">
-              <img src="/photos/dex-portrait-2.png" alt="Dex 在雪山" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
-              <div style={`position:absolute;top:14px;left:14px;padding:5px 12px;background:rgba(31,27,22,0.75);backdrop-filter:blur(6px);color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:1.5px;border-radius:4px;`}>BTS · 場景外</div>
+          {/* 左：螢幕之外的 Dex（圓形大頭像浮動右上）*/}
+          <div style={`position:relative;padding:24px 26px 26px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
+            {/* 圓形大頭像浮動右上 */}
+            <img src="/photos/dex-portrait-2.png" alt="Dex" loading="lazy" style={`position:absolute;top:22px;right:26px;width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:50% 25%;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,0.14);z-index:2;`} />
+
+            {/* 鏡頭外 標籤 */}
+            <div style={`display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:${C.ink};color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:1.5px;border-radius:4px;margin-bottom:12px;`}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="6" width="13" height="12" rx="2"/>
+                <path d="M16 10l5-3v10l-5-3z"/>
+              </svg>
+              鏡頭外
             </div>
-            <div style="padding:24px 28px 28px;">
-              <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:8px;`}>—— OFF SET ——</div>
-              <div style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};margin-bottom:8px;letter-spacing:-0.3px;`}>在某個雪山上的我</div>
-              <div style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;`}>跑路、開車、看星空 —— 工程師也需要離開螢幕，才看得清楚自己往哪裡走。</div>
+
+            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:6px;`}>—— OFF SET ——</div>
+            <div style={`font-family:${sans};font-size:19px;font-weight:700;color:${C.ink};margin-bottom:18px;letter-spacing:-0.3px;max-width:200px;line-height:1.4;`}>螢幕之外的 Dex</div>
+
+            <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:16px;">
+              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
+                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🎬</span>
+                <span><strong style={`font-weight:600;color:${C.ink};`}>看電影</strong>　昆丁塔倫提諾、大智若魚、我的完美日常</span>
+              </div>
+              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
+                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🎵</span>
+                <span><strong style={`font-weight:600;color:${C.ink};`}>聽音樂</strong>　落日飛車、Deca joins、無妄合作社</span>
+              </div>
+              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
+                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🎙️</span>
+                <span><strong style={`font-weight:600;color:${C.ink};`}>聽 Podcast</strong>　只能喝酒的圖書館、台灣通勤第一品牌</span>
+              </div>
+              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
+                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🚐</span>
+                <span><strong style={`font-weight:600;color:${C.ink};`}>跨界冒險</strong>　5 天 4 夜開露營車環島北海道</span>
+              </div>
+            </div>
+
+            <div style={`padding-top:14px;border-top:1px dashed ${C.rule};font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;line-height:1.75;`}>
+              工程師也需要離開螢幕，才看得清楚自己要去哪裡。
             </div>
           </div>
 
@@ -620,13 +560,118 @@ const interests = {
           </div>
         </div>
 
-        {/* 成就解鎖小註 */}
-        <div style={`margin-top:24px;padding:18px 24px;background:${C.warmSoft};border-radius:12px;font-family:${serif};font-size:14px;color:${C.warm};font-style:italic;display:flex;align-items:center;gap:12px;`}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 17l-2 4 4-2 4 2-2-4M19 17l2 4-4-2-4 2 2-4"/>
-            <circle cx="12" cy="9" r="6"/>
+        {/* 成就解鎖（4 大類）*/}
+        <div style={`margin-top:32px;padding:36px;background:${C.warmSoft};border-radius:16px;position:relative;overflow:hidden;`}>
+          {/* 背景裝飾：獎章 */}
+          <svg width="180" height="180" viewBox="0 0 24 24" style="position:absolute;top:-20px;right:-30px;opacity:0.06;pointer-events:none;">
+            <path d="M5 17l-2 4 4-2 4 2-2-4M19 17l2 4-4-2-4 2 2-4" fill="none" stroke={C.warm} stroke-width="0.8"/>
+            <circle cx="12" cy="9" r="6" fill="none" stroke={C.warm} stroke-width="0.8"/>
           </svg>
-          成就解鎖：5 天 4 夜開露營車環島北海道 —— 在路上，比抵達更重要。
+
+          <div style={`display:inline-flex;align-items:center;gap:8px;padding:5px 12px;background:${C.ink};color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:1.5px;border-radius:4px;margin-bottom:8px;position:relative;`}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 17l-2 4 4-2 4 2-2-4M19 17l2 4-4-2-4 2 2-4"/>
+              <circle cx="12" cy="9" r="6"/>
+            </svg>
+            ACHIEVEMENTS
+          </div>
+          <h3 style={`font-family:${sans};font-size:26px;font-weight:700;color:${C.ink};margin:8px 0 6px;letter-spacing:-0.5px;position:relative;`}>成就解鎖</h3>
+          <p style={`font-family:${serif};font-size:14px;color:${C.muted};font-style:italic;margin:0 0 28px;line-height:1.7;position:relative;`}>
+            十年跨界，不是衝刺、不是規劃完美，是一段又一段真實走過的路。
+          </p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 32px;position:relative;">
+            {/* 跨界轉職 */}
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                <span style="font-size:24px;line-height:1;">🎯</span>
+                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>跨界轉職</h4>
+              </div>
+              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>半導體 QA → Big Data Engineer（人生第一次跨界）</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>工程師 → 成長行銷顧問（橫向跨界，少見路徑）</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>跨界 4 種專業 10 年（半導體 → 大數據 → 軟體 → AI）</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* 教學陪跑 */}
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                <span style="font-size:24px;line-height:1;">🎓</span>
+                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>教學陪跑</h4>
+              </div>
+              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>Tibame 雲端資料工程師線上班 講師 + 專題導師</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>緯創資通數據工程學院 內訓講師（資料治理 / DataOps）</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>CDA 職涯諮詢師 / AndAction Life Coach 認證</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>Alpha Camp / 六角學院 / 學米 / 無限學院 業師</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* 內容創作 */}
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                <span style="font-size:24px;line-height:1;">🎙️</span>
+                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>內容創作</h4>
+              </div>
+              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>Podcaster「沒走歪的才奇怪」上線 Spotify</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>Daydream Dex 部落格 — 寫給每個還在路上的工程師</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* 人生冒險 */}
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                <span style="font-size:24px;line-height:1;">🚐</span>
+                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>人生冒險</h4>
+              </div>
+              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>5 天 4 夜開露營車環島北海道</span>
+                </li>
+                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
+                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
+                  <span>從單一工程師 → 教練 × 講師 × 創作者 混合身份</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div style={`margin-top:24px;padding-top:18px;border-top:1px dashed ${C.rule};font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;line-height:1.7;display:flex;align-items:center;gap:10px;position:relative;`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+              <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+            在路上，比抵達更重要。
+          </div>
         </div>
       </section>
 
@@ -678,48 +723,14 @@ const interests = {
         </div>
       </section>
 
-      {/* ===================== Footer ===================== */}
-      <footer style={`padding:60px 56px 32px;max-width:1120px;margin:0 auto;border-top:1px solid ${C.rule};`}>
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
-          <div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-              <div style={`width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;`}>D</div>
-              <span style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};`}>{SITE_TITLE}</span>
-            </div>
-            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0;max-width:340px;`}>
-              Dex 的塵世筆記 — 寫給每個正在軟體和資料職涯路上的你。<br/>
-              <span style="font-style:italic;font-size:13px;">慢慢走，我們有的是時間。</span>
-            </p>
-            <div style="display:flex;gap:8px;margin-top:20px;">
-              {SOCIAL_LINKS.map((s) => (
-                <a href={s.url} title={s.name} target="_blank" rel="noopener noreferrer" style={`width:36px;height:36px;border-radius:8px;background:${C.card};border:1px solid ${C.rule};display:flex;align-items:center;justify-content:center;color:${C.ink2};text-decoration:none;`}>
-                  <Icon name={s.icon} width={14} height={14} />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {[
-            { t: '頁面', items: [['關於我', '/about'], ['所有文章', '/blog'], ['電子報', '#'], ['RSS', '/rss.xml']] },
-            { t: '主題', items: [['轉職', '#'], ['資料工程', '#'], ['AI', '#'], ['心法', '#']] },
-            { t: '聯絡', items: [['寫信給我', 'mailto:hamastarkh@gmail.com'], ['預約諮詢', CTA_BOOKING_URL], ['Sitemap', '/sitemap-index.xml']] },
-          ].map((g) => (
-            <div>
-              <div style={`font-family:${sans};font-size:11px;color:${C.faint};font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;`}>{g.t}</div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                {g.items.map(([label, href]) => (
-                  <a href={href} style={`font-family:${sans};font-size:13px;color:${C.ink2};text-decoration:none;`}>{label}</a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={`padding-top:24px;border-top:1px solid ${C.rule};display:flex;justify-content:space-between;align-items:center;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
-          <span>© 2026 {SITE_TITLE} · 採 CC BY-NC 4.0 授權</span>
-          <span>Made with care in Taipei · 謝謝你讀到這裡 ♡</span>
-        </div>
-      </footer>
+      <Footer
+        taglineComma="full"
+        groups={[
+          { t: '頁面', items: [['關於我', '/about'], ['所有文章', '/blog'], ['電子報', '#'], ['RSS', '/rss.xml']] },
+          { t: '主題', items: [['轉職', '#'], ['資料工程', '#'], ['AI', '#'], ['心法', '#']] },
+          { t: '聯絡', items: [['寫信給我', 'mailto:hamastarkh@gmail.com'], ['預約諮詢', CTA_BOOKING_URL], ['Sitemap', '/sitemap-index.xml']] },
+        ]}
+      />
 
     </div>
   </body>

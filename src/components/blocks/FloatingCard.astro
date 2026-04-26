@@ -1,0 +1,53 @@
+---
+/**
+ * 角落漂浮小卡（rotate ± 數度）
+ *
+ * 用於：「132 位工程師正在訂閱」、「本月還有 3 個時段」、「跨界 10 年」等
+ * style:
+ *  - 'light': 白底 + rule border + 黑字（about 跨界 10 年版本）
+ *  - 'dark':  ink 底 + 白字（about 諮詢狀態版本）
+ *
+ * 子內容透過 <slot /> 傳入。
+ */
+interface Props {
+  rotate?: number;
+  variant?: 'light' | 'dark';
+  position?: string;
+  class?: string;
+}
+
+const C = {
+  ink: '#1F1B16',
+  rule: '#E8E2D4',
+  card: '#FFFFFF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+
+const {
+  rotate = 0,
+  variant = 'light',
+  position,
+  class: className,
+} = Astro.props;
+
+const variantStyle =
+  variant === 'light'
+    ? `background:${C.card};border:1px solid ${C.rule};box-shadow:0 8px 24px rgba(0,0,0,0.08);color:${C.ink};`
+    : `background:${C.ink};color:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.18);`;
+
+const styleStr = [
+  position ?? 'position:relative',
+  'padding:12px 16px',
+  'border-radius:12px',
+  `transform:rotate(${rotate}deg)`,
+  `font-family:${sans}`,
+  'font-size:12px',
+  'display:flex',
+  'align-items:center',
+  'gap:10px',
+  variantStyle,
+].join(';');
+---
+<div style={styleStr} class={className}>
+  <slot />
+</div>

@@ -1,0 +1,127 @@
+---
+import { SITE_TITLE, CTA_BOOKING_URL } from '../../consts';
+import SocialIconList from './SocialIconList.astro';
+
+/**
+ * 全站共用 Footer
+ *
+ * 三頁原本的列表內容略有差異（mailto / 是否含「職涯諮詢」連結 / 訪談邀約）
+ * 用 props 提供覆寫；預設提供 index 版本。
+ */
+type LinkPair = readonly [label: string, href: string];
+interface LinkGroup {
+  t: string;
+  items: readonly LinkPair[];
+}
+
+interface Props {
+  groups?: readonly LinkGroup[];
+  /**
+   * 標語結尾的逗號樣式：'half' 為半形（index 版），'full' 為全形（about/coaching 版）
+   * 預設半形，與 index 原樣相符。
+   */
+  taglineComma?: 'half' | 'full';
+}
+
+const C = {
+  ink: '#1F1B16',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+  faint: '#A39C8C',
+  rule: '#E8E2D4',
+  accent: '#5391FF',
+  accentDark: '#2F6FE0',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+
+const defaultGroups: readonly LinkGroup[] = [
+  {
+    t: '頁面',
+    items: [
+      ['關於我', '/about'],
+      ['所有文章', '/blog'],
+      ['電子報', '#'],
+      ['RSS', '/rss.xml'],
+    ],
+  },
+  {
+    t: '主題',
+    items: [
+      ['轉職', '#'],
+      ['資料工程', '#'],
+      ['AI', '#'],
+      ['心法', '#'],
+    ],
+  },
+  {
+    t: '聯絡',
+    items: [
+      ['寫信給我', '#'],
+      ['預約諮詢', CTA_BOOKING_URL],
+      ['訪談邀約', '#'],
+      ['Sitemap', '/sitemap-index.xml'],
+    ],
+  },
+];
+
+const { groups = defaultGroups, taglineComma = 'half' } = Astro.props;
+const tagline =
+  taglineComma === 'half'
+    ? '慢慢走,我們有的是時間。'
+    : '慢慢走，我們有的是時間。';
+---
+<footer
+  style={`padding:60px 56px 32px;max-width:1120px;margin:0 auto;border-top:1px solid ${C.rule};`}
+>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div
+          style={`width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;`}
+        >
+          D
+        </div>
+        <span
+          style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};`}
+        >
+          {SITE_TITLE}
+        </span>
+      </div>
+      <p
+        style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0;max-width:340px;`}
+      >
+        Dex 的塵世筆記 — 寫給每個正在軟體和資料職涯路上的你。<br />
+        <span style="font-style:italic;font-size:13px;">{tagline}</span>
+      </p>
+      <SocialIconList variant="footer" />
+    </div>
+
+    {groups.map((g) => (
+      <div>
+        <div
+          style={`font-family:${sans};font-size:11px;color:${C.faint};font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;`}
+        >
+          {g.t}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          {g.items.map(([label, href]) => (
+            <a
+              href={href}
+              style={`font-family:${sans};font-size:13px;color:${C.ink2};text-decoration:none;`}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div
+    style={`padding-top:24px;border-top:1px solid ${C.rule};display:flex;justify-content:space-between;align-items:center;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}
+  >
+    <span>© 2026 {SITE_TITLE} · 採 CC BY-NC 4.0 授權</span>
+    <span>Made with care in Taipei · 謝謝你讀到這裡 ♡</span>
+  </div>
+</footer>

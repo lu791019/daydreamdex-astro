@@ -1,0 +1,65 @@
+---
+/**
+ * 區塊標題（含上方斜體小標 + 主標 + 描述）
+ *
+ * 範例：
+ *   —— FIVE ESSENTIAL READS ——
+ *   給正在轉職的你
+ *   不是雞湯，是實戰。
+ */
+interface Props {
+  eyebrow?: string;
+  eyebrowColor?: string;
+  title: string;
+  description?: string;
+  align?: 'left' | 'center';
+  titleSize?: number;
+  marginBottom?: string;
+}
+
+const {
+  eyebrow,
+  eyebrowColor,
+  title,
+  description,
+  align = 'left',
+  titleSize = 34,
+  marginBottom,
+} = Astro.props;
+
+const C = {
+  ink: '#1F1B16',
+  muted: '#6B6557',
+  accent: '#5391FF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+
+const wrapStyle = [
+  align === 'center' ? 'text-align:center' : '',
+  marginBottom ? `margin-bottom:${marginBottom}` : 'margin-bottom:36px',
+]
+  .filter(Boolean)
+  .join(';');
+---
+<div style={wrapStyle}>
+  {eyebrow && (
+    <div
+      style={`font-family:${serif};font-size:13px;color:${eyebrowColor ?? C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}
+    >
+      {eyebrow}
+    </div>
+  )}
+  <h2
+    style={`font-family:${sans};font-size:${titleSize}px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}
+  >
+    {title}
+  </h2>
+  {description && (
+    <p
+      style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;${align === 'center' ? 'margin-left:auto;margin-right:auto;' : ''}`}
+    >
+      {description}
+    </p>
+  )}
+</div>

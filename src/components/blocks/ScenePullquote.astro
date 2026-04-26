@@ -1,0 +1,73 @@
+---
+import Clapper from '../icons/Clapper.astro';
+
+/**
+ * 電影台詞引言區塊（SCENE 01 起點 / SCENE 02 信念 / FINAL SCENE 等）
+ * variant:
+ *  - 'light': 淺底（白色透明 + 暖橘左 border） — index Hero 的 SCENE 01
+ *  - 'dark':  深底（暖橘左 border + 深 ink 背景） — Cinema 區用
+ */
+interface Props {
+  scene: string;
+  label?: string;
+  quote: string;
+  attribution?: string;
+  variant?: 'light' | 'dark';
+  maxWidth?: string;
+  marginTop?: string;
+}
+
+const {
+  scene,
+  label,
+  quote,
+  attribution,
+  variant = 'light',
+  maxWidth,
+  marginTop,
+} = Astro.props;
+
+const C = {
+  ink: '#1F1B16',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+  warm: '#D97706',
+  warmSoft: '#FEF3E7',
+};
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+
+const styleBase = [
+  'padding:16px 20px',
+  `border-left:3px solid ${C.warm}`,
+  'border-radius:0 10px 10px 0',
+  variant === 'light'
+    ? 'background:rgba(255,255,255,0.6)'
+    : `background:${C.ink}`,
+  maxWidth ? `max-width:${maxWidth}` : '',
+  marginTop ? `margin-top:${marginTop}` : '',
+]
+  .filter(Boolean)
+  .join(';');
+
+const quoteColor = variant === 'light' ? C.ink2 : '#fff';
+---
+<div style={styleBase}>
+  <div
+    style={`display:flex;align-items:center;gap:8px;font-family:${serif};font-size:11px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:6px;`}
+  >
+    <Clapper size={13} color={C.warm} />
+    {scene}{label ? ` · ${label}` : ''}
+  </div>
+  <div
+    style={`font-family:${serif};font-size:16px;color:${quoteColor};line-height:1.7;font-style:italic;`}
+  >
+    {quote}
+  </div>
+  {attribution && (
+    <div
+      style={`font-family:${serif};font-size:12px;color:${C.muted};font-style:italic;margin-top:8px;text-align:right;`}
+    >
+      —— {attribution}
+    </div>
+  )}
+</div>
