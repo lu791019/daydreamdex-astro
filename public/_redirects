@@ -2,49 +2,49 @@
 # 規則：每條都用 301!（強制覆蓋）、直跳終點（不 chain）
 
 # === WordPress 系統路徑 ===
-/wp-admin/*               /                                                                                 301!
-/wp-login.php             /                                                                                 301!
-/feed/                    /rss.xml                                                                          301!
-/feed                     /rss.xml                                                                          301!
-/sitemap_index.xml        /sitemap-index.xml                                                                301!
-/post-sitemap.xml         /sitemap-index.xml                                                                301!
-/page-sitemap.xml         /sitemap-index.xml                                                                301!
-/category-sitemap.xml     /sitemap-index.xml                                                                301!
-/local-sitemap.xml        /sitemap-index.xml                                                                301!
+/wp-admin/*               /  301
+/wp-login.php             /  301
+/feed/                    /rss.xml  301
+/feed                     /rss.xml  301
+/sitemap_index.xml        /sitemap-index.xml  301
+/post-sitemap.xml         /sitemap-index.xml  301
+/page-sitemap.xml         /sitemap-index.xml  301
+/category-sitemap.xml     /sitemap-index.xml  301
+/local-sitemap.xml        /sitemap-index.xml  301
 
 # === 14 篇文章（舊 /{slug}/ → 新 /blog/{date-prefix}-{slug}）===
-/data-engineer-career-roadmap-from-skills-to-interview/                          /blog/2025-03-20-data-engineer-career-roadmap-from-skills-to-interview                          301!
-/data-analyst-beginner-guide-career-switch/                                      /blog/2025-03-13-data-analyst-beginner-guide-career-switch                                      301!
-/software-or-machine-learning-to-ai/                                             /blog/2025-03-11-software-or-machine-learning-to-ai                                             301!
-/how-to-become-best-data-engineer/                                               /blog/2025-03-06-how-to-become-best-data-engineer                                               301!
-/30s-career-change-5-questions-to-ask/                                           /blog/2025-03-04-30s-career-change-5-questions-to-ask                                           301!
-/python-career-transition-guide-and-experience/                                  /blog/2024-08-04-python-career-transition-guide-and-experience                                  301!
-/langchain-introduction-learning/                                                /blog/2024-08-03-langchain-introduction-learning                                                301!
-/three-steps-to-get-job-and-become-python-engineer/                              /blog/2024-07-14-three-steps-to-get-job-and-become-python-engineer                              301!
-/python-beginner-guide-line-self-study-strategy-with-engineer-background-2/      /blog/2024-07-14-python-beginner-guide-line-self-study-strategy-with-engineer-background-2      301!
-/python-coding-rules-guide-line-3/                                               /blog/2024-06-27-python-coding-rules-guide-line-3                                               301!
-/nosql-compare-and-selection-2/                                                  /blog/2024-06-15-nosql-compare-and-selection-2                                                  301!
-/truely-take-a-break-off-work-3/                                                 /blog/2024-05-05-truely-take-a-break-off-work-3                                                 301!
-/my-vacation-starting/                                                           /blog/2024-04-13-my-vacation-starting                                                           301!
-/cost-of-time-in-employment-sys-3/                                               /blog/2024-04-03-cost-of-time-in-employment-sys-3                                               301!
+/data-engineer-career-roadmap-from-skills-to-interview/                          /blog/2025-03-20-data-engineer-career-roadmap-from-skills-to-interview  301
+/data-analyst-beginner-guide-career-switch/                                      /blog/2025-03-13-data-analyst-beginner-guide-career-switch  301
+/software-or-machine-learning-to-ai/                                             /blog/2025-03-11-software-or-machine-learning-to-ai  301
+/how-to-become-best-data-engineer/                                               /blog/2025-03-06-how-to-become-best-data-engineer  301
+/30s-career-change-5-questions-to-ask/                                           /blog/2025-03-04-30s-career-change-5-questions-to-ask  301
+/python-career-transition-guide-and-experience/                                  /blog/2024-08-04-python-career-transition-guide-and-experience  301
+/langchain-introduction-learning/                                                /blog/2024-08-03-langchain-introduction-learning  301
+/three-steps-to-get-job-and-become-python-engineer/                              /blog/2024-07-14-three-steps-to-get-job-and-become-python-engineer  301
+/python-beginner-guide-line-self-study-strategy-with-engineer-background-2/      /blog/2024-07-14-python-beginner-guide-line-self-study-strategy-with-engineer-background-2  301
+/python-coding-rules-guide-line-3/                                               /blog/2024-06-27-python-coding-rules-guide-line-3  301
+/nosql-compare-and-selection-2/                                                  /blog/2024-06-15-nosql-compare-and-selection-2  301
+/truely-take-a-break-off-work-3/                                                 /blog/2024-05-05-truely-take-a-break-off-work-3  301
+/my-vacation-starting/                                                           /blog/2024-04-13-my-vacation-starting  301
+/cost-of-time-in-employment-sys-3/                                               /blog/2024-04-03-cost-of-time-in-employment-sys-3  301
 
 # === 公開 page（重要的合併或重定向）===
-/about-us/                /about                                                                            301!
-/story/                   /about                                                                            301!
-/privacy-policy/          /                                                                                 301!
-/terms/                   /                                                                                 301!
+/about-us/                /about  301
+/story/                   /about  301
+/privacy-policy/          /  301
+/terms/                   /  301
 
 # === 行銷漏斗（沒重建，全導首頁）===
-/homepage-1/              /                                                                                 301!
-/homepage-2/              /                                                                                 301!
-/homepage-3/              /                                                                                 301!
-/salespage-1/             /                                                                                 301!
-/salespage-2/             /                                                                                 301!
-/sales-page-3/            /                                                                                 301!
-/get/                     /                                                                                 301!
-/free/                    /                                                                                 301!
-/refund/                  /                                                                                 301!
+/homepage-1/              /  301
+/homepage-2/              /  301
+/homepage-3/              /  301
+/salespage-1/             /  301
+/salespage-2/             /  301
+/sales-page-3/            /  301
+/get/                     /  301
+/free/                    /  301
+/refund/                  /  301
 
 # === 分類 / 標籤（暫導首頁，未來可做 /categories /tags 頁面）===
-/category/*               /                                                                                 301!
-/tag/*                    /                                                                                 301!
+/category/*               /  301
+/tag/*                    /  301
