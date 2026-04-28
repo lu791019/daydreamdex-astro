@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "optimize-for-ai": {
+      "source": "calm-north/seojuice-skills",
+      "sourceType": "github",
+      "computedHash": "07c29b3de08b25d6261b1bfc18c31b8995cfe2e2141d6f2df365cfbbd002093c"
+    },
+    "search-console": {
+      "source": "openclaudia/openclaudia-skills",
+      "sourceType": "github",
+      "computedHash": "a4d1eb0a2e9315482f72331dbd1d8aba1b86cd1a76e2f6cda8b10e17312c3839"
+    }
+  }
+}
