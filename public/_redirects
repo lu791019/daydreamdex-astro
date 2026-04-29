@@ -28,6 +28,14 @@
 /my-vacation-starting/                                                           /blog/2024-04-13-my-vacation-starting  301
 /cost-of-time-in-employment-sys-3/                                               /blog/2024-04-03-cost-of-time-in-employment-sys-3  301
 
+# === 舊 slug 變體（GSC 12mo 顯示有殘留流量，沒 `-2` 結尾的 WP 舊版）===
+/python-beginner-guide-line-self-study-strategy-with-engineer-background/        /blog/2024-07-14-python-beginner-guide-line-self-study-strategy-with-engineer-background-2  301
+/nosql-compare-and-selection/                                                    /blog/2024-06-15-nosql-compare-and-selection-2  301
+
+# === 中文 URL fallback（WP 中文 permalink 殘留，splat 容錯）===
+/想進入-*                                                                         /blog/2025-03-11-software-or-machine-learning-to-ai  301
+/big-data-*                                                                       /  301
+
 # === 公開 page（重要的合併或重定向）===
 /about-us/                /about  301
 /story/                   /about  301
