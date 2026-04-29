@@ -11,7 +11,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://daydreamdex.com',
   trailingSlash: 'never',
-  build: { format: 'directory' },
+  build: { format: 'file' },
   integrations: [mdx(), sitemap(), icon()],
   vite: {
     plugins: [tailwindcss()],
