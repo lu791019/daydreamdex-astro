@@ -34,9 +34,18 @@ import { SITE_TITLE } from '../consts';
   gtag('config', 'G-J9CMX2NPH8');
 </script>
 
-<!-- Fonts: Noto Sans TC + Noto Serif TC -->
+<!-- DNS prefetch for third-party origins -->
+<link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+<link rel="dns-prefetch" href="https://aapd.simplybook.asia" />
+
+<!-- Fonts: Noto Sans TC + Noto Serif TC (preload CSS to start fetch earlier) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap"
+/>
 <link
   rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap"
