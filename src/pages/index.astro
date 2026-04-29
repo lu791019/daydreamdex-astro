@@ -869,7 +869,11 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
           <div style="display:grid;grid-template-columns:180px 1fr;gap:48px;align-items:center;position:relative;">
             <div style="text-align:center;">
               <div style={`width:160px;height:160px;border-radius:50%;overflow:hidden;box-shadow:0 16px 40px rgba(83,145,255,0.28), 0 4px 12px rgba(0,0,0,0.08);position:relative;margin:0 auto;border:4px solid #fff;`}>
-                <img src="/photos/dex-portrait-1.png" alt="Dex" style="width:100%;height:100%;object-fit:cover;display:block;" />
+                <picture>
+                  <source type="image/avif" srcset="/photos/dex-portrait-1-320.avif 1x, /photos/dex-portrait-1-640.avif 2x" />
+                  <source type="image/webp" srcset="/photos/dex-portrait-1-320.webp 1x, /photos/dex-portrait-1-640.webp 2x" />
+                  <img src="/photos/dex-portrait-1-320.webp" alt="Dex" width="160" height="160" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;" />
+                </picture>
                 <div style="position:absolute;bottom:4px;right:4px;width:36px;height:36px;border-radius:50%;background:#10B981;border:4px solid white;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">👋</div>
               </div>
               <div style={`margin-top:16px;font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;`}>—— Dex ——</div>
