@@ -34,7 +34,11 @@ const {
 } = Astro.props;
 
 // Resolve absolute URLs
-const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+// Strip `.html` suffix and `/index` from pathname (build.format='file' artifact)
+const cleanPath = Astro.url.pathname
+  .replace(/\.html$/, '')
+  .replace(/\/index$/, '/');
+const canonicalURL = canonical ?? new URL(cleanPath || '/', Astro.site).href;
 const imageURL = image.startsWith('http')
   ? image
   : new URL(image, Astro.site).href;
