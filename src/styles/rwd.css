@@ -37,8 +37,9 @@ img, video, picture, svg {
   }
 
   /* --- flex 強制 wrap，避免溢出 --- */
-  [style*="display:flex"]:not([style*="flex-direction:column"]),
-  [style*="display: flex"]:not([style*="flex-direction: column"]) {
+  /* 排除：column flex / 絕對定位 (如 NOW SHOWING pill) / 圓角 pill / inline-flex */
+  [style*="display:flex"]:not([style*="flex-direction:column"]):not([style*="position:absolute"]):not([style*="position: absolute"]):not([style*="border-radius:999"]),
+  [style*="display: flex"]:not([style*="flex-direction: column"]):not([style*="position:absolute"]):not([style*="position: absolute"]):not([style*="border-radius:999"]) {
     flex-wrap: wrap !important;
   }
 
@@ -170,6 +171,26 @@ img, video, picture, svg {
     max-width: 100% !important;
   }
 
+  /* --- 浮疊卡片堆 (e.g. 影評卡 height:420px + position:absolute children) --- */
+  /* 父容器固定高度改 auto，子卡片絕對定位改流式排列 */
+  [style*="position:relative"][style*="height:420px"],
+  [style*="position: relative"][style*="height: 420px"],
+  [style*="position:relative"][style*="height:380px"],
+  [style*="position: relative"][style*="height: 380px"] {
+    height: auto !important;
+  }
+  [style*="height:420px"] > [style*="position:absolute"],
+  [style*="height: 420px"] > [style*="position: absolute"],
+  [style*="height:380px"] > [style*="position:absolute"],
+  [style*="height: 380px"] > [style*="position: absolute"] {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    margin-bottom: 14px !important;
+  }
+
   /* --- 內容容器 max-width 縮邊 --- */
   section[style*="max-width:1240px"],
   section[style*="max-width: 1240px"],
@@ -184,6 +205,11 @@ img, video, picture, svg {
   /* 額外處理 nav gap 和 padding */
   nav, header {
     flex-wrap: wrap !important;
+  }
+
+  /* --- 圓角 pill 標籤文字不換行 --- */
+  [style*="border-radius:999"] {
+    white-space: nowrap !important;
   }
 }
 
