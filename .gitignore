@@ -22,3 +22,14 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# GSC OAuth credentials (NEVER commit)
+.gsc/
+
+# RWD screenshot baselines (local testing artifacts)
+.rwd-baseline/
+
+# Implementation plan / task list (per-feature, not committed)
+implementation_plan.md
+task.md
+walkthrough.md
