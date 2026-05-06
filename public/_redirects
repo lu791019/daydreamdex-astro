@@ -65,7 +65,8 @@
 /2025/*                   /blog  301
 /2026/*                   /blog  301
 /author/*                 /about  301
-/?p=*                     /blog  301
+# 注意：Cloudflare Pages _redirects 不支援 query string matching
+# `/?p=*` 會被誤判成 path=/ → 把首頁也劫持，禁止使用
 
 # === Catch-all 404（必須最後！）===
 # 沒匹配到任何 redirect 規則 + 沒對應靜態檔案 → 回 404.html (status 404)
