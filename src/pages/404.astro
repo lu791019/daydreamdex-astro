@@ -1,0 +1,85 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import SEO from '../components/SEO.astro';
+import TopBar from '../components/blocks/TopBar.astro';
+import Footer from '../components/blocks/Footer.astro';
+import { SITE_TITLE } from '../consts';
+
+const title = `找不到頁面 ｜ ${SITE_TITLE}`;
+const description = '這個 URL 在新站找不到。可能是 WordPress 舊網址搬遷後沒對應的頁面，或是輸入錯了。';
+
+const C = {
+  bg: '#FBFAF7',
+  bgSoft: '#F4F1EB',
+  ink: '#1F1B16',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+  rule: '#E8E2D4',
+  accent: '#5391FF',
+  warm: '#D97706',
+  card: '#FFFFFF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead />
+    <SEO title={title} description={description} type="website" />
+    <meta name="robots" content="noindex,follow" />
+    <style is:global>
+      body {
+        margin: 0;
+        background: #FBFAF7;
+        color: #1F1B16;
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      }
+      a { color: inherit; }
+    </style>
+  </head>
+  <body>
+    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;display:flex;flex-direction:column;`}>
+      <TopBar logoVariant="minimal" />
+
+      <main style="flex:1;display:flex;align-items:center;justify-content:center;padding:80px 24px;">
+        <section style="max-width:640px;text-align:center;">
+          {/* 場記板 NOT FOUND */}
+          <div style={`display:inline-flex;align-items:center;gap:10px;background:${C.ink};color:${C.bg};padding:8px 16px;border-radius:6px;font-family:${sans};font-weight:700;letter-spacing:2px;font-size:13px;margin-bottom:24px;`}>
+            <span style={`width:8px;height:8px;border-radius:50%;background:${C.warm};`}></span>
+            SCENE 404 · CUT
+          </div>
+
+          <h1 style={`font-family:${sans};font-size:54px;font-weight:800;letter-spacing:-1px;line-height:1.2;margin:0 0 18px;`}>
+            這個鏡頭<br/>
+            <span style={`color:${C.accent};`}>沒在劇本上</span>
+          </h1>
+
+          <p style={`font-family:${serif};font-size:17px;line-height:1.95;color:${C.ink2};margin:0 0 32px;`}>
+            你找的這個 URL 在新站不存在，或是從 WordPress 舊站搬過來時沒對應到。<br/>
+            別慌，從下面這幾個入口繼續走 ——
+          </p>
+
+          <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+            <a href="/" style={`background:${C.accent};color:#fff;padding:14px 28px;border-radius:14px;text-decoration:none;font-family:${sans};font-weight:700;font-size:15px;box-shadow:0 4px 12px rgba(83,145,255,0.25);`}>
+              回首頁
+            </a>
+            <a href="/blog" style={`background:${C.card};color:${C.ink};padding:14px 28px;border-radius:14px;text-decoration:none;font-family:${sans};font-weight:700;font-size:15px;border:1px solid ${C.rule};`}>
+              所有文章
+            </a>
+            <a href="/about" style={`background:${C.card};color:${C.ink};padding:14px 28px;border-radius:14px;text-decoration:none;font-family:${sans};font-weight:700;font-size:15px;border:1px solid ${C.rule};`}>
+              關於我
+            </a>
+          </div>
+
+          <p style={`font-family:${serif};font-size:14px;color:${C.muted};margin:48px 0 0;font-style:italic;`}>
+            — 如果你是從外部連結進來，麻煩跟我說一聲，我來修。
+          </p>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  </body>
+</html>

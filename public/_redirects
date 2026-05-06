@@ -33,7 +33,9 @@
 /nosql-compare-and-selection/                                                    /blog/2024-06-15-nosql-compare-and-selection-2  301
 
 # === 中文 URL fallback（WP 中文 permalink 殘留，splat 容錯）===
-/想進入-*                                                                         /blog/2025-03-11-software-or-machine-learning-to-ai  301
+# Cloudflare Pages _redirects 不支援非 ASCII pattern → 必須用 URL-encoded form
+# /想進入-* → percent-encoded
+/%E6%83%B3%E9%80%B2%E5%85%A5-*                                                    /blog/2025-03-11-software-or-machine-learning-to-ai  301
 /big-data-*                                                                       /  301
 
 # === 公開 page（重要的合併或重定向）===
@@ -56,3 +58,16 @@
 # === 分類 / 標籤（暫導首頁，未來可做 /categories /tags 頁面）===
 /category/*               /  301
 /tag/*                    /  301
+
+# === WP 分頁 / 日期式 permalink fallback（避免 catch-all 服務首頁，造成 soft 404）===
+/page/*                   /blog  301
+/2024/*                   /blog  301
+/2025/*                   /blog  301
+/2026/*                   /blog  301
+/author/*                 /about  301
+/?p=*                     /blog  301
+
+# === Catch-all 404（必須最後！）===
+# 沒匹配到任何 redirect 規則 + 沒對應靜態檔案 → 回 404.html (status 404)
+# 不寫此條 Cloudflare Pages 會把首頁 index.html 用 200 餵回，造成 soft 404 + duplicate content
+/*                        /404.html  404
