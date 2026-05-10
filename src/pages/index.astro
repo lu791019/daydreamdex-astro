@@ -1051,17 +1051,17 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
       .floating-cta {
         position: fixed;
         right: 28px;
-        bottom: 28px;
+        bottom: 22vh;
         z-index: 60;
         display: block;
-        width: 340px;
-        background: var(--card);
-        border: 1px solid var(--rule);
+        width: 360px;
+        background: var(--ink);
+        border: 1px solid rgba(255,255,255,0.08);
         border-radius: 18px;
         box-shadow:
-          0 24px 60px rgba(31,27,22,0.22),
-          0 6px 16px rgba(31,27,22,0.08),
-          0 0 0 4px rgba(255,255,255,0.6);
+          0 28px 70px rgba(31,27,22,0.45),
+          0 10px 24px rgba(31,27,22,0.22),
+          0 0 0 4px rgba(255,255,255,0.7);
         text-decoration: none;
         overflow: hidden;
         /* 進場：先藏在下方 + 淡，5s 後滑入 */
@@ -1091,92 +1091,92 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
           0 0 0 4px rgba(255,255,255,0.7);
       }
 
-      /* 膠捲齒孔 */
+      /* 膠捲齒孔（橘底深墨 holes，反色更顯眼） */
       .filmstrip {
         display: flex;
         justify-content: space-around;
         align-items: center;
-        padding: 8px 0;
-        background: var(--ink);
+        padding: 9px 0;
+        background: var(--warm);
       }
       .filmstrip .hole {
         width: 14px;
         height: 14px;
         border-radius: 3px;
-        background: var(--bg);
+        background: var(--ink);
       }
 
-      .cta-body { padding: 22px 24px 20px; }
+      .cta-body { padding: 24px 26px 22px; }
 
-      /* Badge */
+      /* Badge — 暖橘塊狀 */
       .badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 5px 11px;
-        background: var(--warmSoft);
-        color: var(--warm);
+        padding: 6px 12px;
+        background: var(--warm);
+        color: #fff;
         border-radius: 999px;
         font-family: "Noto Sans TC", system-ui, sans-serif;
-        font-size: 10.5px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 1.3px;
-        margin-bottom: 14px;
+        letter-spacing: 1.4px;
+        margin-bottom: 16px;
       }
       .pulse-dot {
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background: var(--warm);
-        box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.6);
+        background: #fff;
+        box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
         animation: pulse 1.6s infinite;
       }
       @keyframes pulse {
-        0%   { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.55); }
-        70%  { box-shadow: 0 0 0 10px rgba(217, 119, 6, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+        0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+        70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+        100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
       }
 
-      /* 主標 */
+      /* 主標 — 白字 */
       .cta-title {
         font-family: "Noto Sans TC", system-ui, sans-serif;
-        font-size: 17px;
+        font-size: 20px;
         font-weight: 800;
-        color: var(--ink);
-        letter-spacing: -0.3px;
-        line-height: 1.45;
-        margin-bottom: 8px;
+        color: #fff;
+        letter-spacing: -0.4px;
+        line-height: 1.4;
+        margin-bottom: 10px;
       }
       .cta-title .highlight {
-        background: linear-gradient(180deg, transparent 60%, rgba(217, 119, 6, 0.22) 60%);
-        padding: 0 2px;
+        background: linear-gradient(180deg, transparent 55%, rgba(217, 119, 6, 0.55) 55%);
+        padding: 0 3px;
       }
 
-      /* 副標 */
+      /* 副標 — 半透明白 italic */
       .cta-subtitle {
         font-family: "Noto Serif TC", serif;
-        font-size: 12.5px;
-        color: var(--muted);
+        font-size: 14px;
+        color: rgba(255,255,255,0.7);
         font-style: italic;
-        margin-bottom: 16px;
+        margin-bottom: 18px;
       }
 
-      /* CTA Button */
+      /* CTA Button — 暖橘填底 */
       .cta-button {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 11px 22px;
-        background: var(--accent);
+        padding: 13px 24px;
+        background: var(--warm);
         color: #fff;
         border-radius: 10px;
         font-family: "Noto Sans TC", system-ui, sans-serif;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 700;
-        box-shadow: 0 5px 14px rgba(83,145,255,0.35);
+        box-shadow: 0 6px 18px rgba(217,119,6,0.45);
       }
       .floating-cta:hover .cta-button {
-        background: var(--accentDark);
+        background: #B8620D;
       }
       .floating-cta:hover .cta-button svg {
         transform: translateX(4px);
