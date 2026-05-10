@@ -391,8 +391,8 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
                 ))}
               </div>
               <div>
-                <div style={`font-family:${sans};font-size:12px;font-weight:600;color:${C.ink};`}>132 位工程師</div>
-                <div style={`font-family:${serif};font-size:11px;color:${C.muted};font-style:italic;`}>正在訂閱本月電子報</div>
+                <div style={`font-family:${sans};font-size:12px;font-weight:600;color:${C.ink};`}>慢慢累積中的讀者</div>
+                <div style={`font-family:${serif};font-size:11px;color:${C.muted};font-style:italic;`}>邀你一起在路上</div>
               </div>
             </div>
 
@@ -1009,5 +1009,39 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
       <Footer />
 
     </div>
+
+    {/* ===================== 右側浮動 CTA — 領取手冊 ===================== */}
+    {/* 桌機固定右下角，B Warm 風格小卡；手機隱藏（避免遮內容） */}
+    <a
+      href="/newsletter"
+      class="floating-cta"
+      style={`position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:flex-start;gap:12px;width:280px;padding:16px 18px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;box-shadow:0 18px 40px rgba(31,27,22,0.18),0 4px 10px rgba(31,27,22,0.06);text-decoration:none;transform:rotate(-1.5deg);transition:transform 200ms ease;`}
+      aria-label="領取轉職為 AI 時代資料工程師的必讀手冊"
+    >
+      {/* 場記板小圖 */}
+      <div style={`flex-shrink:0;width:36px;height:36px;border-radius:8px;background:${C.warmSoft};color:${C.warm};display:flex;align-items:center;justify-content:center;`}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="6" rx="1"/>
+          <path d="M7 3v6M11 3v6M15 3v6M19 3v6"/>
+          <rect x="3" y="9" width="18" height="12" rx="1"/>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style={`font-family:${sans};font-size:10px;letter-spacing:1.5px;color:${C.warm};font-weight:700;margin-bottom:4px;`}>FREE · 免費電子報</div>
+        <div style={`font-family:${sans};font-size:13px;font-weight:700;color:${C.ink};line-height:1.45;margin-bottom:8px;`}>領取轉職為 AI 時代<br/>資料工程師的必讀手冊</div>
+        <div style={`display:inline-flex;align-items:center;gap:4px;font-family:${sans};font-size:12px;font-weight:600;color:${C.accent};`}>
+          立即領取
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+    </a>
+
+    <style>
+      .floating-cta:hover { transform: rotate(0deg) translateY(-3px) !important; }
+      @media (max-width: 767px) {
+        .floating-cta { display: none !important; }
+      }
+    </style>
+
   </body>
 </html>
