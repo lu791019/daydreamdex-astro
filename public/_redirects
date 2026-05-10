@@ -59,11 +59,11 @@
 /category/*               /  301
 /tag/*                    /  301
 
-# === Newsletter landing page（Kit 訂閱頁，加品牌網址）===
-# Kit hosted form uid 不是 slug — 真實 URL 是 hash form。
-# 想改成 /daydreamdex slug 要去 Kit Landing Page settings → URL slug
-/newsletter               https://iandexp.kit.com/2efedadb38  301
-/subscribe                https://iandexp.kit.com/2efedadb38  301
+# === Newsletter landing page（Kit 訂閱頁）===
+# 真正的 daydreamdex 訂閱頁 = form id 9418174 「IandExp」
+# uid e0cd61d37a — 此 URL 對應 form 本身，即使 Kit Homepage 改設定也不會被覆蓋
+/newsletter               https://iandexp.kit.com/e0cd61d37a  301
+/subscribe                https://iandexp.kit.com/e0cd61d37a  301
 
 # === WP 分頁 / 日期式 permalink fallback（避免 catch-all 服務首頁，造成 soft 404）===
 /page/*                   /blog  301
