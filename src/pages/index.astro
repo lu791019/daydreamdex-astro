@@ -1010,42 +1010,92 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
 
     </div>
 
-    {/* ===================== 右下角浮動 CTA — 領取手冊（5s 後從下方滑入） ===================== */}
-    <a
-      href="/newsletter"
-      class="floating-cta"
-      aria-label="免費領取 AI 工程師與資料工程師的轉職指南"
-    >
-      {/* 膠捲齒孔頂部裝飾 */}
-      <div class="filmstrip">
-        {Array.from({ length: 8 }).map(() => <span class="hole"></span>)}
-      </div>
+    {/* ===================== 右下角浮動 CTA — 領取手冊（5s 後從下方滑入，可收合到右側）===================== */}
+    <aside class="floating-cta" id="newsletterCTA">
+      {/* 收合按鈕（右上角 →） */}
+      <button class="cta-collapse" type="button" id="ctaCollapse" aria-label="收合到右側">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6l6 6-6 6"/>
+        </svg>
+      </button>
 
-      <div class="cta-body">
-        {/* Badge with pulsing dot */}
-        <div class="badge">
-          <span class="pulse-dot"></span>
-          <span>FREE · 限時免費</span>
+      <a
+        href="/newsletter"
+        class="cta-link"
+        aria-label="免費領取 AI 工程師與資料工程師的轉職指南"
+      >
+        {/* 膠捲齒孔頂部裝飾 */}
+        <div class="filmstrip">
+          {Array.from({ length: 8 }).map(() => <span class="hole"></span>)}
         </div>
 
-        {/* 主標題 */}
-        <div class="cta-title">
-          AI 工程師與資料工程師<br/>
-          <span class="highlight">的轉職指南</span>
+        <div class="cta-body">
+          {/* Badge with pulsing dot */}
+          <div class="badge">
+            <span class="pulse-dot"></span>
+            <span>FREE · 限時免費</span>
+          </div>
+
+          {/* 主標題 */}
+          <div class="cta-title">
+            AI 工程師與資料工程師<br/>
+            <span class="highlight">的轉職指南</span>
+          </div>
+
+          {/* 副標 */}
+          <div class="cta-subtitle">完整地圖 · 實戰路徑 · 慢慢看</div>
+
+          {/* CTA 按鈕 */}
+          <span class="cta-button">
+            立即免費領取
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </span>
         </div>
+      </a>
+    </aside>
 
-        {/* 副標 */}
-        <div class="cta-subtitle">完整地圖 · 實戰路徑 · 慢慢看</div>
+    {/* 收合後的右側小標籤（信封圖示）— 點擊重新展開 */}
+    <button class="cta-tab" type="button" id="newsletterTab" aria-label="展開電子報訂閱">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <path d="m2 7 10 6 10-6"/>
+      </svg>
+      <span class="cta-tab-label">電子報</span>
+    </button>
 
-        {/* CTA 按鈕 */}
-        <span class="cta-button">
-          立即免費領取
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-            <path d="M5 12h14M13 5l7 7-7 7"/>
-          </svg>
-        </span>
-      </div>
-    </a>
+    {/* localStorage 記住偏好 — 一次性 inline script，不阻塞 */}
+    <script is:inline>
+      (function () {
+        const KEY = 'dd-newsletter-cta-collapsed';
+        const cta = document.getElementById('newsletterCTA');
+        const tab = document.getElementById('newsletterTab');
+        const close = document.getElementById('ctaCollapse');
+        if (!cta || !tab || !close) return;
+
+        // 初始狀態
+        if (localStorage.getItem(KEY) === '1') {
+          cta.classList.add('is-collapsed');
+          tab.classList.add('is-shown');
+        }
+
+        close.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          cta.classList.add('is-collapsed');
+          // 等卡片滑出再顯示 tab
+          setTimeout(function () { tab.classList.add('is-shown'); }, 320);
+          try { localStorage.setItem(KEY, '1'); } catch (_) {}
+        });
+
+        tab.addEventListener('click', function () {
+          tab.classList.remove('is-shown');
+          cta.classList.remove('is-collapsed');
+          try { localStorage.setItem(KEY, '0'); } catch (_) {}
+        });
+      })();
+    </script>
 
     <style define:vars={{ ink: C.ink, bg: C.bg, card: C.card, rule: C.rule, accent: C.accent, accentDark: C.accentDark, warm: C.warm, warmSoft: C.warmSoft, muted: C.muted }}>
       .floating-cta {
@@ -1183,9 +1233,89 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
         transition: transform 220ms ease;
       }
 
+      /* 收合按鈕（右上角） */
+      .cta-collapse {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.85);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+      }
+      .cta-collapse:hover {
+        background: rgba(255,255,255,0.16);
+        color: #fff;
+        transform: translateX(2px);
+      }
+
+      /* a 元素 wrapper — 不要被 button 遮住 click */
+      .floating-cta .cta-link {
+        display: block;
+        text-decoration: none;
+      }
+
+      /* 收合狀態 — 滑出右側 + 隱藏 */
+      .floating-cta.is-collapsed {
+        animation: none !important;
+        opacity: 0 !important;
+        transform: translateX(140%) rotate(0deg) !important;
+        pointer-events: none !important;
+        transition: transform 320ms cubic-bezier(0.55, 0, 1, 0.45), opacity 280ms ease;
+      }
+
+      /* 收合後的右側小標籤 */
+      .cta-tab {
+        position: fixed;
+        right: 0;
+        bottom: 22vh;
+        z-index: 60;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: var(--ink);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-right: 0;
+        border-radius: 14px 0 0 14px;
+        cursor: pointer;
+        font-family: "Noto Sans TC", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: -8px 12px 24px rgba(31,27,22,0.22);
+        opacity: 0;
+        transform: translateX(100%);
+        transition: opacity 280ms ease, transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), background 160ms ease;
+      }
+      .cta-tab.is-shown {
+        display: inline-flex;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .cta-tab:hover {
+        background: var(--warm);
+        padding-right: 20px;
+      }
+      .cta-tab svg {
+        color: var(--warm);
+        transition: color 160ms ease;
+      }
+      .cta-tab:hover svg { color: #fff; }
+
       /* 手機隱藏（避免遮內容 + RWD 衝突） */
       @media (max-width: 767px) {
-        .floating-cta { display: none !important; }
+        .floating-cta, .cta-tab { display: none !important; }
       }
 
       /* 遵守用戶 prefers-reduced-motion */
