@@ -59,6 +59,10 @@
 /category/*               /  301
 /tag/*                    /  301
 
+# === Newsletter landing page（Kit 訂閱頁，加品牌網址）===
+/newsletter               https://iandexp.kit.com/daydreamdex  301
+/subscribe                https://iandexp.kit.com/daydreamdex  301
+
 # === WP 分頁 / 日期式 permalink fallback（避免 catch-all 服務首頁，造成 soft 404）===
 /page/*                   /blog  301
 /2024/*                   /blog  301
