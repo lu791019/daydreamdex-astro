@@ -1065,34 +1065,24 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
       <span class="cta-tab-label">電子報</span>
     </button>
 
-    {/* localStorage 記住偏好 — 一次性 inline script，不阻塞 */}
+    {/* 收合 / 展開 — 不持久化，每次進站都重新彈出主卡 */}
     <script is:inline>
       (function () {
-        const KEY = 'dd-newsletter-cta-collapsed';
         const cta = document.getElementById('newsletterCTA');
         const tab = document.getElementById('newsletterTab');
         const close = document.getElementById('ctaCollapse');
         if (!cta || !tab || !close) return;
 
-        // 初始狀態
-        if (localStorage.getItem(KEY) === '1') {
-          cta.classList.add('is-collapsed');
-          tab.classList.add('is-shown');
-        }
-
         close.addEventListener('click', function (e) {
           e.preventDefault();
           e.stopPropagation();
           cta.classList.add('is-collapsed');
-          // 等卡片滑出再顯示 tab
           setTimeout(function () { tab.classList.add('is-shown'); }, 320);
-          try { localStorage.setItem(KEY, '1'); } catch (_) {}
         });
 
         tab.addEventListener('click', function () {
           tab.classList.remove('is-shown');
           cta.classList.remove('is-collapsed');
-          try { localStorage.setItem(KEY, '0'); } catch (_) {}
         });
       })();
     </script>
