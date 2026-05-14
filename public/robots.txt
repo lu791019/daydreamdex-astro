@@ -1,10 +1,8 @@
 User-agent: *
 Allow: /
 
-# Block WordPress system paths (legacy from migration)
-Disallow: /wp-admin/
-Disallow: /wp-login.php
-Disallow: /wp-content/
-Disallow: /feed/
+# 注意：舊 WordPress 路徑 (/wp-admin/、/feed/、/wp-content/) 改用 _redirects 301 處理，
+# 不再 Disallow — 因為 Disallow 會擋住 Googlebot 看到 301，造成「robots blocked」報錯。
+# 讓 Google 看到 301 → 自動從 index 移除舊 URL + 把權重傳到新 URL，才是正確處理方式。
 
 Sitemap: https://daydreamdex.com/sitemap-index.xml
