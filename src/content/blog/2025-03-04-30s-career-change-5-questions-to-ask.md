@@ -81,4 +81,4 @@ heroImage: "/images/30-多歲想轉職？先問自己這-5-個問題.webp"
 並且領取NVIDIA AI學習資源和Python入門計劃  
 訂閱電子報，一起開啟屬於你的職涯與人生成長旅程
 
-[https://iandexp.kit.com/283146f2d3](https://iandexp.kit.com/283146f2d3)
+👉 [免費領取電子報訂閱頁](https://daydreamdex.com/newsletter)

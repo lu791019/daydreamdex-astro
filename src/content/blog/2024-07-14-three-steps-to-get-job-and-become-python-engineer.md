@@ -216,7 +216,6 @@ Pressplay這邊，幫讀者爭取了[九折優惠券](https://www.pressplay.cc/m
 
 ## **電子報訂閱**
 
-更多學習資源和工作經驗分享  
-可訂閱 我與經驗值 <I And EXP> 電子報  
-[https://iandexp.ck.page/283146f2d3](https://iandexp.ck.page/283146f2d3)  
-訂閱即可獲得NVIDIA AI 學習資源
+更多學習資源和工作經驗分享，可訂閱我的電子報「我與經驗值」。
+
+👉 [免費領取電子報訂閱頁](https://daydreamdex.com/newsletter)

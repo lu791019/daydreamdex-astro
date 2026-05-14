@@ -8,9 +8,13 @@ import Footer from '../components/blocks/Footer.astro';
 import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
 import { SITE_TITLE, SITE_URL, CTA_BOOKING_URL } from '../consts';
 
-type Props = CollectionEntry<'blog'>['data'];
+type NavLink = { slug: string; title: string } | null;
+type Props = CollectionEntry<'blog'>['data'] & {
+  newer?: NavLink;
+  older?: NavLink;
+};
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, newer = null, older = null } = Astro.props;
 
 // 文章 OG 圖：有 heroImage 用之，否則 fallback 到預設 OG
 const ogImage = heroImage ? `${SITE_URL}${heroImage}` : '/og-default.png';
@@ -130,6 +134,10 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
         border-top: 1px dashed #E8E2D4;
         margin: 2.4em 0;
       }
+      .post-nav-card:hover {
+        transform: translateY(-2px);
+        border-color: #5391FF !important;
+      }
       .post-prose table {
         border-collapse: collapse;
         width: 100%;
@@ -210,15 +218,42 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
               我每兩週寫一封信給你，聊聊程式、職涯與 AI。也歡迎預約 1:1 諮詢，50 分鐘陪你想清楚。
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <a href="/newsletter" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.warm};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(217,119,6,0.30);`}>
+                免費領取電子報
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
               <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.ink};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;`}>
                 預約諮詢
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
               </a>
               <a href="/about" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.card};color:${C.ink};border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;border:1px solid ${C.rule};`}>
                 認識 Dex
               </a>
             </div>
           </div>
+
+          {/* 上下篇導覽 */}
+          {(newer || older) && (
+            <nav style={`margin-top:40px;padding-top:32px;border-top:1px dashed ${C.rule};display:grid;grid-template-columns:1fr 1fr;gap:16px;`} aria-label="文章導覽">
+              {newer ? (
+                <a href={`/blog/${newer.slug}/`} style={`display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:${C.card};border:1px solid ${C.rule};border-radius:12px;text-decoration:none;transition:transform 200ms ease, border-color 200ms ease;`} class="post-nav-card">
+                  <span style={`font-family:${serif};font-size:11px;color:${C.faint};letter-spacing:1.5px;font-style:italic;display:inline-flex;align-items:center;gap:6px;`}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    上一篇（較新）
+                  </span>
+                  <span style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};line-height:1.5;letter-spacing:-0.2px;`}>{newer.title}</span>
+                </a>
+              ) : <div></div>}
+              {older ? (
+                <a href={`/blog/${older.slug}/`} style={`display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:${C.card};border:1px solid ${C.rule};border-radius:12px;text-decoration:none;text-align:right;transition:transform 200ms ease, border-color 200ms ease;`} class="post-nav-card">
+                  <span style={`font-family:${serif};font-size:11px;color:${C.faint};letter-spacing:1.5px;font-style:italic;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;`}>
+                    下一篇（較舊）
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </span>
+                  <span style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};line-height:1.5;letter-spacing:-0.2px;`}>{older.title}</span>
+                </a>
+              ) : <div></div>}
+            </nav>
+          )}
         </article>
       </main>
 
