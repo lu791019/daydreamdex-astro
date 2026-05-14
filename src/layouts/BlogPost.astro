@@ -3,8 +3,10 @@ import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import SEO from '../components/SEO.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import { SITE_TITLE, SITE_URL, CTA_BOOKING_URL, SOCIAL_LINKS } from '../consts';
-import { Icon } from 'astro-icon/components';
+import TopBar from '../components/blocks/TopBar.astro';
+import Footer from '../components/blocks/Footer.astro';
+import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
+import { SITE_TITLE, SITE_URL, CTA_BOOKING_URL } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -149,47 +151,7 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
   <body>
     <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;`}>
 
-      {/* ===================== TopBar (簡化版) ===================== */}
-      <div style={`position:sticky;top:0;z-index:50;background:rgba(251,250,247,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid ${C.rule};`}>
-        <div style="max-width:1240px;margin:0 auto;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
-          <a href="/" style="display:flex;align-items:center;gap:12px;flex-shrink:0;text-decoration:none;">
-            <div style={`width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;position:relative;`}>
-              <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="6" r="3.2"/>
-                <circle cx="9" cy="6" r="0.9" fill="#fff"/>
-                <circle cx="17" cy="6" r="3.2"/>
-                <circle cx="17" cy="6" r="0.9" fill="#fff"/>
-                <path d="M9 9.2v2M17 9.2v2"/>
-                <rect x="3" y="11" width="18" height="11" rx="1.4"/>
-                <circle cx="12" cy="16.5" r="3"/>
-                <circle cx="12" cy="16.5" r="1.2" fill="#fff" opacity="0.4"/>
-                <rect x="18" y="13" width="2" height="2" rx="0.3" fill="#fff"/>
-                <path d="M21 14l5-2v8l-5-2z"/>
-              </svg>
-              <div style={`position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:${C.warm};border:2px solid ${C.bg};`}></div>
-            </div>
-            <div>
-              <div style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};line-height:1;letter-spacing:-0.2px;`}>{SITE_TITLE}</div>
-              <div style={`font-family:${serif};font-size:10.5px;color:${C.muted};margin-top:3px;font-style:italic;`}>白日夢的塵世筆記</div>
-            </div>
-          </a>
-
-          <nav style={`display:flex;align-items:center;gap:2px;font-family:${sans};font-size:13.5px;`}>
-            <a href="/" style={`color:${C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:500;`}>文章</a>
-            <a href="/about" style={`color:${C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:500;`}>關於我</a>
-            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`color:${C.ink2};padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:500;`}>職涯諮詢</a>
-          </nav>
-
-          <div style="display:flex;align-items:center;gap:6px;">
-            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`padding:9px 16px;background:${C.ink};color:#fff;font-size:13px;font-weight:500;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;`}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4z"/>
-              </svg>
-              一起聊聊
-            </a>
-          </div>
-        </div>
-      </div>
+      <TopBar activePage="文章" logoVariant="medium" />
 
       {/* ===================== Article ===================== */}
       <main style="padding:60px 24px 40px;max-width:720px;margin:0 auto;">
@@ -260,28 +222,10 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
         </article>
       </main>
 
-      {/* ===================== Footer ===================== */}
-      <footer style={`padding:60px 24px 32px;max-width:720px;margin:40px auto 0;border-top:1px solid ${C.rule};`}>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <div style={`width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg, ${C.accent}, ${C.accentDark});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;`}>D</div>
-          <span style={`font-family:${sans};font-size:15px;font-weight:700;color:${C.ink};`}>{SITE_TITLE}</span>
-        </div>
-        <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
-          Dex 的塵世筆記 — 寫給每個正在軟體和資料職涯路上的你。<br/>
-          <span style="font-style:italic;font-size:13px;">慢慢走，我們有的是時間。</span>
-        </p>
-        <div style="display:flex;gap:8px;">
-          {SOCIAL_LINKS.map((s) => (
-            <a href={s.url} title={s.name} target="_blank" rel="noopener noreferrer" style={`width:36px;height:36px;border-radius:8px;background:${C.card};border:1px solid ${C.rule};display:flex;align-items:center;justify-content:center;color:${C.ink2};text-decoration:none;`}>
-              <Icon name={s.icon} width={14} height={14} />
-            </a>
-          ))}
-        </div>
-        <div style={`margin-top:24px;padding-top:18px;border-top:1px solid ${C.rule};font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
-          © 2026 {SITE_TITLE} · 採 CC BY-NC 4.0 授權 · Made with care in Taipei
-        </div>
-      </footer>
+      <Footer />
 
     </div>
+
+    <NewsletterFloatingCTA />
   </body>
 </html>

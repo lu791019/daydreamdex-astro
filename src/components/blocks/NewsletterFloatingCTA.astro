@@ -1,0 +1,304 @@
+---
+// NewsletterFloatingCTA.astro — 右下角浮動電子報訂閱 CTA
+// - 5s 後從畫面下方彈跳滑入（cubic-bezier overshoot）
+// - 可收合到右側小標籤（信封圖示）
+// - 不持久化（每次進站重新彈出主卡）
+// - 手機自動隱藏
+// - 遵守 prefers-reduced-motion
+//
+// 使用：<NewsletterFloatingCTA /> 放在 <body> 結尾前即可
+
+const C = {
+  ink: '#1F1B16',
+  bg: '#FBFAF7',
+  card: '#FFFFFF',
+  rule: '#E8E2D4',
+  accent: '#5391FF',
+  accentDark: '#2F6FE0',
+  warm: '#D97706',
+  warmSoft: '#FEF3E7',
+  muted: '#6B6557',
+};
+---
+
+<aside class="floating-cta" id="newsletterCTA">
+  <button class="cta-collapse" type="button" id="ctaCollapse" aria-label="收合到右側">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 6l6 6-6 6"/>
+    </svg>
+  </button>
+
+  <a href="/newsletter" class="cta-link" aria-label="免費領取 AI 工程師與資料工程師的轉職指南">
+    <div class="filmstrip">
+      {Array.from({ length: 8 }).map(() => <span class="hole"></span>)}
+    </div>
+
+    <div class="cta-body">
+      <div class="badge">
+        <span class="pulse-dot"></span>
+        <span>FREE · 限時免費</span>
+      </div>
+
+      <div class="cta-title">
+        AI 工程師與資料工程師<br/>
+        <span class="highlight">的轉職指南</span>
+      </div>
+
+      <div class="cta-subtitle">完整地圖 · 實戰路徑 · 慢慢看</div>
+
+      <span class="cta-button">
+        立即免費領取
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <path d="M5 12h14M13 5l7 7-7 7"/>
+        </svg>
+      </span>
+    </div>
+  </a>
+</aside>
+
+<button class="cta-tab" type="button" id="newsletterTab" aria-label="展開電子報訂閱">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="5" width="20" height="14" rx="2"/>
+    <path d="m2 7 10 6 10-6"/>
+  </svg>
+  <span class="cta-tab-label">電子報</span>
+</button>
+
+<script is:inline>
+  (function () {
+    const cta = document.getElementById('newsletterCTA');
+    const tab = document.getElementById('newsletterTab');
+    const close = document.getElementById('ctaCollapse');
+    if (!cta || !tab || !close) return;
+
+    close.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      cta.classList.add('is-collapsed');
+      setTimeout(function () { tab.classList.add('is-shown'); }, 320);
+    });
+
+    tab.addEventListener('click', function () {
+      tab.classList.remove('is-shown');
+      cta.classList.remove('is-collapsed');
+    });
+  })();
+</script>
+
+<style define:vars={{ ink: C.ink, warm: C.warm }}>
+  .floating-cta {
+    position: fixed;
+    right: 28px;
+    bottom: 22vh;
+    z-index: 60;
+    display: block;
+    width: 360px;
+    background: var(--ink);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    box-shadow:
+      0 28px 70px rgba(31,27,22,0.45),
+      0 10px 24px rgba(31,27,22,0.22),
+      0 0 0 4px rgba(255,255,255,0.7);
+    text-decoration: none;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(160%) rotate(0deg);
+    animation:
+      ctaSlideIn 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 5s forwards,
+      ctaFloat 3.6s ease-in-out 5.7s infinite;
+  }
+
+  @keyframes ctaSlideIn {
+    0%   { opacity: 0; transform: translateY(160%) rotate(0deg); }
+    100% { opacity: 1; transform: translateY(0)    rotate(-1.5deg); }
+  }
+  @keyframes ctaFloat {
+    0%, 100% { transform: translateY(0)    rotate(-1.5deg); }
+    50%      { transform: translateY(-6px) rotate(-2.5deg); }
+  }
+
+  .floating-cta:hover {
+    transform: translateY(-4px) rotate(0deg) scale(1.02) !important;
+    animation-play-state: paused !important;
+    transition: transform 240ms ease;
+    box-shadow:
+      0 32px 80px rgba(31,27,22,0.28),
+      0 8px 20px rgba(31,27,22,0.12),
+      0 0 0 4px rgba(255,255,255,0.7);
+  }
+
+  .filmstrip {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 9px 0;
+    background: var(--warm);
+  }
+  .filmstrip .hole {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: var(--ink);
+  }
+
+  .cta-body { padding: 24px 26px 22px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--warm);
+    color: #fff;
+    border-radius: 999px;
+    font-family: "Noto Sans TC", system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    margin-bottom: 16px;
+  }
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+    70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+  }
+
+  .cta-title {
+    font-family: "Noto Sans TC", system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.4px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .cta-title .highlight {
+    background: linear-gradient(180deg, transparent 55%, rgba(217, 119, 6, 0.55) 55%);
+    padding: 0 3px;
+  }
+
+  .cta-subtitle {
+    font-family: "Noto Serif TC", serif;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    background: var(--warm);
+    color: #fff;
+    border-radius: 10px;
+    font-family: "Noto Sans TC", system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(217,119,6,0.45);
+  }
+  .floating-cta:hover .cta-button { background: #B8620D; }
+  .floating-cta:hover .cta-button svg {
+    transform: translateX(4px);
+    transition: transform 220ms ease;
+  }
+
+  .cta-collapse {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+  .cta-collapse:hover {
+    background: rgba(255,255,255,0.16);
+    color: #fff;
+    transform: translateX(2px);
+  }
+
+  .floating-cta .cta-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .floating-cta.is-collapsed {
+    animation: none !important;
+    opacity: 0 !important;
+    transform: translateX(140%) rotate(0deg) !important;
+    pointer-events: none !important;
+    transition: transform 320ms cubic-bezier(0.55, 0, 1, 0.45), opacity 280ms ease;
+  }
+
+  .cta-tab {
+    position: fixed;
+    right: 0;
+    bottom: 22vh;
+    z-index: 60;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--ink);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-right: 0;
+    border-radius: 14px 0 0 14px;
+    cursor: pointer;
+    font-family: "Noto Sans TC", system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: -8px 12px 24px rgba(31,27,22,0.22);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 280ms ease, transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), background 160ms ease;
+  }
+  .cta-tab.is-shown {
+    display: inline-flex;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .cta-tab:hover {
+    background: var(--warm);
+    padding-right: 20px;
+  }
+  .cta-tab svg {
+    color: var(--warm);
+    transition: color 160ms ease;
+  }
+  .cta-tab:hover svg { color: #fff; }
+
+  @media (max-width: 767px) {
+    .floating-cta, .cta-tab { display: none !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .floating-cta {
+      animation: none !important;
+      opacity: 1;
+      transform: translateY(0) rotate(-1.5deg);
+    }
+    .pulse-dot { animation: none !important; }
+  }
+</style>
