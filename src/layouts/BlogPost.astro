@@ -9,12 +9,14 @@ import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.as
 import { SITE_TITLE, SITE_URL, CTA_BOOKING_URL } from '../consts';
 
 type NavLink = { slug: string; title: string } | null;
+type Heading = { depth: number; slug: string; text: string };
 type Props = CollectionEntry<'blog'>['data'] & {
   newer?: NavLink;
   older?: NavLink;
+  headings?: Heading[];
 };
 
-const { title, description, pubDate, updatedDate, heroImage, newer = null, older = null } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, newer = null, older = null, headings = [] } = Astro.props;
 
 // 文章 OG 圖：有 heroImage 用之，否則 fallback 到預設 OG
 const ogImage = heroImage ? `${SITE_URL}${heroImage}` : '/og-default.png';
@@ -52,6 +54,10 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
       image={heroImage ? ogImage : undefined}
     />
     <style is:global>
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px; /* 避開 sticky TopBar，點 TOC 跳轉留空間 */
+      }
       body {
         margin: 0;
         background: #FBFAF7;
@@ -160,6 +166,22 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
     <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;`}>
 
       <TopBar activePage="文章" logoVariant="medium" />
+
+      {/* ===================== TOC sticky 側欄（桌機 ≥1280px 才顯示）===================== */}
+      {headings.length > 0 && (
+        <aside class="toc-sidebar" aria-label="文章目錄">
+          <div class="toc-title">目錄</div>
+          <ul class="toc-list">
+            {headings.map((h) => (
+              <li>
+                <a href={`#${h.slug}`} class={`toc-link toc-h${h.depth}`} data-slug={h.slug}>
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
 
       {/* ===================== Article ===================== */}
       <main style="padding:60px 24px 40px;max-width:720px;margin:0 auto;">
@@ -279,5 +301,108 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
     </div>
 
     <NewsletterFloatingCTA />
+
+    {/* TOC 樣式 + active highlight 邏輯 */}
+    <style>
+      .toc-sidebar {
+        position: fixed;
+        left: 28px;
+        top: 100px;
+        width: 240px;
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+        z-index: 40;
+        padding: 20px 18px;
+        background: #FFFFFF;
+        border: 1px solid #E8E2D4;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(31,27,22,0.06);
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      }
+      .toc-title {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: #6B6557;
+        font-weight: 700;
+        margin-bottom: 12px;
+        padding-left: 10px;
+        text-transform: uppercase;
+        font-style: italic;
+        font-family: "Noto Serif TC", serif;
+      }
+      .toc-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .toc-list li { margin: 0; }
+      .toc-link {
+        display: block;
+        padding: 6px 10px 6px 12px;
+        color: #3D3A33;
+        text-decoration: none;
+        border-left: 2px solid transparent;
+        line-height: 1.5;
+        font-size: 13px;
+        transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+      }
+      .toc-link.toc-h3 {
+        padding-left: 24px;
+        font-size: 12.5px;
+        color: #6B6557;
+      }
+      .toc-link:hover {
+        color: #5391FF;
+      }
+      .toc-link.is-active {
+        color: #2F6FE0;
+        font-weight: 700;
+        border-left-color: #5391FF;
+        background: #F3F7FF;
+      }
+      /* 桌機 ≥1280px 顯示，以下隱藏（手機/平板用內文閱讀） */
+      @media (max-width: 1279px) {
+        .toc-sidebar { display: none; }
+      }
+    </style>
+
+    <script is:inline>
+      (function () {
+        const links = document.querySelectorAll('.toc-link');
+        if (!links.length) return;
+        const map = new Map();
+        const ids = [];
+        links.forEach((a) => {
+          const slug = a.getAttribute('data-slug');
+          if (slug) {
+            map.set(slug, a);
+            ids.push(slug);
+          }
+        });
+
+        function setActive(slug) {
+          links.forEach((l) => l.classList.toggle('is-active', l.getAttribute('data-slug') === slug));
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            // 找最頂上正 intersect 的那個 heading
+            const visible = entries
+              .filter((e) => e.isIntersecting)
+              .sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
+            if (visible[0]) setActive(visible[0].target.id);
+          },
+          { rootMargin: '-15% 0px -70% 0px', threshold: 0 }
+        );
+
+        ids.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) observer.observe(el);
+        });
+
+        // 初始：第一個段落
+        if (ids[0]) setActive(ids[0]);
+      })();
+    </script>
   </body>
 </html>

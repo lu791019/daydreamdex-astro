@@ -24,12 +24,15 @@ type Props = {
 };
 
 const { post, newer, older } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const newerLink = newer ? { slug: newer.id, title: newer.data.title } : null;
 const olderLink = older ? { slug: older.id, title: older.data.title } : null;
+
+// 只取 H2 / H3 進 TOC（H1 是文章標題、H4+ 太細不放）
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<BlogPost {...post.data} newer={newerLink} older={olderLink}>
+<BlogPost {...post.data} newer={newerLink} older={olderLink} headings={tocHeadings}>
 	<Content />
 </BlogPost>
