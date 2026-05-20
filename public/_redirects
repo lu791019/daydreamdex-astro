@@ -64,11 +64,6 @@
 /newsletter               https://iandexp.kit.com/daydreamdex  301
 /subscribe                https://iandexp.kit.com/daydreamdex  301
 
-# === 暫時 redirect：/consultant /instructor 尚未上線，先導 /coaching ===
-# 階段 B + C 完成後此規則自動失效（靜態檔案優先於 _redirects）
-/consultant               /coaching  302
-/instructor               /coaching  302
-
 # === WP 分頁 / 日期式 permalink fallback（避免 catch-all 服務首頁，造成 soft 404）===
 /page/*                   /blog  301
 /2024/*                   /blog  301

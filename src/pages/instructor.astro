@@ -1,0 +1,314 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import SEO from '../components/SEO.astro';
+import TopBar from '../components/blocks/TopBar.astro';
+import Footer from '../components/blocks/Footer.astro';
+import ContactCTA from '../components/blocks/ContactCTA.astro';
+import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
+import { SITE_TITLE } from '../consts';
+import { PROFILE } from '../data/profile';
+
+const pageTitle = `企業與大專院校講座、內訓 ｜ ${SITE_TITLE}`;
+const pageDescription = '邀請 Dex 講座 / 內訓 / 課程。10+ 主持與講座、100+ 轉職學員指導。AI 時代職涯戰略、資料工程、AI 工具應用、個人品牌、AI Coding 技術導入 — 5 大核心主題可邀約。';
+
+const C = {
+  bg: '#FBFAF7', bgSoft: '#F4F1EB', ink: '#1F1B16', ink2: '#3D3A33',
+  muted: '#6B6557', faint: '#A39C8C', rule: '#E8E2D4',
+  accent: '#5391FF', accentDark: '#2F6FE0', accentSoft: '#EAF1FF',
+  warm: '#D97706', warmSoft: '#FEF3E7', card: '#FFFFFF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+
+// 主辦單位類型
+const hosts = [
+  { icon: '🎓', t: '學校', sub: '大學 / 高中', d: '產學講座、職涯講座、技術分享' },
+  { icon: '💻', t: 'Bootcamp', sub: '學院 / 學習平台', d: '主題講座、PBL 業師、作品集陪跑' },
+  { icon: '🏢', t: '企業', sub: '企業內訓', d: 'DataOps / AI 導入 / 開發者分享' },
+  { icon: '🏛', t: '公部門 / 社群', sub: '政府 / 社群活動', d: '產學合作、社群高峰會、議程主持' },
+];
+
+// 數據成果
+const stats = [
+  { n: '10+', t: '主持與講座', d: '含產學 / 大型線上 / 社群' },
+  { n: '100+', t: '轉職學員指導', d: 'TibaMe / AC / 六角 / 學米等' },
+  { n: '3', t: '專業身分', d: '程式業師 / 職涯教練 / 內容創作者' },
+  { n: '5', t: '專業證照', d: 'MPP / AWS / Google / CDA / Life Coach' },
+];
+
+// 為什麼選 Dex
+const whyDex = [
+  { icon: '🤝', t: '同理心教學', d: '10 年技術職涯 + 100+ 學員陪跑 — 知道學生卡在哪，從學生視角拆問題。' },
+  { icon: '🏭', t: '業界真實深度', d: `${PROFILE.careerOrgs.join(' / ')} — 真的在做，不是只在教。案例都是現場。` },
+  { icon: '🛠', t: 'PBL 實戰教學', d: '融入專題式學習與業界案例，不是純講概念 — 學員下課就能動。' },
+  { icon: '🎯', t: '職涯整合視角', d: 'CDA 國際諮詢師 + Life Coach — 技術不只是技術，能接到職涯與生涯。' },
+];
+
+// 5 大核心主題（user 確認 4 個 + AI Coding 新增）
+const topics = [
+  {
+    icon: '🤖',
+    t: 'AI 時代的職涯戰略',
+    fit: '對職涯感到焦慮 / 想轉型者；初階工程師、初階資料分析師、在校生、新鮮人',
+    points: [
+      '掌握生成式 AI 與自動化趨勢下的職場變革',
+      '哪些工作型態被取代、哪些新機會正在崛起',
+      '設計屬於自己的「AI 時代個人成長藍圖」',
+    ],
+    win: '理解 AI 自動化影響 · 找到個人定位 · 設計轉型地圖',
+  },
+  {
+    icon: '📊',
+    t: '資料工程職涯入門與轉職路徑規劃',
+    fit: '欲轉職資料領域的新鮮人、跨領域進入科技業者、對資料工程感興趣的學員',
+    points: [
+      '資料工程產業機會解析與實際進入路線',
+      'DE 職責、技能組成、進階路線（雲端、平台、DataOps）',
+      '真實案例拆解成功轉職的策略',
+    ],
+    win: 'DE 職涯生態圖 · 個人化轉職路線 · 作品集 × 技術 × 商業比例',
+  },
+  {
+    icon: '🛠',
+    t: 'AI 技能展現與工具應用 — 職場升級攻略',
+    fit: '想提升職場競爭力的上班族、初階技術人、產品經理、數位工作者',
+    points: [
+      '在職場中實際應用 AI 工具（ChatGPT / NotebookLM / 自動化）',
+      '「AI 技能 × 實戰應用 × 影響力加速」成長飛輪模型',
+      '設計 AI 應用策略，成為 AI 素養與自動化人才',
+    ],
+    win: '辨識 AI 場景 · 工具選擇與導入 · AI 職場價值模型',
+  },
+  {
+    icon: '✨',
+    t: '職涯個人品牌設計：打造你在市場上的專屬影響力',
+    fit: '技術人、資料人才、斜槓者、自由工作者、自媒體新手',
+    points: [
+      '把累積的專業、經驗與個人特色設計成可持續的個人品牌',
+      '品牌定位 / 價值主張 / 內容策略 / 影響力擴張',
+    ],
+    win: '品牌定位 × 價值主張 · 內容策略 · 把成果變資產',
+  },
+  {
+    icon: '🤖',
+    t: 'AI Coding 技術導入與應用落地',
+    fit: '軟體工程師、AI 應用開發者、技術主管、產品經理、想把 AI 真正導入產品的工程團隊',
+    points: [
+      '聚焦如何把生成式 AI 應用從「能跑」帶到「真的能用」',
+      '智能助理與工作流程的選型決策、技能模組的系統化拆解',
+      '成本、效能、品質之間的取捨，搭配企業導入的真實案例',
+    ],
+    win: '選型時機 · 技能模組系統化 · 成本/效能/品質監控 · 真實落地案例',
+  },
+];
+
+// 過往合作精選
+const partnerGroups = [
+  { tag: '🎤 講座 / 技術分享', items: ['Alpha Camp 高雄講座 ×2', '中央大學產學技術分享', '緯創部門技術分享會', '樹德科大職涯講座（2024、2025）', '立志中學職涯講座（2024、2025）'] },
+  { tag: '🏢 企業內訓', items: ['緯創數據工程學院（2023–2025）', '緯創 DataOps 與資料治理', '緯創開發者分享會（2023–2024）', '全齡發展協會 AI 技術應用'] },
+  { tag: '📂 作品集 / 專題陪跑', items: ['TibaMe 雲端遠距在職班（2026 –）', 'AAPD 職涯陪跑教練（2026 –）', '無限學院（2024 –）/ nschool 職能學院（2023 –）', '學米 / 六角 / Alpha Camp（2023 –）'] },
+  { tag: '🎙 主持 / 大型線上', items: ['PyCon TW 2024 議程主持', '水球軟體學院 技術研討會 2025', 'TibaMe 資料工程師職涯線上分享（2025 · 2026）', 'TibaMe 緯育 線上分享會 2025'] },
+];
+
+// 近期演講合作明細
+const talks = [
+  { t: 'Alpha Camp 高雄合作講座：尋找自我的動力 — 資料 × 軟體 × 傳授的職涯旅程', d: '2024/03/24' },
+  { t: 'Alpha Camp 高雄合作 ＆ 實體履歷健檢：理工職涯工程師在程式領域的發展', d: '2024/05/25' },
+  { t: '產學合作 - 中央知識分享：團隊協作的 Python 程式設計', d: '2024/06/25' },
+  { t: '產學合作 - 中央知識分享：Docker 容器化技術', d: '2024/09/03' },
+  { t: '緯創數位轉型技術分享會：生成式 AI 簡報工具優劣', d: '2024/09/18' },
+  { t: 'PyCon TW 2024 一般議程主持人 / Open Space — 南部的程式職涯發展', d: '2024/09/22' },
+  { t: '島島阿學 行銷讀書會：電子報類型分析與 Kit 平台優劣', d: '2025/10/18' },
+  { t: '樹德科大職涯講座：人工智慧與資訊科技 — 新興技術中的職涯機遇', d: '2025/10/21' },
+  { t: '立志中學職涯講座：人工智慧與資訊科技 — 技術、升學與職涯的交會', d: '2024/11/11 · 2025/11/11' },
+  { t: '台灣實驗教育合作社線上講座：從 Python 開發到資料科學', d: '2025/11/23' },
+  { t: 'TibaMe 資料工程師職涯與轉職策略線上分享', d: '2025 · 2026' },
+];
+
+const certs = PROFILE.certs.map(c => c.label);
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead />
+    <SEO title={pageTitle} description={pageDescription} type="website" />
+    <style is:global>
+      body {
+        margin: 0;
+        background: #FBFAF7;
+        color: #1F1B16;
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      }
+      a { color: inherit; }
+    </style>
+  </head>
+  <body>
+    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;`}>
+
+      <TopBar activePage="講座" logoVariant="minimal" />
+
+      {/* ===================== Hero ===================== */}
+      <section style="padding:80px 56px 60px;max-width:1100px;margin:0 auto;text-align:center;">
+        <div style={`display:inline-flex;align-items:center;gap:10px;background:${C.ink};color:${C.bg};padding:6px 16px;border-radius:6px;font-family:${sans};font-weight:700;letter-spacing:2px;font-size:12px;margin-bottom:24px;`}>
+          <span style={`width:7px;height:7px;border-radius:50%;background:${C.warm};`}></span>
+          SCENE · 講座 / 內訓
+        </div>
+
+        <h1 style={`font-family:${sans};font-size:54px;font-weight:800;letter-spacing:-1.3px;line-height:1.2;margin:0 0 22px;`}>
+          邀請 Dex<br/>
+          <span style={`color:${C.accent};`}>講座</span> / <span style={`color:${C.warm};`}>內訓</span> / <span style={`color:${C.accent};`}>課程</span>
+        </h1>
+
+        <p style={`font-family:${serif};font-size:17px;color:${C.muted};line-height:1.95;max-width:680px;margin:0 auto 18px;font-style:italic;`}>
+          「{PROFILE.quotes.instructor}」
+        </p>
+        <p style={`font-family:${sans};font-size:13.5px;color:${C.muted};max-width:680px;margin:0 auto;line-height:1.85;`}>
+          Python × 資料工程 × AI 應用 × 職涯轉型 — {PROFILE.stats.talks}+ 主持與講座、{PROFILE.stats.studentsCoached}+ 轉職學員指導
+        </p>
+      </section>
+
+      {/* ===================== 你是哪一種主辦單位 ===================== */}
+      <section style="padding:40px 56px 80px;max-width:1100px;margin:0 auto;">
+        <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 36px;`}>
+          你是哪一種主辦單位？
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;">
+          {hosts.map((h) => (
+            <div style={`padding:28px 24px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;text-align:center;`}>
+              <div style="font-size:34px;margin-bottom:14px;">{h.icon}</div>
+              <h3 style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 4px;`}>{h.t}</h3>
+              <div style={`font-family:${sans};font-size:12px;color:${C.muted};margin-bottom:12px;font-weight:500;`}>{h.sub}</div>
+              <p style={`font-family:${serif};font-size:13.5px;color:${C.muted};line-height:1.85;margin:0;`}>{h.d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===================== 數據成果 ===================== */}
+      <section style={`background:${C.ink};color:${C.bg};padding:80px 56px;`}>
+        <div style="max-width:1000px;margin:0 auto;">
+          <h2 style={`font-family:${sans};font-size:32px;font-weight:800;letter-spacing:-0.6px;text-align:center;margin:0 0 40px;color:#fff;`}>
+            數據成果
+          </h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;">
+            {stats.map((s) => (
+              <div style={`padding:28px 22px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;text-align:center;`}>
+                <div style={`font-family:${sans};font-size:42px;font-weight:800;color:${C.warm};letter-spacing:-1.5px;line-height:1;margin-bottom:10px;`}>{s.n}</div>
+                <h3 style={`font-family:${sans};font-size:16px;font-weight:700;color:#fff;margin:0 0 6px;letter-spacing:-0.2px;`}>{s.t}</h3>
+                <p style={`font-family:${serif};font-size:12.5px;color:rgba(255,255,255,0.65);margin:0;font-style:italic;line-height:1.65;`}>{s.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== 為什麼選 Dex ===================== */}
+      <section style="padding:80px 56px;max-width:1100px;margin:0 auto;">
+        <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 40px;`}>
+          為什麼選 Dex 來教學？
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;">
+          {whyDex.map((w) => (
+            <div style={`padding:28px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
+              <div style="font-size:30px;margin-bottom:14px;">{w.icon}</div>
+              <h3 style={`font-family:${sans};font-size:17px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 10px;`}>{w.t}</h3>
+              <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0;`}>{w.d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===================== 5 大核心主題 ===================== */}
+      <section style={`background:${C.bgSoft};padding:80px 56px;`}>
+        <div style="max-width:1100px;margin:0 auto;">
+          <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 14px;`}>
+            5 大核心主題
+          </h2>
+          <p style={`font-family:${serif};font-size:14px;color:${C.muted};text-align:center;font-style:italic;margin:0 0 40px;`}>
+            每個主題均可客製化時長、深度與案例 — 來信附主辦單位、對象與期待，會給課綱提案。
+          </p>
+          <div style="display:flex;flex-direction:column;gap:18px;">
+            {topics.map((tp) => (
+              <div style={`padding:30px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
+                <div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:18px;">
+                  <div style="font-size:36px;line-height:1;">{tp.icon}</div>
+                  <div style="flex:1;">
+                    <h3 style={`font-family:${sans};font-size:20px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 8px;line-height:1.4;`}>{tp.t}</h3>
+                    <p style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;margin:0;line-height:1.7;`}>適合：{tp.fit}</p>
+                  </div>
+                </div>
+                <ul style={`list-style:none;padding:0;margin:0 0 16px;font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.95;`}>
+                  {tp.points.map((p) => <li style="padding-left:18px;text-indent:-12px;">· {p}</li>)}
+                </ul>
+                <div style={`padding-top:14px;border-top:1px dashed ${C.rule};font-family:${sans};font-size:13px;color:${C.ink};font-weight:600;`}>
+                  <span style={`color:${C.muted};font-weight:500;letter-spacing:1px;`}>學員收穫 ›</span> {tp.win}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={`margin-top:28px;padding:22px;background:${C.warmSoft};border-radius:14px;font-family:${sans};font-size:14px;color:${C.ink};text-align:center;`}>
+            💡 也可 <strong style={`color:${C.warm};`}>客製化主題</strong>：結合貴單位需求設計 — 來信附對象 / 時長 / 期待收穫，我會給課綱提案。
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== 過往合作精選 ===================== */}
+      <section style="padding:80px 56px;max-width:1100px;margin:0 auto;">
+        <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 40px;`}>
+          過往合作精選
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:20px;">
+          {partnerGroups.map((g) => (
+            <div style={`padding:24px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
+              <h3 style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};letter-spacing:0.5px;margin:0 0 14px;`}>{g.tag}</h3>
+              <ul style={`list-style:none;padding:0;margin:0;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:2;`}>
+                {g.items.map((it) => <li>· {it}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===================== 近期演講合作明細 ===================== */}
+      <section style={`background:${C.bgSoft};padding:80px 56px;`}>
+        <div style="max-width:900px;margin:0 auto;">
+          <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 36px;`}>
+            近期演講合作明細
+          </h2>
+          <ul style={`list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;`}>
+            {talks.map((t) => (
+              <li style={`display:grid;grid-template-columns:1fr 140px;gap:18px;padding:16px 22px;background:${C.card};border:1px solid ${C.rule};border-radius:10px;align-items:start;`}>
+                <span style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.65;`}>{t.t}</span>
+                <span style={`font-family:${sans};font-size:12px;color:${C.warm};font-weight:600;letter-spacing:0.5px;text-align:right;white-space:nowrap;`}>{t.d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ===================== 專業背景 ===================== */}
+      <section style="padding:60px 56px;max-width:900px;margin:0 auto;text-align:center;">
+        <h2 style={`font-family:${sans};font-size:26px;font-weight:800;color:${C.ink};letter-spacing:-0.5px;margin:0 0 20px;`}>
+          專業背景
+        </h2>
+        <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.95;margin:0 0 24px;max-width:680px;margin-left:auto;margin-right:auto;`}>
+          <strong style={`color:${C.ink};font-family:${sans};`}>正職：</strong>
+          {PROFILE.careerOrgs.join(' · ')}
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+          {certs.map((c) => (
+            <span style={`padding:9px 18px;background:${C.card};color:${C.ink};border:1px solid ${C.rule};border-radius:999px;font-family:${sans};font-size:13px;font-weight:600;`}>{c}</span>
+          ))}
+        </div>
+      </section>
+
+      <ContactCTA variant="instructor" />
+
+      <Footer taglineComma="full" />
+
+    </div>
+
+    <NewsletterFloatingCTA />
+  </body>
+</html>
