@@ -1,0 +1,116 @@
+---
+// ContactCTA.astro — 三頁底部聯絡 CTA 通用區
+// Props 控制標題 + 副標 + 行動目標（諮詢/合作/演講邀約）
+import { PROFILE } from '../../data/profile';
+
+type Variant = 'coaching' | 'consultant' | 'instructor';
+
+interface Props {
+  variant: Variant;
+  // 可選覆寫
+  title?: string;
+  subtitle?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+}
+
+const { variant, title, subtitle, primaryLabel, primaryHref } = Astro.props;
+
+// 預設文案 by variant
+const defaults = {
+  coaching: {
+    title: '準備好了嗎？',
+    subtitle: '個人來諮詢，直接 AAPD 預約；機構合作，寫信給我聊聊脈絡。',
+    primaryLabel: '📅 個人諮詢 · AAPD 預約',
+    primaryHref: PROFILE.aapdUrl,
+    primaryExternal: true,
+  },
+  consultant: {
+    title: '準備開始合作？',
+    subtitle: '請附背景 + 想討論的主題 + 預算 / 時程的初步想法，我會在 1–2 天內回覆。不確定哪個切入點？先約一次免費 30 分鐘對焦。',
+    primaryLabel: '📧 寫信給 Dex',
+    primaryHref: `mailto:${PROFILE.email}?subject=顧問合作洽詢`,
+    primaryExternal: false,
+  },
+  instructor: {
+    title: '邀請 Dex 演講 / 內訓 / 課程',
+    subtitle: '請附主辦單位 + 場合主題 + 預計時程的初步想法，我會在 1–2 天內回覆。不確定哪個主題？先約一次免費 30 分鐘需求確認。',
+    primaryLabel: '📧 寫信給 Dex',
+    primaryHref: `mailto:${PROFILE.email}?subject=講座邀約洽詢`,
+    primaryExternal: false,
+  },
+} as const;
+
+const d = defaults[variant];
+const _title = title ?? d.title;
+const _subtitle = subtitle ?? d.subtitle;
+const _primaryLabel = primaryLabel ?? d.primaryLabel;
+const _primaryHref = primaryHref ?? d.primaryHref;
+const _primaryExternal = d.primaryExternal;
+
+// B Warm tokens
+const C = {
+  bg: '#FBFAF7',
+  bgSoft: '#F4F1EB',
+  ink: '#1F1B16',
+  ink2: '#3D3A33',
+  muted: '#6B6557',
+  rule: '#E8E2D4',
+  accent: '#5391FF',
+  warm: '#D97706',
+  warmSoft: '#FEF3E7',
+  card: '#FFFFFF',
+};
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+---
+
+<section style={`background:${C.bgSoft};padding:80px 24px;`}>
+  <div style="max-width:760px;margin:0 auto;text-align:center;">
+    {/* SCENE 標籤 */}
+    <div style={`display:inline-flex;align-items:center;gap:10px;background:${C.ink};color:${C.bg};padding:6px 16px;border-radius:6px;font-family:${sans};font-weight:700;letter-spacing:2px;font-size:12px;margin-bottom:24px;`}>
+      <span style={`width:7px;height:7px;border-radius:50%;background:${C.warm};`}></span>
+      ACTION!
+    </div>
+
+    <h2 style={`font-family:${sans};font-size:38px;font-weight:800;color:${C.ink};letter-spacing:-1px;line-height:1.3;margin:0 0 18px;`}>
+      {_title}
+    </h2>
+    <p style={`font-family:${serif};font-size:16px;color:${C.muted};line-height:1.95;max-width:620px;margin:0 auto 36px;`}>
+      {_subtitle}
+    </p>
+
+    {/* 主 CTA */}
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;">
+      <a
+        href={_primaryHref}
+        {..._primaryExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+        style={`display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:${C.warm};color:#fff;border-radius:12px;font-family:${sans};font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(217,119,6,0.32);`}
+      >
+        {_primaryLabel}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a
+        href={`mailto:${PROFILE.email}`}
+        style={`display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:${C.card};color:${C.ink};border-radius:12px;font-family:${sans};font-size:15px;font-weight:600;text-decoration:none;border:1px solid ${C.rule};`}
+      >
+        📧 寫信給我
+      </a>
+      <a
+        href={`https://line.me/ti/p/~${PROFILE.lineId}`}
+        target="_blank" rel="noopener noreferrer"
+        style={`display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:${C.card};color:${C.ink};border-radius:12px;font-family:${sans};font-size:15px;font-weight:600;text-decoration:none;border:1px solid ${C.rule};`}
+      >
+        💬 Line（{PROFILE.lineId}）
+      </a>
+    </div>
+
+    {/* 簽名 quote */}
+    <p style={`font-family:${serif};font-size:16px;color:${C.ink};font-style:italic;margin:32px auto 0;max-width:540px;line-height:1.85;`}>
+      「{PROFILE.quotes.signature}」
+    </p>
+    <p style={`font-family:${sans};font-size:13px;color:${C.muted};margin-top:14px;`}>
+      {PROFILE.fullName} · {PROFILE.brand} · {PROFILE.email}
+    </p>
+  </div>
+</section>

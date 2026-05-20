@@ -19,9 +19,9 @@ type ActivePage =
   | '文章'
   | '關於我'
   | 'Podcast'
-  | '職涯諮詢'
-  | '免費課程'
-  | '付費課程'
+  | '諮詢'
+  | '顧問'
+  | '講座'
   | '電子報';
 
 interface Props {
@@ -71,9 +71,9 @@ const navItems: NavItem[] = [
     href: 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T',
     icon: 'mic',
   },
-  { label: '職涯諮詢', href: '/coaching', icon: 'calendar' },
-  { label: '免費課程', href: '#', icon: 'graduation' },
-  { label: '付費課程', href: CTA_COURSE_URL, icon: 'sparkle' },
+  { label: '諮詢', href: '/coaching', icon: 'calendar' },
+  { label: '顧問', href: '/consultant', icon: 'sparkle' },
+  { label: '講座', href: '/instructor', icon: 'graduation' },
   { label: '電子報', href: '/newsletter', icon: null },
 ];
 ---
