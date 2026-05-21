@@ -19,9 +19,9 @@ type ActivePage =
   | '文章'
   | '關於我'
   | 'Podcast'
-  | '職涯諮詢'
-  | '技術顧問'
-  | '講座邀約'
+  | '職涯諮詢與陪跑'
+  | 'AI 與資料自動化導入'
+  | '企業內訓與學校講座'
   | '電子報';
 
 interface Props {
@@ -66,15 +66,12 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: '文章', href: '/', icon: null },
   { label: '關於我', href: '/about', icon: null },
-  {
-    label: 'Podcast',
-    href: 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T',
-    icon: 'mic',
-  },
-  { label: '職涯諮詢', href: '/coaching', icon: 'calendar' },
-  { label: '技術顧問', href: '/consultant', icon: 'sparkle' },
-  { label: '講座邀約', href: '/instructor', icon: 'graduation' },
-  { label: '電子報', href: '/newsletter', icon: null },
+  { label: '職涯諮詢與陪跑', href: '/coaching', icon: 'calendar' },
+  { label: 'AI 與資料自動化導入', href: '/consultant', icon: 'sparkle' },
+  { label: '企業內訓與學校講座', href: '/instructor', icon: 'graduation' },
+  // Podcast 與 電子報 暫時隱藏 — 電子報入口維持 Hero / 浮動 CTA / Footer 三處冗餘
+  // { label: 'Podcast', href: 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T', icon: 'mic' },
+  // { label: '電子報', href: '/newsletter', icon: null },
 ];
 ---
 <div
