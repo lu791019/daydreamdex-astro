@@ -1,7 +1,7 @@
 ---
-title: "探索LLM LangChain：深入了解五大核心模塊"
+title: "LangChain 是什麼？五大核心模塊（Prompt / LLMChain / Agent / OutputParser / Memory）完整實作"
 pubDate: 2024-08-03
-description: "最近在上LLM線上課 來分享我所學到的 LangChain LangChian是把ChatGPT API 轉換為物件導向的形式來使用我所學到 LangChain 的五個方法 : Prompt Template / LLMChain / OutputParser / Agent / ConversationChain 這"
+description: "LangChain（Langchian）是 LLM 應用開發框架，把 ChatGPT API 轉成物件導向。完整介紹五大核心：Prompt Template、LLMChain、OutputParser、Agent、ConversationChain — 適合想做 RAG / AI Agent 的工程師入門。"
 draft: false
 categories: 
   - "ai-趨勢與應用"
