@@ -1,0 +1,79 @@
+---
+// ServiceCrossLink.astro — 服務頁底部「也許你也想看」互推卡
+// 3 個服務頁互連：傳 current 排除自己，剩下 2 個渲染卡片
+
+type ServiceKey = 'coaching' | 'consultant' | 'instructor';
+interface Props { current: ServiceKey; }
+const { current } = Astro.props;
+
+const services: Record<ServiceKey, { href: string; tag: string; title: string; desc: string; color: string; }> = {
+  coaching: {
+    href: '/coaching',
+    tag: '個人 · 諮詢陪跑',
+    title: '職涯諮詢與陪跑',
+    desc: '1on1 深度對談 60 分鐘 · CDA + Life Coach + 100+ 學員陪跑經驗。轉職、作品集、履歷、技術卡關都聊。',
+    color: '#5391FF',
+  },
+  consultant: {
+    href: '/consultant',
+    tag: '企業 · 顧問內訓',
+    title: 'AI 與資料自動化導入',
+    desc: '技術顧問 × 資料工程 × AI 落地 × 數位行銷。10 年技術職涯（Hamastar / 緯創 / LINE Bank）。',
+    color: '#D97706',
+  },
+  instructor: {
+    href: '/instructor',
+    tag: '機構 · 講座邀約',
+    title: '企業內訓與學校講座',
+    desc: '5 大核心主題（AI 職涯戰略 / 資料工程 / AI 工具 / 個人品牌 / AI Coding）。10+ 主持與講座。',
+    color: '#2F6FE0',
+  },
+};
+
+const others = (Object.keys(services) as ServiceKey[]).filter((k) => k !== current);
+const C = { bg: '#FBFAF7', bgSoft: '#F4F1EB', ink: '#1F1B16', muted: '#6B6557', rule: '#E8E2D4', card: '#FFFFFF', warm: '#D97706' };
+const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
+const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+---
+
+<section style={`padding:80px 56px;max-width:1100px;margin:0 auto;`}>
+  <div style="text-align:center;margin-bottom:36px;">
+    <div style={`display:inline-flex;align-items:center;gap:8px;font-family:${serif};font-size:11px;color:${C.muted};letter-spacing:2px;font-style:italic;margin-bottom:14px;`}>
+      <span style={`width:24px;height:1px;background:${C.rule};`}></span>
+      其他合作方式
+      <span style={`width:24px;height:1px;background:${C.rule};`}></span>
+    </div>
+    <h2 style={`font-family:${sans};font-size:28px;font-weight:800;color:${C.ink};letter-spacing:-0.5px;margin:0;`}>
+      也許你也想看
+    </h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:20px;">
+    {others.map((k) => {
+      const s = services[k];
+      return (
+        <a href={s.href} style={`display:block;padding:28px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;text-decoration:none;transition:transform 220ms ease, box-shadow 220ms ease;`} class="cross-link-card">
+          <div style={`font-family:${serif};font-size:11px;color:${s.color};letter-spacing:2px;font-weight:700;font-style:italic;margin-bottom:10px;`}>
+            {s.tag}
+          </div>
+          <h3 style={`font-family:${sans};font-size:20px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 10px;line-height:1.4;`}>
+            {s.title}
+          </h3>
+          <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 14px;`}>
+            {s.desc}
+          </p>
+          <span style={`display:inline-flex;align-items:center;gap:6px;color:${s.color};font-family:${sans};font-size:13px;font-weight:700;`}>
+            看詳細
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .cross-link-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(31,27,22,0.10);
+  }
+</style>

@@ -4,6 +4,7 @@ import SEO from '../components/SEO.astro';
 import TopBar from '../components/blocks/TopBar.astro';
 import Footer from '../components/blocks/Footer.astro';
 import ContactCTA from '../components/blocks/ContactCTA.astro';
+import ServiceCrossLink from '../components/blocks/ServiceCrossLink.astro';
 import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
 import { SITE_TITLE } from '../consts';
 import { PROFILE } from '../data/profile';
@@ -302,6 +303,8 @@ const certs = PROFILE.certs.map(c => c.label);
           ))}
         </div>
       </section>
+
+      <ServiceCrossLink current="instructor" />
 
       <ContactCTA variant="instructor" />
 

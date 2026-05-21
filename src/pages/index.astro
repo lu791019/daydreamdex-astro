@@ -760,6 +760,39 @@ const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
         <FilmStripDivider opacity={0.08} />
       </div>
 
+      {/* ===================== W_Services Hub ===================== */}
+      <section style="padding:60px 56px 40px;max-width:1120px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:40px;">
+          <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— SERVICES ——</div>
+          <h2 style={`font-family:${sans};font-size:38px;font-weight:700;color:${C.ink};margin:0 0 12px;letter-spacing:-1px;`}>三種找我的方式</h2>
+          <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:0;`}>個人想清楚下一步 · 企業需要技術導入 · 機構邀約講座</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;">
+          <a href="/coaching" style={`display:block;padding:30px 26px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;text-decoration:none;transition:transform 220ms ease, box-shadow 220ms ease;`} class="service-hub-card">
+            <div style="font-size:34px;margin-bottom:14px;">🧭</div>
+            <div style={`font-family:${serif};font-size:11px;color:${C.accent};letter-spacing:2px;font-weight:700;font-style:italic;margin-bottom:8px;`}>個人 · 諮詢陪跑</div>
+            <h3 style={`font-family:${sans};font-size:19px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 10px;line-height:1.4;`}>職涯諮詢與陪跑</h3>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 16px;`}>1on1 60 分鐘深度對談 · 轉職、作品集、履歷、技術卡關。CDA + Life Coach + 100+ 學員陪跑經驗。</p>
+            <span style={`display:inline-flex;align-items:center;gap:6px;color:${C.accent};font-family:${sans};font-size:13px;font-weight:700;`}>看諮詢方案 →</span>
+          </a>
+          <a href="/consultant" style={`display:block;padding:30px 26px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;text-decoration:none;transition:transform 220ms ease, box-shadow 220ms ease;`} class="service-hub-card">
+            <div style="font-size:34px;margin-bottom:14px;">🤖</div>
+            <div style={`font-family:${serif};font-size:11px;color:${C.warm};letter-spacing:2px;font-weight:700;font-style:italic;margin-bottom:8px;`}>企業 · 顧問內訓</div>
+            <h3 style={`font-family:${sans};font-size:19px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 10px;line-height:1.4;`}>AI 與資料自動化導入</h3>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 16px;`}>7 大顧問服務：技術 / 資料 / AI 落地 / 數位行銷 / 職涯。10 年技術職涯，做得起的解法。</p>
+            <span style={`display:inline-flex;align-items:center;gap:6px;color:${C.warm};font-family:${sans};font-size:13px;font-weight:700;`}>看顧問服務 →</span>
+          </a>
+          <a href="/instructor" style={`display:block;padding:30px 26px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;text-decoration:none;transition:transform 220ms ease, box-shadow 220ms ease;`} class="service-hub-card">
+            <div style="font-size:34px;margin-bottom:14px;">🎤</div>
+            <div style={`font-family:${serif};font-size:11px;color:${C.accentDark};letter-spacing:2px;font-weight:700;font-style:italic;margin-bottom:8px;`}>機構 · 講座邀約</div>
+            <h3 style={`font-family:${sans};font-size:19px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 10px;line-height:1.4;`}>企業內訓與學校講座</h3>
+            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 16px;`}>5 大核心主題：AI 職涯戰略、資料工程、AI 工具、個人品牌、AI Coding。10+ 主持與講座。</p>
+            <span style={`display:inline-flex;align-items:center;gap:6px;color:${C.accentDark};font-family:${sans};font-size:13px;font-weight:700;`}>看講座主題 →</span>
+          </a>
+        </div>
+      </section>
+      <style>.service-hub-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(31,27,22,0.10); }</style>
+
       {/* ===================== W_AllPosts ===================== */}
       <section id="all-posts" style="padding:60px 56px 40px;max-width:1120px;margin:0 auto;">
         <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;">
