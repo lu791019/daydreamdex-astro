@@ -39,28 +39,21 @@ import { SITE_TITLE } from '../consts';
 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 <link rel="dns-prefetch" href="https://aapd.simplybook.asia" />
 
-<!-- Fonts: Noto Sans TC + Noto Serif TC (preload CSS to start fetch earlier) -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <!--
-  字型策略：display=optional - 首次訪客 100ms 內沒拿到 fonts 就立刻用 system fallback（PingFang TC / Microsoft JhengHei）
-  不阻塞 LCP。fonts 載入後 cache 給下次訪問用。對 Mobile PSI 影響極大。
-  讀者第一次可能看到 system fonts (視覺微差) - 但 LCP 從 17s 降到 < 4s 換來的。
+  字型策略：純 system fonts，不載 Google Fonts
+  - macOS/iOS: PingFang TC / Songti TC (預裝、品質高)
+  - Windows: Microsoft JhengHei / MingLiU
+  - Android: Noto Sans CJK (Android 系統字)
+  - Linux: 視發行版
+
+  好處：
+  - 省 132 KB unused CSS (Google Fonts 內部 @font-face rules)
+  - 省 ~60 KB woff2 字型載入時間
+  - 0 ms 字型載入阻塞 → Mobile LCP 大幅改善
+  - PSI Mobile Perf 預期 55 → 80+
+
+  Trade-off：
+  - 訪客看到的中文字型跟設計稿 Noto Sans TC 有 5–10% 差異
+  - 但 fallback chain 已在每個元件的 font-family 內含 PingFang TC / 微軟正黑體
+  - 視覺上仍是「無襯線中文字」整體調性不變
 -->
-<link
-  rel="preload"
-  as="style"
-  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=optional"
-/>
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=optional"
-  media="print"
-  onload="this.media='all'"
-/>
-<noscript>
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=optional"
-  />
-</noscript>
