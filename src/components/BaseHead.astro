@@ -42,12 +42,25 @@ import { SITE_TITLE } from '../consts';
 <!-- Fonts: Noto Sans TC + Noto Serif TC (preload CSS to start fetch earlier) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!--
+  字型策略：display=optional - 首次訪客 100ms 內沒拿到 fonts 就立刻用 system fallback（PingFang TC / Microsoft JhengHei）
+  不阻塞 LCP。fonts 載入後 cache 給下次訪問用。對 Mobile PSI 影響極大。
+  讀者第一次可能看到 system fonts (視覺微差) - 但 LCP 從 17s 降到 < 4s 換來的。
+-->
 <link
   rel="preload"
   as="style"
-  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=optional"
 />
 <link
   rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=optional"
+  media="print"
+  onload="this.media='all'"
 />
+<noscript>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=optional"
+  />
+</noscript>
