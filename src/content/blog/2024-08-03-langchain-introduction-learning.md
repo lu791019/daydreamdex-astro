@@ -26,7 +26,7 @@ heroImage: "/images/DALL·E-2024-08-04-12.18.32-A-horizontal-illustration-repres
 
 - **生成提示：** 根據用戶的行為和輸入生成提示，提供更個性化的體驗。
 
-![](/images/promt.png)
+![](/images/promt.webp)
 
 ## LLMChain
 
@@ -46,9 +46,9 @@ heroImage: "/images/DALL·E-2024-08-04-12.18.32-A-horizontal-illustration-repres
 
 **實例應用：** 例如，在智能客服系統中，LLMChain 可以根據不同的客戶問題，自動選擇合適的提示模板和語言模型，快速提供準確的回答。這不僅提高了客服效率，還提升了用戶體驗。
 
-![](/images/promt-llm01.png)
+![](/images/promt-llm01.webp)
 
-![](/images/promt-llm02.png)
+![](/images/promt-llm02.webp)
 
 ## 各種文件格式的 OutputParser 如JsonOutputParser
 
@@ -66,11 +66,11 @@ OutputParser 是 LangChain 中的重要工具之一，它負責解析模型輸�
 
 **實例應用：** 在現實應用中，OutputParser 可以廣泛應用於各種場景。例如，在電子商務平台中，您可以使用 JsonOutputParser 解析來自不同供應商的產品數據，並將其轉換為統一格式，方便後續的數據整合和分析。在醫療領域，您可以使用 XML 解析器處理來自不同醫療設備的數據，確保數據的準確性和一致性，提升診斷和治療的效率。
 
-![](/images/json-parsar-01-1.png)
+![](/images/json-parsar-01-1.webp)
 
-![](/images/json-parsar-02-1.png)
+![](/images/json-parsar-02-1.webp)
 
-![](/images/json-parsar-03-1.png)
+![](/images/json-parsar-03-1.webp)
 
 ## Agent
 
@@ -102,9 +102,9 @@ Agent 是 LangChain 中的一個強大功能，允許模型與外部工具和服
 
 - **多任務處理：** Agent 可以同時處理多個任務，例如一邊回答用戶的問題，一邊查詢數據庫，提供更高效的服務。
 
-![](/images/agent-01.png)
+![](/images/agent-01.webp)
 
-![](/images/agent-02.png)
+![](/images/agent-02.webp)
 
 ## ConversationChain
 

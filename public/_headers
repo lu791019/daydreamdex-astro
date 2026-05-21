@@ -1,0 +1,26 @@
+# Cloudflare Pages cache headers — 解決全部 cf-cache-status: DYNAMIC 問題
+# Astro 預設 max-age=0, must-revalidate → Cloudflare 不快取 HTML
+# 改成 browser 10 分鐘 + CDN 1 天，新 deploy 時 Cloudflare Pages 自動 invalidate
+
+/*.html
+  Cache-Control: public, max-age=600, s-maxage=86400
+
+/
+  Cache-Control: public, max-age=600, s-maxage=86400
+
+# 靜態 asset 長 cache（檔名含 hash，永遠安全）
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 圖片快取 1 個月
+/images/*
+  Cache-Control: public, max-age=2592000
+
+/photos/*
+  Cache-Control: public, max-age=2592000
+
+/favicon.*
+  Cache-Control: public, max-age=2592000
+
+/og-default.png
+  Cache-Control: public, max-age=2592000
