@@ -1,0 +1,45 @@
+---
+// 新版頁尾：社群 icon + 三欄連結
+import { Icon } from 'astro-icon/components';
+import { SOCIAL_LINKS } from '../../consts';
+import { PROFILE } from '../../data/profile';
+
+const PODCAST_MAIN_URL = 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T';
+const PODCAST_FILM_URL = 'https://open.spotify.com/show/5oy6A25HTtZE9hQAMSJCML';
+---
+
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <div>
+      <div class="foot-brand">Dex 的塵世哲學</div>
+      <small>DAYDREAM DEX · 技術 × 教學 × 陪伴</small>
+      <div class="foot-social">
+        {SOCIAL_LINKS.map((s) => (
+          <a href={s.url} title={s.name} aria-label={s.name} target="_blank" rel="noopener noreferrer">
+            <Icon name={s.icon} width={18} height={18} />
+          </a>
+        ))}
+      </div>
+    </div>
+    <div class="foot-col">
+      <b>閱讀與收聽</b>
+      <a href="/blog">全部文章</a>
+      <a href="/reviews">影評放映室</a>
+      <a href="/newsletter">電子報</a>
+      <a href={PODCAST_MAIN_URL} target="_blank" rel="noopener noreferrer">Podcast《沒走歪的才奇怪》</a>
+      <a href={PODCAST_FILM_URL} target="_blank" rel="noopener noreferrer">Podcast《塵影》</a>
+    </div>
+    <div class="foot-col">
+      <b>服務</b>
+      <a href="/coaching">職涯諮詢與陪跑</a>
+      <a href="/consultant">AI 與資料自動化導入</a>
+      <a href="/instructor">企業內訓與學校講座</a>
+    </div>
+    <div class="foot-col">
+      <b>關於</b>
+      <a href="/about">關於 Dex</a>
+      <a href={`mailto:${PROFILE.email}`}>寫信給我</a>
+    </div>
+  </div>
+  <div class="wrap foot-copy">© 2026 Dex 的塵世哲學 · Daydream Dex</div>
+</footer>

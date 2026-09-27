@@ -1,0 +1,60 @@
+---
+// 新版頁首：原本五個導覽項目 + 社群 icon + 免費聊聊；手機收合成選單
+import { Icon } from 'astro-icon/components';
+import { SOCIAL_LINKS } from '../../consts';
+
+interface Props {
+  homeHref?: string;
+  chatHref: string;
+}
+const { homeHref = '/', chatHref } = Astro.props;
+
+const NAV = [
+  { label: '文章', href: '/blog' },
+  { label: '關於我', href: '/about' },
+  { label: '職涯諮詢與陪跑', href: '/coaching' },
+  { label: 'AI 與資料自動化導入', href: '/consultant' },
+  { label: '企業內訓與學校講座', href: '/instructor' },
+];
+---
+
+<nav class="nav" aria-label="主選單">
+  <div class="wrap nav-in">
+    <a class="brand" href={homeHref} aria-label="Dex 的塵世哲學 首頁">
+      <svg width="30" height="26" viewBox="0 0 30 26" aria-hidden="true">
+        <rect x="1" y="9" width="28" height="16" rx="2" fill="#F3EBDD" />
+        <rect x="1" y="3" width="28" height="6" rx="1" fill="#F0B45E" transform="rotate(-8 1 9)" />
+        <path d="M5 3.5l3 5M11 2.7l3 5M17 1.9l3 5M23 1.1l3 5" stroke="#16100C" stroke-width="2" transform="rotate(-8 1 9)" />
+      </svg>
+      <span><b>Dex 的塵世哲學</b><small>DAYDREAM DEX</small></span>
+    </a>
+
+    <div class="links">
+      {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-social">
+        {SOCIAL_LINKS.map((s) => (
+          <a href={s.url} title={s.name} aria-label={s.name} target="_blank" rel="noopener noreferrer">
+            <Icon name={s.icon} width={15} height={15} />
+          </a>
+        ))}
+      </div>
+      <a class="btn btn-amber btn-sm" href={chatHref} target="_blank" rel="noopener noreferrer">免費聊聊</a>
+      <details class="nav-menu">
+        <summary aria-label="開啟選單">選單</summary>
+        <div class="nav-menu-panel">
+          {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
+          <div class="nav-menu-social">
+            {SOCIAL_LINKS.map((s) => (
+              <a href={s.url} aria-label={s.name} target="_blank" rel="noopener noreferrer">
+                <Icon name={s.icon} width={18} height={18} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</nav>
