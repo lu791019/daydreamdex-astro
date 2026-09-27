@@ -540,3 +540,8 @@
 .pv .scene-paper .scene-sub { color: var(--ink-2); opacity: 1; }
 .pv .final-scene .scene-line { font-size: 19px; color: #fbf6ee; }
 .pv .final-scene .scene-sub { color: var(--cream); opacity: 0.92; font-size: 14.5px; }
+
+/* 主標改為「轉職、轉型與人生」後加長：縮小上限、避免擠出欄位 */
+.pv .hero h1 { font-size: clamp(29px, 4.2vw, 52px); }
+.pv .hero h1 em { white-space: nowrap; }
+@media (max-width: 960px) { .pv .hero h1 { font-size: clamp(29px, 6.2vw, 48px); } }
