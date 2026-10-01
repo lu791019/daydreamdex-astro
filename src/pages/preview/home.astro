@@ -69,6 +69,18 @@ const reel = [
   { year: '2026', org: '哈馬星科技', role: 'Tech Leader' },
 ];
 
+// ===== 獎座櫃：證照（profile.certs）＋實績 =====
+const trophies = [
+  { icon: '🧭', name: 'CDA 國際生涯發展諮詢師', note: '擺渡人生學校' },
+  { icon: '🌱', name: 'Life Coach 生涯教練', note: 'AndAction' },
+  { icon: '📊', name: '大數據 & 資料科學', note: 'Microsoft MPP' },
+  { icon: '☁️', name: 'AI Practitioner', note: 'AWS' },
+  { icon: '✨', name: 'Generative AI', note: 'Google' },
+  { icon: '🤝', name: '104 Giver', note: '職涯分享與諮詢' },
+  { icon: '🎤', name: 'PyCon TW 2024', note: '議程主持' },
+  { icon: '🏅', name: '在地數位種子人才', note: '數位發展部入選案（左鎮）' },
+];
+
 // ===== 三種找我的方式（原名稱保留） =====
 const doors = [
   {
@@ -425,6 +437,26 @@ const forYou: [string, string][] = [
           ))}
         </div>
 
+        <div class="trophy" aria-label="證照與實績">
+          <div class="trophy-head">
+            <div><div class="trophy-k">TROPHY CABINET · 證照與實績</div><h3>獎座櫃</h3></div>
+            <span class="trophy-count">{trophies.length} 座入櫃</span>
+          </div>
+          <div class="trophy-case">
+            {[trophies.slice(0, 4), trophies.slice(4)].map((row) => (
+              <div class="trophy-shelf">
+                {row.map((t) => (
+                  <div class="trophy-item">
+                    <span class="medal" aria-hidden="true">{t.icon}</span>
+                    <b>{t.name}</b>
+                    <small>{t.note}</small>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div class="stats">
           <div><b>10</b><span>年跨界</span></div>
           <div><b>4</b><span>個產業 · 6 家公司</span></div>
@@ -533,8 +565,12 @@ const forYou: [string, string][] = [
         <h2>數位轉型與 AI 導入實績</h2>
         <p class="sub">兩個正在地方與非營利組織現場運作的系統 —— 從需求訪談、開發到交接，全程參與。</p>
         <div class="case-grid">
-          {cases.map((c) => (
+          {cases.map((c, i) => (
             <article class="case">
+              <span class="tape tape-l" aria-hidden="true"></span>
+              <span class="tape tape-r" aria-hidden="true"></span>
+              <div class="case-sheet"><span>CALL SHEET · 通告單</span><span>CASE {String(i + 1).padStart(2, '0')}</span></div>
+              <span class="case-stamp" aria-hidden="true">已交付<br />上映中</span>
               <div class="case-org">{c.org}</div>
               <div class="case-meta">{c.program} · 我的角色：{c.role}</div>
               <h3>{c.title}</h3>

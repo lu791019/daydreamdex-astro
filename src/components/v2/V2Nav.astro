@@ -1,13 +1,14 @@
 ---
-// 新版頁首：原本五個導覽項目 + 社群 icon + 免費聊聊；手機收合成選單
+// 新版頁首（兩排）：上排品牌＋社群＋ADMIT ONE 票根；下排編號導覽＋NOW PLAYING；手機收合成選單
 import { Icon } from 'astro-icon/components';
 import { SOCIAL_LINKS } from '../../consts';
 
 interface Props {
   homeHref?: string;
   chatHref: string;
+  hall?: string;
 }
-const { homeHref = '/', chatHref } = Astro.props;
+const { homeHref = '/', chatHref, hall = 'HALL 01' } = Astro.props;
 
 const NAV = [
   { label: '文章', href: '/blog' },
@@ -16,9 +17,11 @@ const NAV = [
   { label: 'AI 與資料自動化導入', href: '/consultant' },
   { label: '企業內訓與學校講座', href: '/instructor' },
 ];
+const no = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
 <nav class="nav" aria-label="主選單">
+  <div class="marquee-bulbs" aria-hidden="true"></div>
   <div class="wrap nav-in">
     <a class="brand" href={homeHref} aria-label="Dex 的塵世哲學 首頁">
       <svg width="30" height="26" viewBox="0 0 30 26" aria-hidden="true">
@@ -29,10 +32,6 @@ const NAV = [
       <span><b>Dex 的塵世哲學</b><small>DAYDREAM DEX</small></span>
     </a>
 
-    <div class="links">
-      {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
-    </div>
-
     <div class="nav-right">
       <div class="nav-social">
         {SOCIAL_LINKS.map((s) => (
@@ -41,11 +40,14 @@ const NAV = [
           </a>
         ))}
       </div>
-      <a class="btn btn-amber btn-sm" href={chatHref} target="_blank" rel="noopener noreferrer">免費聊聊</a>
+      <a class="admit" href={chatHref} target="_blank" rel="noopener noreferrer">
+        <span class="admit-stub">ADMIT ONE</span>
+        <span class="admit-main">免費聊聊</span>
+      </a>
       <details class="nav-menu">
         <summary aria-label="開啟選單">選單</summary>
         <div class="nav-menu-panel">
-          {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
+          {NAV.map((n, i) => <a href={n.href}><span class="nav-no">{no(i)}</span>{n.label}</a>)}
           <div class="nav-menu-social">
             {SOCIAL_LINKS.map((s) => (
               <a href={s.url} aria-label={s.name} target="_blank" rel="noopener noreferrer">
@@ -55,6 +57,14 @@ const NAV = [
           </div>
         </div>
       </details>
+    </div>
+  </div>
+  <div class="nav-row2">
+    <div class="wrap nav-row2-in">
+      <div class="links">
+        {NAV.map((n, i) => <a href={n.href}><span class="nav-no">{no(i)}</span>{n.label}</a>)}
+      </div>
+      <span class="now-playing">NOW PLAYING · {hall}</span>
     </div>
   </div>
 </nav>
