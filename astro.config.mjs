@@ -16,7 +16,7 @@ export default defineConfig({
     mdx(),
     sitemap({
       // 改版預覽頁不進 sitemap
-      filter: (page) => !page.includes('/preview/') && !page.includes('/reviews'), // 改版上線時拿掉 /reviews
+      filter: (page) => !page.includes('/preview/'),
       // Inject lastmod = build time so Google sees fresh content signal
       serialize(item) {
         return { ...item, lastmod: new Date().toISOString() };

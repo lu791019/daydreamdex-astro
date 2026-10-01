@@ -1,5 +1,5 @@
 ---
-// 單篇影評（改版上線前 noindex、不進 sitemap）
+// 單篇影評
 import { getCollection, render } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import SEO from '../../components/SEO.astro';
@@ -26,10 +26,9 @@ const CHAT_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
   <head>
     <BaseHead />
     <SEO title={`《${review.data.title}》影評｜Dex 的塵世哲學`} description={review.data.description} type="article" />
-    <meta name="robots" content="noindex, nofollow" />
   </head>
   <body class="pv">
-    <V2Nav homeHref="/preview/home" chatHref={CHAT_URL} />
+    <V2Nav homeHref="/" chatHref={CHAT_URL} />
 
     <article class="review-page">
       <header class="dark grain review-page-head">

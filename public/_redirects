@@ -76,4 +76,5 @@
 # === Catch-all 404（必須最後！）===
 # 沒匹配到任何 redirect 規則 + 沒對應靜態檔案 → 回 404.html (status 404)
 # 不寫此條 Cloudflare Pages 會把首頁 index.html 用 200 餵回，造成 soft 404 + duplicate content
+/preview/home / 301
 /*                        /404.html  404

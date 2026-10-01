@@ -1,5 +1,5 @@
 ---
-// 影評放映室（改版上線前 noindex、不進 sitemap）
+// 影評放映室
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import SEO from '../../components/SEO.astro';
@@ -18,10 +18,9 @@ const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b
   <head>
     <BaseHead />
     <SEO title="影評放映室｜Dex 的塵世哲學" description="工程師也是影評人。Dex 的長篇影評與影展不爆雷短評：阿莫多瓦《人聲》、徐浩峰《師父》、銀河映像《樹大招風》，以及影展片單短評。" type="website" />
-    <meta name="robots" content="noindex, nofollow" />
   </head>
   <body class="pv">
-    <V2Nav homeHref="/preview/home" chatHref={CHAT_URL} />
+    <V2Nav homeHref="/" chatHref={CHAT_URL} />
 
     <header class="dark grain cinema reviews-hero">
       <div class="cinema-strip" aria-hidden="true"></div>
