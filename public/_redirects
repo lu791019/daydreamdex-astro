@@ -77,4 +77,34 @@
 # 沒匹配到任何 redirect 規則 + 沒對應靜態檔案 → 回 404.html (status 404)
 # 不寫此條 Cloudflare Pages 會把首頁 index.html 用 200 餵回，造成 soft 404 + duplicate content
 /preview/home / 301
+# 舊網址少了結尾斜線也 301（外部連結常省略 /；2026-10 SEO 檢查發現會 404）
+/data-engineer-career-roadmap-from-skills-to-interview /blog/2025-03-20-data-engineer-career-roadmap-from-skills-to-interview  301
+/data-analyst-beginner-guide-career-switch /blog/2025-03-13-data-analyst-beginner-guide-career-switch  301
+/software-or-machine-learning-to-ai /blog/2025-03-11-software-or-machine-learning-to-ai  301
+/how-to-become-best-data-engineer /blog/2025-03-06-how-to-become-best-data-engineer  301
+/30s-career-change-5-questions-to-ask /blog/2025-03-04-30s-career-change-5-questions-to-ask  301
+/python-career-transition-guide-and-experience /blog/2024-08-04-python-career-transition-guide-and-experience  301
+/langchain-introduction-learning /blog/2024-08-03-langchain-introduction-learning  301
+/three-steps-to-get-job-and-become-python-engineer /blog/2024-07-14-three-steps-to-get-job-and-become-python-engineer  301
+/python-beginner-guide-line-self-study-strategy-with-engineer-background-2 /blog/2024-07-14-python-beginner-guide-line-self-study-strategy-with-engineer-background-2  301
+/python-coding-rules-guide-line-3 /blog/2024-06-27-python-coding-rules-guide-line-3  301
+/nosql-compare-and-selection-2 /blog/2024-06-15-nosql-compare-and-selection-2  301
+/truely-take-a-break-off-work-3 /blog/2024-05-05-truely-take-a-break-off-work-3  301
+/my-vacation-starting     /blog/2024-04-13-my-vacation-starting  301
+/cost-of-time-in-employment-sys-3 /blog/2024-04-03-cost-of-time-in-employment-sys-3  301
+/python-beginner-guide-line-self-study-strategy-with-engineer-background /blog/2024-07-14-python-beginner-guide-line-self-study-strategy-with-engineer-background-2  301
+/nosql-compare-and-selection /blog/2024-06-15-nosql-compare-and-selection-2  301
+/about-us                 /about  301
+/story                    /about  301
+/privacy-policy           /  301
+/terms                    /  301
+/homepage-1               /  301
+/homepage-2               /  301
+/homepage-3               /  301
+/salespage-1              /  301
+/salespage-2              /  301
+/sales-page-3             /  301
+/get                      /  301
+/free                     /  301
+/refund                   /  301
 /*                        /404.html  404

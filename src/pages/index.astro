@@ -58,6 +58,9 @@ const latestPosts = posts.slice(0, LATEST_COUNT);
 const featured = FEATURED_POST_SLUGS.map((slug) => posts.find((p) => p.slug.includes(slug)))
   .filter((p): p is NonNullable<typeof p> => Boolean(p));
 const forYouPost = featured[0];
+// 熱門文章：首頁其他區塊沒連到的文章也放一份內部連結（2026-10 SEO：避免排名頁失去首頁連結）
+const linkedSlugs = new Set([...latestPosts, ...featured].map((p) => p.slug));
+const morePosts = posts.filter((p) => !linkedSlugs.has(p.slug));
 
 // ===== 經歷（綜合履歷） =====
 const reel = [
@@ -529,6 +532,16 @@ const PROMISES = ['不寫速成懶人包，每篇都來自真實走過的路', '
             </a>
           ))}
         </div>
+        {morePosts.length > 0 && (
+          <div class="more-reads">
+            <div class="more-reads-k">MORE READS · 讀者也常看</div>
+            <ul>
+              {morePosts.map((p) => (
+                <li><a href={`/blog/${p.slug}`}><span class="post-tag">{p.tag}</span>{p.title}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
 

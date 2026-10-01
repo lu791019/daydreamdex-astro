@@ -2,8 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright config for Daydream Dex E2E tests.
- * Targets the production Pages.dev deployment.
+ * 預設測本機 production build（astro preview :4322）；
+ * 要測線上站時：BASE_URL=https://daydreamdex-astro.pages.dev npx playwright test
  */
+const BASE_URL = process.env.BASE_URL ?? 'http://localhost:4322';
+const LOCAL_URL = 'http://localhost:4322';
+
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30_000,
@@ -16,12 +20,23 @@ export default defineConfig({
   outputDir: 'tests/test-results',
 
   use: {
-    baseURL: 'https://daydreamdex-astro.pages.dev',
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     ignoreHTTPSErrors: true,
   },
+
+  // 只有測本機時才起 preview server（BASE_URL 指向線上站時不需要）
+  webServer:
+    BASE_URL === LOCAL_URL
+      ? {
+          command: 'npm run build && npx astro preview --port 4322',
+          url: LOCAL_URL,
+          reuseExistingServer: true,
+          timeout: 180_000,
+        }
+      : undefined,
 
   projects: [
     {

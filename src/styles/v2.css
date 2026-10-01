@@ -758,3 +758,11 @@
   .pv .final-facts div { grid-template-columns: 1fr; gap: 0; }
 }
 @media (max-width: 640px) { .pv .hero .clapper svg { width: 120px; } }
+/* 首頁「讀者也常看」：補齊首頁對所有文章的內部連結 */
+.pv .more-reads { margin-top: 36px; padding-top: 24px; border-top: 1px dashed var(--rule); }
+.pv .more-reads-k { font-family: var(--pixel); font-size: 11px; letter-spacing: .2em; color: var(--cta); margin-bottom: 12px; }
+.pv .more-reads ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 28px; }
+.pv .more-reads a { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 0; color: var(--ink); font-family: var(--sans); font-size: 15.5px; line-height: 1.5; }
+.pv .more-reads a:hover { color: var(--cta); }
+.pv .more-reads .post-tag { flex: none; }
+@media (max-width: 760px) { .pv .more-reads ul { grid-template-columns: 1fr; } }

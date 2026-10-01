@@ -3,8 +3,10 @@ export const POST_CATS = ['轉職', '資料工程', 'AI', '心法'] as const;
 
 /** 依標題＋摘要推斷分類；規則與 preview/home.astro 的 inferTag 一致 */
 export function inferTag(title: string, desc: string): string {
-  const text = (title + desc).toLowerCase();
-  if (/ai|llm|langchain|機器學習|machine learning/.test(text)) return 'AI';
+  // 以空白相接，避免 title 結尾與 desc 開頭拼出假關鍵字
+  const text = `${title} ${desc}`.toLowerCase();
+  // "ai" 需前後不接英文字母，避免 email／airflow／maintain 之類被誤判
+  if (/(?<![a-z])ai(?![a-z])|llm|langchain|機器學習|machine learning/.test(text)) return 'AI';
   if (/資料工程|data engineer|nosql|spark|sql|資料分析|data analyst/.test(text)) return '資料工程';
   if (/轉職|python|career|程式|入門|新手/.test(text)) return '轉職';
   if (/休息|時間|志業|人生|長期/.test(text)) return '心法';
@@ -27,7 +29,7 @@ export function readingMinutes(markdown: string = ''): number {
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-/** 2025.03.20 */
+/** 2025.03.20 — frontmatter 日期會被解析成 UTC 午夜，用 UTC getter 才不受建置機時區影響 */
 export function dotDate(d: Date): string {
-  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
+  return `${d.getUTCFullYear()}.${pad(d.getUTCMonth() + 1)}.${pad(d.getUTCDate())}`;
 }
