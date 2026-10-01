@@ -3,6 +3,7 @@
 // 視覺：A「暖光放映廳」為主 + B 底片框；字型沿用原部落格（黑體粗標題 + 明體內文）
 // 文案：原首頁文字為主體，新內容補強；經歷以《Dex綜合履歷_領袖100》為準
 import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
 import BaseHead from '../../components/BaseHead.astro';
 import SEO from '../../components/SEO.astro';
 import NewsletterFloatingCTA from '../../components/blocks/NewsletterFloatingCTA.astro';
@@ -69,17 +70,18 @@ const reel = [
   { year: '2026', org: '哈馬星科技', role: 'Tech Leader' },
 ];
 
-// ===== 獎座櫃：證照（profile.certs）＋實績 =====
+// ===== 獎座櫃：指標性實績（依《Dex綜合履歷_領袖100》）；icon 用 pixelarticons =====
 const trophies = [
-  { icon: '🧭', name: 'CDA 國際生涯發展諮詢師', note: '擺渡人生學校' },
-  { icon: '🌱', name: 'Life Coach 生涯教練', note: 'AndAction' },
-  { icon: '📊', name: '大數據 & 資料科學', note: 'Microsoft MPP' },
-  { icon: '☁️', name: 'AI Practitioner', note: 'AWS' },
-  { icon: '✨', name: 'Generative AI', note: 'Google' },
-  { icon: '🤝', name: '104 Giver', note: '職涯分享與諮詢' },
-  { icon: '🎤', name: 'PyCon TW 2024', note: '議程主持' },
-  { icon: '🏅', name: '在地數位種子人才', note: '數位發展部入選案（左鎮）' },
+  { icon: 'users', name: '50+ 位轉職學員', note: '一對一陪跑：作品集、履歷、面試' },
+  { icon: 'teach', name: 'TibaMe 轉職班業師', note: '資料工程九大模組 63 小時帶狀課' },
+  { icon: 'mic', name: '每年回校園開講', note: '立志中學・樹德科大職涯講座' },
+  { icon: 'terminal', name: 'PyCon TW 2024', note: '一般議程主持人・議程組成員' },
+  { icon: 'map-pin', name: '數位部入選案', note: '在地數位種子人才・臺南左鎮' },
+  { icon: 'message-text', name: 'AI 會議紀錄助手', note: '合照盟・內政部合作社輔導計畫' },
+  { icon: 'heart', name: 'g0v 島島阿學', note: '公民科技與自學社群核心成員' },
+  { icon: 'radio-tower', name: '單篇 7.9 萬觸及', note: 'Threads 近 4,000 追蹤' },
 ];
+const CERTS = ['CDA 國際生涯發展諮詢師', 'Life Coach 生涯教練', 'Microsoft 大數據與資料科學', 'AWS AI Practitioner', 'Google GenAI'];
 
 // ===== 三種找我的方式（原名稱保留） =====
 const doors = [
@@ -439,7 +441,7 @@ const forYou: [string, string][] = [
 
         <div class="trophy" aria-label="證照與實績">
           <div class="trophy-head">
-            <div><div class="trophy-k">TROPHY CABINET · 證照與實績</div><h3>獎座櫃</h3></div>
+            <div><div class="trophy-k">TROPHY CABINET · 代表作</div><h3>獎座櫃</h3></div>
             <span class="trophy-count">{trophies.length} 座入櫃</span>
           </div>
           <div class="trophy-case">
@@ -447,7 +449,7 @@ const forYou: [string, string][] = [
               <div class="trophy-shelf">
                 {row.map((t) => (
                   <div class="trophy-item">
-                    <span class="medal" aria-hidden="true">{t.icon}</span>
+                    <span class="medal" aria-hidden="true"><Icon name={`pixelarticons:${t.icon}`} width={34} height={34} /></span>
                     <b>{t.name}</b>
                     <small>{t.note}</small>
                   </div>
@@ -455,6 +457,7 @@ const forYou: [string, string][] = [
               </div>
             ))}
           </div>
+          <p class="trophy-certs"><span>CERTIFIED</span>{CERTS.join('・')}</p>
         </div>
 
         <div class="stats">

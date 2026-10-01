@@ -639,3 +639,9 @@
   .pv .trophy-case { padding: 20px 14px 4px; border-width: 8px; }
 }
 .pv .nav-menu summary { white-space: nowrap; }
+.pv .medal { color: #2a1c12; font-size: 0; }
+.pv .medal svg { filter: drop-shadow(0 1px 0 rgba(255,230,174,.6)); }
+.pv .trophy-item b { font-size: 15px; }
+.pv .trophy-certs { margin: 4px 0 0; padding: 14px 18px; background: #1f1812; color: rgba(243,235,221,.85); font-family: var(--sans); font-size: 13.5px;
+  border-radius: 0 0 8px 8px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+.pv .trophy-certs span { font-family: var(--pixel); font-size: 10px; letter-spacing: .2em; color: var(--amber); }
