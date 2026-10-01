@@ -1,0 +1,196 @@
+/* 關於我（v2）頁面專屬樣式 — 共用 class 沿用 v2.css */
+
+/* 共用小標：像素字英文 + 黑體中文 */
+.pv .ab-tag { font-family: var(--pixel); font-size: 12px; letter-spacing: 0.2em; color: var(--amber); margin-bottom: 12px; }
+.pv .ab-tag span { font-family: var(--sans); font-weight: 700; letter-spacing: 0.08em; }
+.pv .paper .ab-tag { color: var(--cta); }
+.pv .ab-h2 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 0 0 14px; }
+
+/* ===== HERO ===== */
+.pv .ab-hero { overflow: hidden; padding: 80px 0 100px; }
+.pv .ab-hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center; position: relative; z-index: 1; }
+.pv .ab-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid rgba(240, 180, 94, 0.45); background: rgba(240, 180, 94, 0.1);
+  border-radius: 999px; font-family: var(--pixel); font-size: 11px; letter-spacing: 0.16em; color: var(--amber); margin-bottom: 26px; }
+.pv .ab-kicker span { font-family: var(--sans); font-weight: 700; font-size: 13px; letter-spacing: 0.08em; }
+.pv .ab-h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.18; letter-spacing: -0.03em; }
+.pv .ab-h1 em { font-style: normal; color: var(--amber); }
+.pv .ab-lead { font-size: 19px; line-height: 1.9; margin: 28px 0 0; max-width: 600px; color: var(--cream); }
+.pv .ab-lead-sub { font-size: 17px; line-height: 1.85; margin: 10px 0 0; max-width: 600px; color: var(--cream-dim); }
+.pv .ab-hero .btn svg { flex: none; }
+.pv .ab-visual { padding: 36px 34px; }
+.pv .ab-frame-cap { position: absolute; left: 26px; bottom: 34px; font-family: var(--pixel); font-size: 10px; letter-spacing: 0.22em; color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); }
+.pv .ab-card-years { top: 6px; right: -6px; background: var(--paper); color: var(--ink); transform: rotate(4deg); }
+.pv .ab-card-years small { color: var(--muted); opacity: 1; }
+.pv .ab-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--warm); flex: none; }
+.pv .ab-visual .card-chair svg { flex: none; color: var(--amber); }
+
+/* ===== MY STORY ===== */
+.pv .ab-story { padding: 96px 0 90px; }
+.pv .ab-story-body p { font-size: 18px; line-height: 2; color: var(--ink-2); margin: 0 0 1.3em; }
+.pv .ab-story-body p:last-child { margin-bottom: 0; }
+.pv .ab-story-body b { color: var(--ink); }
+.pv .ab-story-body p:first-child::first-letter { font-weight: 800; font-size: 2.6em; float: left; line-height: 1; margin: 6px 10px 0 0; color: var(--cta); }
+
+/* ===== REEL：職涯膠捲 ===== */
+.pv .ab-reel-sec { padding: 100px 0; overflow: hidden; }
+.pv .ab-reel-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+.pv .ab-clapper { flex: none; transform: rotate(6deg); filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.45)); }
+.pv .ab-reel { margin-top: 40px; background: #0b0806; border-radius: 6px; padding: 30px 0; overflow-x: auto; scroll-snap-type: x proximity;
+  box-shadow: 0 0 0 1px rgba(243, 235, 221, 0.08), 0 30px 60px rgba(0, 0, 0, 0.45);
+  background-image: radial-gradient(circle, #f3ebdd 3.5px, transparent 4px), radial-gradient(circle, #f3ebdd 3.5px, transparent 4px);
+  background-size: 22px 10px, 22px 10px; background-repeat: repeat-x; background-position: 0 9px, 0 calc(100% - 9px); background-attachment: local;
+  scrollbar-width: thin; scrollbar-color: var(--amber) transparent; }
+.pv .ab-reel:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+.pv .ab-reel-track { list-style: none; margin: 0; padding: 0 14px; display: flex; gap: 12px; width: max-content; }
+.pv .ab-frame { width: 236px; flex: none; scroll-snap-align: start; background: var(--night-3); border: 1px solid var(--rule-dark); border-radius: 3px;
+  position: relative; display: flex; flex-direction: column; }
+.pv .ab-frame.is-now { background: linear-gradient(160deg, #3a2a18, #2a2019); border-color: rgba(240, 180, 94, 0.7); box-shadow: 0 0 24px rgba(240, 180, 94, 0.18); }
+.pv .ab-frame-top { position: relative; height: 104px; display: flex; align-items: center; justify-content: center; padding: 26px 14px 10px;
+  background: linear-gradient(160deg, rgba(240, 180, 94, 0.18), rgba(180, 83, 9, 0.08)); border-bottom: 1px dashed rgba(243, 235, 221, 0.18); }
+.pv .ab-scene-no { position: absolute; top: 9px; left: 10px; font-family: var(--pixel); font-size: 10px; letter-spacing: 0.16em; color: var(--amber); }
+.pv .ab-now { position: absolute; top: 7px; right: 9px; padding: 2px 8px; background: #dc2626; color: #fff; font-family: var(--pixel); font-size: 10px;
+  letter-spacing: 0.14em; border: 2px solid #fff; transform: rotate(5deg); }
+.pv .ab-company { font-family: var(--sans); font-weight: 800; font-size: 21px; line-height: 1.3; text-align: center; color: #fbf6ee; }
+.pv .ab-frame-body { padding: 14px 16px 34px; }
+.pv .ab-period { font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--amber); letter-spacing: 0.06em; }
+.pv .ab-frame h3 { font-size: 16px; line-height: 1.45; margin: 6px 0 6px; color: var(--cream); }
+.pv .ab-frame p { margin: 0; font-size: 16px; line-height: 1.75; color: var(--cream-dim); }
+.pv .ab-frame-no { position: absolute; right: 10px; bottom: 9px; font-family: var(--pixel); font-size: 9.5px; letter-spacing: 0.14em; color: rgba(243, 235, 221, 0.6); }
+.pv .ab-reel-foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 16px; font-family: var(--pixel); font-size: 11px;
+  letter-spacing: 0.16em; color: var(--cream-dim); }
+.pv .ab-swipe { font-family: var(--sans); letter-spacing: 0.06em; font-size: 13px; }
+
+/* ===== OFF SET + 斜槓 ===== */
+.pv .ab-offset-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
+.pv .ab-offset-card, .pv .ab-side { background: #fffdf8; border: 1px solid #e2d5be; border-radius: 6px; padding: 30px 30px 26px;
+  box-shadow: 0 22px 44px -26px rgba(31, 24, 18, 0.45); }
+.pv .ab-offset-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; }
+.pv .ab-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: var(--ink); color: #fff; font-family: var(--sans);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.12em; border-radius: 4px; margin-bottom: 14px; }
+.pv .ab-offset-card .ab-tag { margin-bottom: 4px; }
+.pv .ab-offset-card h3, .pv .ab-side h3 { font-size: 22px; line-height: 1.4; }
+.pv .ab-polaroid { flex: none; background: #0b0806; padding: 16px 8px; border-radius: 4px; transform: rotate(3deg); position: relative;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3); }
+.pv .ab-polaroid::before, .pv .ab-polaroid::after { content: ''; position: absolute; left: 6px; right: 6px; height: 7px;
+  background: radial-gradient(circle, #f3ebdd 2.2px, transparent 2.6px) 0 0 / 13px 7px repeat-x; opacity: 0.85; }
+.pv .ab-polaroid::before { top: 4px; }
+.pv .ab-polaroid::after { bottom: 4px; }
+.pv .ab-polaroid img { display: block; width: 104px; height: 104px; object-fit: cover; object-position: 50% 25%; border-radius: 2px; }
+.pv .ab-offset-list { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.pv .ab-offset-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.7; color: var(--ink-2); }
+.pv .ab-offset-list b { color: var(--ink); margin-right: 10px; }
+.pv .ab-ico { flex: none; width: 34px; height: 34px; border-radius: 8px; background: var(--paper-2); color: var(--cta); display: inline-flex;
+  align-items: center; justify-content: center; }
+.pv .ab-note { margin: 22px 0 0; padding-top: 16px; border-top: 1px dashed #e2d5be; font-size: 16px; line-height: 1.8; color: var(--muted); }
+.pv .ab-side h3 { margin-bottom: 16px; }
+.pv .ab-side-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.pv .ab-side-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; line-height: 1.65; color: var(--ink-2); }
+.pv .ab-side-list svg { flex: none; margin-top: 5px; }
+
+/* ===== COACHING STYLE ===== */
+.pv .ab-coach { padding: 110px 0; }
+.pv .ab-coach-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 44px; }
+.pv .ab-coach-card { background: linear-gradient(160deg, var(--night-3), var(--night-2)); border: 1px solid var(--rule-dark); border-radius: 6px;
+  padding: 40px 30px 30px; position: relative; overflow: hidden; }
+.pv .ab-coach-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.pv .ab-take { font-family: var(--pixel); font-size: 12px; letter-spacing: 0.2em; color: var(--amber); }
+.pv .ab-coach-ico { width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #2a1c12;
+  background: radial-gradient(circle at 35% 30%, #ffe6ae, #f0b45e 45%, #b45309 100%); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2); }
+.pv .ab-coach-card h3 { font-size: 22px; margin-bottom: 8px; }
+.pv .ab-coach-card p { margin: 0; font-size: 16px; line-height: 1.85; color: var(--cream-dim); }
+
+/* ===== FOR WHOM ===== */
+.pv .ab-pain-sheet { margin-top: 40px; background: #fffdf8; border: 1px solid #e2d5be; border-radius: 4px; padding: 30px 32px 12px;
+  box-shadow: 0 22px 44px -26px rgba(31, 24, 18, 0.45); }
+.pv .ab-pain-list { list-style: none; margin: 0; padding: 0; }
+.pv .ab-pain-list li { display: grid; grid-template-columns: 64px 1fr 1fr; gap: 24px; align-items: center; padding: 18px 0; border-bottom: 1px dashed #e2d5be; }
+.pv .ab-pain-list li:last-child { border-bottom: 0; }
+.pv .ab-pain-no { font-family: var(--pixel); font-size: 26px; color: var(--cta); }
+.pv .ab-pain-k { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 2px; }
+.pv .ab-pain-k.is-warm { color: var(--cta); }
+.pv .ab-pain-list b { font-size: 17px; line-height: 1.55; color: var(--ink); }
+.pv .ab-pain-sol { padding-left: 24px; border-left: 2px solid var(--paper-2); font-size: 16px; line-height: 1.7; color: var(--ink-2); }
+
+/* ===== SCENE 04 ===== */
+.pv .ab-belief { padding: 100px 0; }
+.pv .ab-belief-card { margin-top: 0; padding: 34px 34px 30px; background: rgba(243, 235, 221, 0.06); }
+.pv .ab-film-src { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--amber); letter-spacing: 0.06em; margin: 4px 0 14px; }
+.pv .ab-belief-card .scene-line { font-size: clamp(19px, 2.4vw, 24px); }
+.pv .ab-belief-card .scene-sub { font-size: 16px; }
+
+/* ===== OFF DUTY：ADMIT ONE 票 ===== */
+.pv .ab-ticket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+.pv .ab-ticket { display: flex; background: #fffdf8; border: 1px solid #e2d5be; border-radius: 8px; overflow: hidden;
+  box-shadow: 4px 4px 0 var(--ink); }
+.pv .ab-ticket-stub { flex: none; width: 46px; background: var(--amber); color: #1f1812; border-right: 2px dashed #1f1812; display: flex;
+  justify-content: space-between; align-items: center; padding: 14px 0; writing-mode: vertical-rl; font-family: var(--pixel); font-size: 10px; letter-spacing: 0.18em; }
+.pv .ab-ticket-main { padding: 22px 22px 20px; flex: 1; min-width: 0; }
+.pv .ab-ticket-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.pv .ab-ticket-head small { display: block; font-family: var(--pixel); font-size: 10px; letter-spacing: 0.18em; color: var(--muted); }
+.pv .ab-ticket-head b { display: block; font-size: 19px; font-weight: 800; line-height: 1.3; }
+.pv .ab-ticket ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pv .ab-ticket li { font-size: 16px; color: var(--ink-2); padding-left: 16px; position: relative; }
+.pv .ab-ticket li::before { content: ''; position: absolute; left: 0; top: 0.8em; width: 7px; height: 2px; background: var(--cta); }
+
+/* ===== CREDITS：成就解鎖 ===== */
+.pv .ab-credits { padding: 110px 0; overflow: hidden; }
+.pv .ab-credits-badge { display: flex; width: fit-content; margin: 0 auto 14px; align-items: center; gap: 8px; padding: 6px 14px; background: var(--amber);
+  color: #1f1812; font-family: var(--pixel); font-size: 11px; letter-spacing: 0.18em; border-radius: 4px; box-shadow: 3px 3px 0 var(--cta); }
+.pv .ab-credits .sub { text-align: center; }
+.pv .ab-credits-roll { margin-top: 48px; padding: 40px 32px 34px; border-block: 1px solid var(--rule-dark); text-align: center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(240, 180, 94, 0.1), transparent 70%); }
+.pv .ab-credits-title { font-family: var(--pixel); font-size: 13px; letter-spacing: 0.3em; color: var(--amber); margin-bottom: 36px; }
+.pv .ab-credit + .ab-credit { margin-top: 40px; }
+.pv .ab-credit-role { font-family: var(--pixel); font-size: 11px; letter-spacing: 0.24em; color: var(--cream-dim); }
+.pv .ab-credit h3 { font-size: 24px; margin: 4px 0 14px; color: var(--amber); }
+.pv .ab-credit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.pv .ab-credit li { font-size: 16.5px; line-height: 1.7; color: var(--cream); }
+.pv .ab-credits-end { margin: 44px 0 0; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; color: var(--amber); }
+
+/* ===== CTA ===== */
+.pv .ab-cta .case-grid { margin-top: 0; }
+.pv .ab-cta .case h3 { margin: 10px 0 10px; font-size: 24px; }
+.pv .ab-cta .case p { font-size: 16px; line-height: 1.85; }
+.pv .ab-cta-ico { width: 46px; height: 46px; border-radius: 10px; background: var(--paper-2); color: var(--cta); display: inline-flex; align-items: center; justify-content: center; }
+.pv .ab-coupon { display: inline-flex; flex-wrap: wrap; align-self: flex-start; align-items: center; gap: 8px; margin-top: 16px; padding: 10px 14px;
+  background: #fcebd5; border: 1px dashed var(--cta); border-radius: 6px; font-size: 14.5px; font-weight: 700; color: var(--cta); }
+.pv .ab-coupon span { padding: 2px 7px; background: var(--cta); color: #fff; border-radius: 3px; font-size: 12px; }
+.pv .ab-cta-actions { margin-top: auto; padding-top: 22px; }
+
+/* motion */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pv .ab-coach-card, .pv .ab-ticket, .pv .ab-credit, .pv .ab-pain-list li {
+      animation: pv-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+/* ===== 響應式 ===== */
+@media (max-width: 960px) {
+  .pv .ab-hero-grid, .pv .ab-offset-grid { grid-template-columns: 1fr; }
+  .pv .ab-visual { order: -1; justify-self: center; }
+  .pv .ab-ticket-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .pv .ab-hero { padding: 36px 0 70px; }
+  .pv .ab-h1 br { display: none; }
+  .pv .ab-lead { font-size: 18px; }
+  .pv .ab-visual { padding: 30px 18px; }
+  .pv .ab-card-years { right: 0; }
+  .pv .ab-story, .pv .ab-reel-sec, .pv .ab-coach, .pv .ab-belief, .pv .ab-credits { padding: 72px 0; }
+  .pv .ab-clapper { display: none; }
+  .pv .ab-frame { width: min(236px, 72vw); }
+  .pv .ab-offset-card, .pv .ab-side { padding: 24px 20px 22px; }
+  .pv .ab-polaroid img { width: 80px; height: 80px; }
+  .pv .ab-coach-grid, .pv .ab-ticket-grid { grid-template-columns: 1fr; }
+  .pv .ab-pain-sheet { padding: 24px 18px 6px; }
+  .pv .ab-pain-list li { grid-template-columns: 40px 1fr; gap: 6px 14px; align-items: start; }
+  .pv .ab-pain-no { font-size: 20px; grid-row: span 2; }
+  .pv .ab-pain-sol { padding-left: 0; border-left: 0; }
+  .pv .ab-belief-card { padding: 30px 20px 24px; }
+  .pv .ab-credits-roll { padding: 32px 4px 28px; }
+}
+.pv .ab-ticket { min-height: 200px; }
+.pv .ab-ticket-stub { gap: 14px; }

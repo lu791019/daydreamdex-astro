@@ -1,7 +1,9 @@
 ---
 // 改版預覽首頁（不上 sitemap、noindex）— Dex 確認後才取代 src/pages/index.astro
-// 視覺：A「暖光放映廳」為主 + B 底片框；字型沿用原部落格（黑體粗標題 + 明體內文）
+// 視覺：A「暖光放映廳」為主 + B 底片框；字型一律黑體（英文台詞用 Georgia 斜體）
 // 文案：原首頁文字為主體，新內容補強；經歷以《Dex綜合履歷_領袖100》為準
+// 2026-10-01 critique 修正：hero 精簡、三幕劇／案例移到 /consultant（首頁留預告）、
+// 影展短評移到 /reviews、文章列表只留最新 5 篇、預約區補費用／對象／流程
 import { getCollection } from 'astro:content';
 import { Icon } from 'astro-icon/components';
 import BaseHead from '../../components/BaseHead.astro';
@@ -10,33 +12,31 @@ import NewsletterFloatingCTA from '../../components/blocks/NewsletterFloatingCTA
 import V2Nav from '../../components/v2/V2Nav.astro';
 import V2Footer from '../../components/v2/V2Footer.astro';
 import { getSubscriberCount } from '../../utils/kit';
+import { inferTag, readingMinutes } from '../../utils/post-meta';
 import { FEATURED_POST_SLUGS, CTA_BOOKING_URL } from '../../consts';
 import { PROFILE } from '../../data/profile';
-import { SHORT_REVIEWS } from '../../data/short-reviews';
 import '../../styles/v2.css';
 
 const subscriberCount = await getSubscriberCount();
 
-// 免費先聊：Dex 尚未提供兩個 Calendly event type，先共用現有連結
+// 免費先聊（個人）：Calendly 15 分鐘。機構尚無專用 event type，先改寫信對焦需求
 const FREE_CHAT_PERSONAL_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
-const FREE_CHAT_ORG_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
+const ORG_INQUIRY_HREF = `mailto:${PROFILE.email}?subject=${encodeURIComponent('機構合作需求對焦')}`;
+const ORG_INQUIRY_LABEL = '寫信預約需求對焦（30 分鐘）';
 const PODCAST_MAIN_URL = 'https://open.spotify.com/show/2qV49EUjFOcJIqkUjwmu2T';
 const PODCAST_FILM_URL = 'https://open.spotify.com/show/5oy6A25HTtZE9hQAMSJCML';
+
+// 諮詢：時長統一 50 分鐘；費用取自 PROFILE.consultingFee 的金額部分
+const CONSULT_MINUTES = 50;
+const CONSULT_PRICE = PROFILE.consultingFee.split('/')[0].trim();
+const LEAD_MAGNET = 'AI 工程師與資料工程師的轉職指南'; // 與 NewsletterFloatingCTA、Kit 登陸頁一致
+const LATEST_COUNT = 5;
 
 // ===== 文章 =====
 const allPosts = (await getCollection('blog', (p) => !p.data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 const slugOf = (id: string) => id.replace(/\.mdx?$/, '');
-
-function inferTag(title: string, desc: string): string {
-  const text = (title + desc).toLowerCase();
-  if (/ai|llm|langchain|機器學習|machine learning/.test(text)) return 'AI';
-  if (/資料工程|data engineer|nosql|spark|sql|資料分析|data analyst/.test(text)) return '資料工程';
-  if (/轉職|python|career|程式|入門|新手/.test(text)) return '轉職';
-  if (/休息|時間|志業|人生|長期/.test(text)) return '心法';
-  return '職涯';
-}
 
 const posts = allPosts.map((p) => {
   const d = p.data.pubDate;
@@ -46,19 +46,18 @@ const posts = allPosts.map((p) => {
     desc: p.data.description,
     heroImage: p.data.heroImage as string | undefined,
     tag: inferTag(p.data.title, p.data.description),
+    minutes: readingMinutes(p.body ?? ''),
     date: `${String(d.getMonth() + 1).padStart(2, '0')} / ${String(d.getDate()).padStart(2, '0')}`,
     year: String(d.getFullYear()),
   };
 });
 const totalPosts = posts.length;
 const latest = posts[0];
-const CATS = ['轉職', '資料工程', 'AI', '心法'] as const;
-const catCount = Object.fromEntries(CATS.map((c) => [c, posts.filter((p) => p.tag === c).length]));
+const latestPosts = posts.slice(0, LATEST_COUNT);
 
 const featured = FEATURED_POST_SLUGS.map((slug) => posts.find((p) => p.slug.includes(slug)))
-  .filter((p): p is NonNullable<typeof p> => Boolean(p))
-  .map((p, i) => ({ ...p, stats: `${10 + i * 3} 分鐘 · 真心話` }));
-const forYouLink = featured[0] ? `/blog/${featured[0].slug}` : '/blog';
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+const forYouPost = featured[0];
 
 // ===== 經歷（綜合履歷） =====
 const reel = [
@@ -89,7 +88,7 @@ const doors = [
     who: '個人 · 諮詢陪跑',
     hook: '你缺的，可能不是技術，是一個陪你把問題想清楚的人。',
     title: '職涯諮詢與陪跑',
-    desc: '1on1 60 分鐘深度對談 · 轉職、作品集、履歷、技術卡關。CDA + Life Coach + 50+ 學員陪跑經驗。',
+    desc: `1on1 ${CONSULT_MINUTES} 分鐘深度對談 · 轉職、作品集、履歷、技術卡關。CDA + Life Coach + 50+ 學員陪跑經驗。`,
     href: '/coaching',
     go: '看諮詢方案',
     free: { label: '先免費聊 15 分鐘', href: FREE_CHAT_PERSONAL_URL },
@@ -101,7 +100,7 @@ const doors = [
     desc: '數位轉型 × AI 轉型的規劃、建置與顧問：資料自動化、LLM 與 AI Agent 導入、技術／資料／數位行銷顧問。10 年技術職涯，做得起的解法。',
     href: '/consultant',
     go: '看顧問服務',
-    free: { label: '免費需求對焦 30 分鐘', href: FREE_CHAT_ORG_URL },
+    free: { label: ORG_INQUIRY_LABEL, href: ORG_INQUIRY_HREF },
   },
   {
     who: '機構 · 講座邀約',
@@ -110,66 +109,18 @@ const doors = [
     desc: '5 大核心主題：AI 職涯戰略、資料工程、AI 工具、個人品牌、AI Coding。10+ 主持與講座。',
     href: '/instructor',
     go: '看講座主題',
-    free: { label: '寫信邀約講座', href: `mailto:${PROFILE.email}?subject=講座／內訓邀約` },
+    free: { label: '寫信邀約講座', href: `mailto:${PROFILE.email}?subject=${encodeURIComponent('講座／內訓邀約')}` },
   },
 ];
 
-// ===== 三幕劇轉型法：電影製作流程 × 導入方法 =====
-const acts = [
-  {
-    no: 'ACT I',
-    phase: 'PRE-PRODUCTION',
-    title: '前期製作',
-    subtitle: '需求探勘與架構規劃',
-    items: ['利害關係人訪談與現況盤點（流程、資料、系統）', '痛點排序與 ROI 評估，找出阻力最小的切入點', '技術選型與系統架構藍圖'],
-    deliver: ['需求規格書', '系統架構圖', '導入路線圖'],
-  },
-  {
-    no: 'ACT II',
-    phase: 'PRODUCTION',
-    title: '拍攝製作',
-    subtitle: 'MVP 開發與迭代驗證',
-    items: ['規格驅動開發（SDD），規格先行、不靠猜', '資料管道、API 串接、LLM／RAG／AI Agent 導入', '短週期 demo，讓使用者邊用邊修'],
-    deliver: ['可運作的 MVP', '測試與驗證報告'],
-  },
-  {
-    no: 'ACT III',
-    phase: 'POST-PRODUCTION & RELEASE',
-    title: '後製與上映',
-    subtitle: '部署、交接與自主維運',
-    items: ['雲端部署、監控與備份機制', '內容與程式分離，非工程背景也改得動', '技術文件、操作手冊與內部教育訓練'],
-    deliver: ['上線系統', '維運文件', '教育訓練'],
-  },
-];
-
-// ===== 實戰案例 =====
-const cases = [
-  {
-    org: '臺南左鎮智慧街區 × 左達工作室',
-    program: '數位發展部「在地數位種子人才培力方案」入選案',
-    title: 'LINE 在地問答與資料洞察系統',
-    role: 'AI 與資料整合',
-    challenge: '計畫有期程，但系統要活得比計畫久；在地夥伴沒有工程背景，工程師撤場後誰來維護？',
-    approach: 'LINE 官方帳號問答架構、Webhook 串接、在地知識庫與 KPI 資料層。評估成本與維護性後，這一期刻意不用 LLM，改走關鍵字比對加結構化資料。',
-    result: '所有回覆文字放進在地夥伴看得懂、改得動的試算表，工程師離場後仍能自行更新與維運。',
-    quote: '一套沒有人維護得了的系統，做得再漂亮都是負債。',
-    tags: ['LINE 官方帳號', 'Webhook', '在地知識庫', 'KPI 資料層'],
-  },
-  {
-    org: '合照盟（合作社照顧聯盟）',
-    program: '內政部合作社輔導計畫',
-    title: 'AI 會議與活動紀錄助手',
-    role: 'AI 技術開發',
-    challenge: '合作社成員多為兼職，平時沒有紀錄的習慣，考核前才回頭大量補件。',
-    approach: '錄音與照片上傳 → Whisper 語音轉文字 → LLM 生成摘要、決議與待辦 → 自動套用主管機關格式 → 匯出 Word／PDF 並雲端歸檔。',
-    result: '完整交付原始碼與技術文件；與另一個技術團隊重新劃分工、訂定資料交付規格，不重工。',
-    quote: '我用你的引擎，你收我的乾淨資料。',
-    tags: ['Whisper', 'LLM 摘要', '自動套版', '跨團隊協作'],
-  },
+// ===== 方法與案例預告（完整內容在 /consultant） =====
+const caseTeasers = [
+  { no: 'CASE 01', org: '臺南左鎮 × 數位部入選案', title: 'LINE 在地問答與資料洞察系統' },
+  { no: 'CASE 02', org: '合照盟 × 內政部合作社輔導計畫', title: 'AI 會議與活動紀錄助手' },
 ];
 
 // ===== Podcast／影片 =====
-const episodes = [ // 第一筆 = 大圖展示
+const episodes = [ // 第一筆 = 大圖展示（最新一集）
   { title: 'Dex 的多重轉職人生，你討厭的那件事，可能正在讓你變強！', yt: 'LgvTylvlSeE', spotify: 'https://open.spotify.com/episode/423pjnJ4xnIZQb9pmlhB8G' },
   { title: 'EP1：AI 時代下，為什麼副業是轉職最低風險的起點？', yt: 'ZHL29pOabhs', spotify: 'https://open.spotify.com/episode/1Car3CezBikqHXjS4c2fBq' },
   { title: '如何靠副業拿到 80 萬的合約，Dex 的理工職涯策略！', yt: '_gtRaFg4B0w', spotify: 'https://open.spotify.com/episode/5Kg4A5786WlXypTJLqgsvA' },
@@ -178,13 +129,14 @@ const episodes = [ // 第一筆 = 大圖展示
 // ===== 影評 =====
 const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b.data.order);
 
-// ===== FOR YOU（原文保留） =====
+// ===== FOR YOU（原文保留，移到預約區旁） =====
 const forYou: [string, string][] = [
   ['你不孤單', '我陪過的 50+ 位學員裡，很多人跟你一樣 30+ 才開始學程式。'],
   ['你不需要學完所有東西', '只需要學「對的那 20%」，我會帶你找到。'],
   ['你不必證明自己', '你願意開始，就已經夠勇敢了。'],
   ['你不會被 AI 取代', '只要你願意學會，如何跟 AI 一起工作。'],
 ];
+const PROMISES = ['不寫速成懶人包，每篇都來自真實走過的路', '不販賣轉職焦慮，只談長期可持續的路徑', '每一封來信，都由我親自讀、親自回'];
 ---
 
 <!doctype html>
@@ -213,7 +165,7 @@ const forYou: [string, string][] = [
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <div class="clapper" aria-hidden="true">
-            <svg width="190" height="140" viewBox="0 0 200 150">
+            <svg width="190" height="140" viewBox="0 0 200 150" aria-hidden="true">
               <rect x="6" y="0" width="188" height="36" rx="3" fill="#F3EBDD" />
               {Array.from({ length: 8 }).map((_, i) => (
                 <polygon points={`${10 + i * 24},2 ${28 + i * 24},2 ${22 + i * 24},34 ${4 + i * 24},34`} fill="#16100C" />
@@ -238,23 +190,12 @@ const forYou: [string, string][] = [
           </div>
 
           <div class="pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l-5 7h10z" /><ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2" /><path d="M12 10v3" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l-5 7h10z" /><ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2" /><path d="M12 10v3" /></svg>
             工程師 × 影評人 · {totalPosts} 篇給工程師的長信
           </div>
 
           <h1>慢慢走，<br />把每一次<em>轉彎</em>，<br />都走成一條長路。</h1>
           <p class="h1-sub">不管是<b>職涯轉換</b>，還是<b>數位轉型</b>。</p>
-
-          <div class="scene">
-            <div class="scene-label">SCENE 01 · 起點</div>
-            <div class="scene-line">“Now you can know everything in the world, but the only way you're finding out that one is by giving it a shot.”</div>
-            <div class="scene-sub">—— 你可以讀遍世界所有的書，但要知道某一件事到底是怎麼回事，唯一的方法，是去試試看。《心靈捕手》</div>
-          </div>
-
-          <div class="roles" aria-label="Dex 的兩個身分">
-            <span><b>01</b>轉職業師</span>
-            <span><b>02</b>數據 &amp; AI 轉型顧問</span>
-          </div>
 
           <p class="lead">
             這裡是 Dex 的塵世筆記 —— 寫給每個正在軟體工程、資料工程、AI 路上的你。
@@ -263,34 +204,16 @@ const forYou: [string, string][] = [
           </p>
 
           <div class="ctas">
-            <a class="btn btn-amber" href="#all-posts">從一篇文章開始 →</a>
-            <a class="btn btn-line" href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer">預約一場諮詢</a>
-            <span class="aside">· 50 分鐘，不催促</span>
+            <a class="btn btn-amber" href="#reads">從一篇文章開始 →</a>
+            <a class="btn btn-line" href="#book">預約一場諮詢</a>
+            <span class="aside">· {CONSULT_MINUTES} 分鐘，不催促</span>
           </div>
 
-          <div class="quick-links">
-            <a class="quick" href={FREE_CHAT_PERSONAL_URL} target="_blank" rel="noopener noreferrer">
-              <span class="quick-k">還不確定？</span><span class="quick-v">先免費聊 15 分鐘 →</span>
-            </a>
-            <a class="quick" href="#doors">
-              <span class="quick-k">企業／機構合作</span><span class="quick-v">AI 與資料自動化導入 →</span>
-            </a>
-            <a class="quick quick-life" href="/coaching">
-              <span class="quick-k">人生卡關了？</span><span class="quick-v">人生教練，陪你想清楚下一步 →</span>
-            </a>
-          </div>
-
-          <div class="promises">
-            <div class="promises-label">—— 在這裡，我答應你 ——</div>
-            <ul>
-              {['不寫速成懶人包，每篇都來自真實走過的路', '不販賣轉職焦慮，只談長期可持續的路徑', '每一封來信，都由我親自讀、親自回'].map((t) => (
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0B45E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav class="hero-paths" aria-label="其他入口">
+            <a href={FREE_CHAT_PERSONAL_URL} target="_blank" rel="noopener noreferrer">還不確定？先免費聊 15 分鐘 →</a>
+            <a href="#doors">企業／機構合作 →</a>
+            <a href="/coaching">人生卡關了？人生教練 →</a>
+          </nav>
         </div>
 
         <div class="hero-visual">
@@ -301,7 +224,7 @@ const forYou: [string, string][] = [
             </picture>
           </div>
           <div class="card card-readers">
-            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
             <div>
               <b>{subscriberCount ? `${subscriberCount}+ 位讀者` : '慢慢累積中的讀者'}</b>
               <small>{subscriberCount ? '一起在這條路上' : '邀你一起在路上'}</small>
@@ -309,12 +232,12 @@ const forYou: [string, string][] = [
           </div>
           {latest && (
             <a class="card card-latest" href={`/blog/${latest.slug}`}>
-              <small><i class="rec"></i>NOW SHOWING · 本週新文</small>
+              <small><i class="rec" aria-hidden="true"></i>NOW SHOWING · 最新文章</small>
               <b>{latest.title}</b>
             </a>
           )}
           <div class="card card-chair">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F3EBDD" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16M20 4L4 20" /><path d="M3 9h18" /><path d="M5.5 9v3l-1 9M18.5 9v3l1 9" /><path d="M5 12h14l-1 3H6z" /></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F3EBDD" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20" /><path d="M3 9h18" /><path d="M5.5 9v3l-1 9M18.5 9v3l1 9" /><path d="M5 12h14l-1 3H6z" /></svg>
             <div><b>諮詢開放預約中</b><small>不勉強，有需要再來</small></div>
           </div>
         </div>
@@ -324,7 +247,7 @@ const forYou: [string, string][] = [
     <div class="sprocket" aria-hidden="true"></div>
 
     <!-- ================= LETTER（原文） ================= -->
-    <section class="paper letter">
+    <section class="paper letter" data-newsletter-trigger>
       <div class="wrap narrow">
         <div class="quote-mark" aria-hidden="true">“</div>
         <div class="label">—— A LETTER TO YOU ——</div>
@@ -359,7 +282,7 @@ const forYou: [string, string][] = [
     </section>
 
     <!-- ================= FIVE ESSENTIAL READS（原版面） ================= -->
-    <section class="paper sec reads">
+    <section id="reads" class="paper sec reads">
       <div class="wrap">
         <div class="reads-head">
           <div>
@@ -367,20 +290,20 @@ const forYou: [string, string][] = [
             <h2>如果你只能讀五篇，我推薦這幾篇</h2>
             <p class="sub">讀者們最常分享、最常回頭再讀的核心長文。從這裡開始，就足夠陪你度過接下來幾個月的迷茫。</p>
           </div>
-          <a class="btn btn-ghost" href="#all-posts">看全部精選 →</a>
+          <a class="btn btn-ghost" href="/blog">看全部 {totalPosts} 篇 →</a>
         </div>
         <div class="read-grid">
           {featured.map((p, i) => (
             <a class={`read ${i === 0 ? 'read-big' : ''}`} href={`/blog/${p.slug}`}>
               <div class="read-img">
-                {p.heroImage && <img src={p.heroImage} alt={p.title} loading={i === 0 ? 'eager' : 'lazy'} />}
-                <span class="read-frame">DAYDREAM · DEX</span>
+                {p.heroImage && <img src={p.heroImage} alt="" loading={i === 0 ? 'eager' : 'lazy'} />}
+                <span class="read-frame" aria-hidden="true">DAYDREAM · DEX</span>
               </div>
               <div class="read-body">
                 <span class="read-tag">{p.tag}</span>
                 <h3>{p.title}</h3>
                 <p>{p.desc}</p>
-                <span class="read-stats">{p.stats}</span>
+                <span class="read-stats">閱讀約 {p.minutes} 分鐘</span>
               </div>
             </a>
           ))}
@@ -404,7 +327,11 @@ const forYou: [string, string][] = [
               <p class="door-desc">{d.desc}</p>
               <div class="door-actions">
                 <a class="btn btn-amber btn-sm" href={d.href}>{d.go} →</a>
-                <a class="door-free" href={d.free.href} target={d.free.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">{d.free.label}</a>
+                {d.free.href.startsWith('http') ? (
+                  <a class="door-free" href={d.free.href} target="_blank" rel="noopener noreferrer">{d.free.label}</a>
+                ) : (
+                  <a class="door-free" href={d.free.href}>{d.free.label}</a>
+                )}
               </div>
             </div>
           ))}
@@ -425,6 +352,11 @@ const forYou: [string, string][] = [
             <p>2016 年我在美光做 DRAM 缺陷分析，每天看的是晶圓上的瑕疵。後來自學跨進大數據：TutorABC 的資料湖與預測模型、LINE Bank 的資料管道、緯創全球工廠的 ESG 數據平台。</p>
             <p>技術做順了，我卻做了一個很多人不理解的決定：<b>去程式教育機構做行銷</b>。技術圈的解讀是「走偏了」。但我想搞懂一個產品從「被做出來」到「被需要」之間，到底發生了什麼 —— 那段路後來變成我最重要的能力：把技術講成別人聽得懂、也願意行動的話。</p>
             <p>跨界十年，做過四種專業，踩過你正在踩的那些坑。這幾年陪 50+ 位學員走過轉職這條路。如果你正在迷茫，<span class="mark">我想告訴你，慢慢來，真的會走到的</span>。</p>
+            <div class="scene scene-paper">
+              <div class="scene-label">SCENE 01 · 起點</div>
+              <div class="scene-line">“Now you can know everything in the world, but the only way you're finding out that one is by giving it a shot.”</div>
+              <div class="scene-sub">—— 你可以讀遍世界所有的書，但要知道某一件事到底是怎麼回事，唯一的方法，是去試試看。《心靈捕手》</div>
+            </div>
             <div class="story-ctas">
               <a class="btn btn-cta" href="/about">認識完整的我 →</a>
               <a class="btn btn-ghost" href={`mailto:${PROFILE.email}`}>寫信給我</a>
@@ -452,7 +384,7 @@ const forYou: [string, string][] = [
               <div class="trophy-shelf">
                 {row.map((t) => (
                   <div class="trophy-item">
-                    <span class="medal" aria-hidden="true"><Icon name={`pixelarticons:${t.icon}`} width={34} height={34} /></span>
+                    <span class="medal" aria-hidden="true"><Icon name={`pixelarticons:${t.icon}`} width={34} height={34} aria-hidden="true" /></span>
                     <b>{t.name}</b>
                     <small>{t.note}</small>
                   </div>
@@ -477,7 +409,7 @@ const forYou: [string, string][] = [
       <div class="wrap">
         <div class="onair-head">
           <div>
-            <div class="label"><span class="rec"></span>ON AIR · 聲音與影像</div>
+            <div class="label"><span class="rec" aria-hidden="true"></span>ON AIR · 聲音與影像</div>
             <h2>《沒走歪的才奇怪》</h2>
             <p class="sub">不想讀長文的時候，就聽我把這些轉折講一遍。每一集都有影片版和 Podcast 版。</p>
           </div>
@@ -487,12 +419,12 @@ const forYou: [string, string][] = [
           <a class="ep-thumb" href={`https://youtu.be/${episodes[0].yt}`} target="_blank" rel="noopener noreferrer" aria-label={`在 YouTube 觀看：${episodes[0].title}`}>
             <img src={`https://i.ytimg.com/vi/${episodes[0].yt}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" />
             <span class="ep-play" aria-hidden="true">▶</span>
-            <span class="ep-no">NOW PLAYING</span>
+            <span class="ep-no" aria-hidden="true">LATEST · 最新一集</span>
           </a>
           <ol class="ep-list">
             {episodes.map((e, i) => (
               <li class={i === 0 ? 'is-on' : ''}>
-                <span class="ep-idx">{i === 0 ? '▶ 正在播放' : `REEL ${String(i + 1).padStart(2, '0')}`}</span>
+                <span class="ep-idx">{i === 0 ? '最新一集' : `REEL ${String(i + 1).padStart(2, '0')}`}</span>
                 <h3>{e.title}</h3>
                 <div class="ep-links">
                   <a href={`https://youtu.be/${e.yt}`} target="_blank" rel="noopener noreferrer">YouTube</a>
@@ -505,90 +437,30 @@ const forYou: [string, string][] = [
       </div>
     </section>
 
-    <!-- ================= PART TWO：三幕劇轉型法 ================= -->
-    <section class="dark grain acts">
+    <!-- ================= PART TWO：方法與案例預告（完整版在 /consultant） ================= -->
+    <section class="paper sec teaser">
       <div class="wrap">
-        <div class="label">PART TWO · 方法論</div>
-        <h2>三幕劇轉型法</h2>
-        <p class="sub">把數位轉型當成一部電影來製作：先有劇本和分鏡，再開拍，最後交到你手上上映。每一幕都有明確的工作項目與交付物。</p>
-        <figure class="acts-figure">
-          <svg viewBox="0 0 1000 268" role="img" aria-labelledby="acts-fig-title">
-            <title id="acts-fig-title">三幕劇轉型法流程：前期製作、拍攝製作、後製與上映，並持續迭代</title>
-            <defs>
-              <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#F0B45E" /></marker>
-            </defs>
-            <!-- 膠捲底 -->
-            <rect x="10" y="30" width="980" height="150" rx="8" fill="#0B0806" stroke="rgba(243,235,221,0.15)" />
-            {Array.from({ length: 40 }).map((_, i) => (<rect x={22 + i * 24.4} y="38" width="12" height="8" rx="1.5" fill="#F3EBDD" opacity="0.75" />))}
-            {Array.from({ length: 40 }).map((_, i) => (<rect x={22 + i * 24.4} y="164" width="12" height="8" rx="1.5" fill="#F3EBDD" opacity="0.75" />))}
-            <!-- 三格 -->
-            {[
-              { x: 40, act: 'ACT I', t: '前期製作', s: 'PRE-PRODUCTION', d: '需求 · 架構 · 路線圖' },
-              { x: 360, act: 'ACT II', t: '拍攝製作', s: 'PRODUCTION', d: 'SDD · MVP · 迭代驗證' },
-              { x: 680, act: 'ACT III', t: '後製與上映', s: 'RELEASE', d: '部署 · 交接 · 自主維運' },
-            ].map((f) => (
-              <g>
-                <rect x={f.x} y="54" width="280" height="102" rx="4" fill="#2A2019" stroke="rgba(240,180,94,0.45)" />
-                <text x={f.x + 18} y="80" fill="#F0B45E" font-size="13" font-family="'PingFang TC','Noto Sans TC',sans-serif" font-weight="700" letter-spacing="2">{f.act} · {f.s}</text>
-                <text x={f.x + 18} y="113" fill="#F3EBDD" font-size="26" font-family="'PingFang TC','Noto Sans TC',sans-serif" font-weight="800">{f.t}</text>
-                <text x={f.x + 18} y="140" fill="rgba(243,235,221,0.85)" font-size="14" font-family="'PingFang TC','Noto Sans TC',sans-serif">{f.d}</text>
-              </g>
-            ))}
-            <!-- 箭頭 -->
-            <line x1="322" y1="105" x2="356" y2="105" stroke="#F0B45E" stroke-width="3" marker-end="url(#arr)" />
-            <line x1="642" y1="105" x2="676" y2="105" stroke="#F0B45E" stroke-width="3" marker-end="url(#arr)" />
-            <!-- 回饋迴圈 -->
-            <path d="M820 184 C 820 222, 180 222, 180 190" fill="none" stroke="#F0B45E" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arr)" />
-            <text x="500" y="258" text-anchor="middle" fill="#F3EBDD" font-size="14" font-family="'PingFang TC','Noto Sans TC',sans-serif">上映後的使用數據，回到下一部的前期製作 —— 持續迭代</text>
-            <!-- 導演與劇組 -->
-            <text x="500" y="20" text-anchor="middle" fill="rgba(243,235,221,0.85)" font-size="14" font-family="'PingFang TC','Noto Sans TC',sans-serif">DIRECTOR（Dex）帶劇組（你的團隊）走完三幕 → 交棒後由劇組自己上映</text>
-          </svg>
-          <figcaption>每一幕結束都有可驗收的交付物；第三幕結束時，系統與知識都已經交到你的團隊手上。</figcaption>
-        </figure>
-        <div class="act-grid">
-          {acts.map((a) => (
-            <div class="act">
-              <div class="act-strip" aria-hidden="true"></div>
-              <div class="act-no">{a.no} · {a.phase}</div>
-              <h3>{a.title}</h3>
-              <div class="act-role">{a.subtitle}</div>
-              <ul class="act-items">{a.items.map((t) => <li>{t}</li>)}</ul>
-              <div class="act-deliver">
-                <span>交付物</span>
-                {a.deliver.map((d) => <b>{d}</b>)}
-              </div>
+        <div class="label">PART TWO · 方法與案例</div>
+        <div class="teaser-grid">
+          <div>
+            <h2>三幕劇轉型法</h2>
+            <p class="teaser-line">把數位轉型當成一部電影來製作：<b>前期製作</b>（需求與架構）→ <b>拍攝製作</b>（MVP 與迭代驗證）→ <b>後製與上映</b>（部署、交接、自主維運）。導演離場之後，劇組依然拍得下去。</p>
+            <div class="teaser-ctas">
+              <a class="btn btn-cta" href="/consultant">看完整方法與案例 →</a>
+              <a class="teaser-link" href={ORG_INQUIRY_HREF}>{ORG_INQUIRY_LABEL}</a>
             </div>
-          ))}
-        </div>
-        <p class="act-line">導演的工作不是自己演完整部片，<br />而是讓劇組在<em>導演離場之後</em>，依然拍得下去。</p>
-      </div>
-    </section>
-
-    <!-- ================= PART THREE：實戰案例 ================= -->
-    <section id="cases" class="paper sec">
-      <div class="wrap">
-        <div class="label">PART THREE · 實戰案例</div>
-        <h2>數位轉型與 AI 導入實績</h2>
-        <p class="sub">兩個正在地方與非營利組織現場運作的系統 —— 從需求訪談、開發到交接，全程參與。</p>
-        <div class="case-grid">
-          {cases.map((c, i) => (
-            <article class="case">
-              <span class="tape tape-l" aria-hidden="true"></span>
-              <span class="tape tape-r" aria-hidden="true"></span>
-              <div class="case-sheet"><span>CALL SHEET · 通告單</span><span>CASE {String(i + 1).padStart(2, '0')}</span></div>
-              <span class="case-stamp" aria-hidden="true">已交付<br />上映中</span>
-              <div class="case-org">{c.org}</div>
-              <div class="case-meta">{c.program} · 我的角色：{c.role}</div>
-              <h3>{c.title}</h3>
-              <dl class="case-rows">
-                <div><dt>挑戰</dt><dd>{c.challenge}</dd></div>
-                <div><dt>做法</dt><dd>{c.approach}</dd></div>
-                <div><dt>成果</dt><dd>{c.result}</dd></div>
-              </dl>
-              <blockquote>「{c.quote}」</blockquote>
-              <div class="case-tags">{c.tags.map((t) => <span>{t}</span>)}</div>
-            </article>
-          ))}
+          </div>
+          <ul class="teaser-cases" aria-label="實戰案例">
+            {caseTeasers.map((c) => (
+              <li>
+                <a href="/consultant#cases">
+                  <span class="teaser-no">{c.no} · {c.org}</span>
+                  <b>{c.title}</b>
+                  <span class="teaser-go" aria-hidden="true">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
@@ -633,40 +505,24 @@ const forYou: [string, string][] = [
             </a>
           ))}
         </div>
-
-        <div class="shorts-head">
-          <div class="label">FESTIVAL NOTES · 影展短評</div>
-          <p class="shorts-intro">第一次不爆雷短評，請小力鞭 😂 <span>← 左右滑動 →</span></p>
-        </div>
-        <div class="shorts" tabindex="0" aria-label="影展短評，可左右捲動">
-          {SHORT_REVIEWS.map((r, i) => (
-            <article class="short">
-              <span class="short-no">{`FRAME ${String(i + 1).padStart(2, '0')}`}</span>
-              <h3>{r.film}</h3>
-              <p>{r.text}</p>
-            </article>
-          ))}
-        </div>
+        <p class="shorts-more"><a href="/reviews#festival-notes">FESTIVAL NOTES · 影展不爆雷短評，在放映室裡 →</a></p>
       </div>
     </section>
 
-    <!-- ================= ARCHIVE：所有的塵世筆記（原版保留） ================= -->
+    <!-- ================= LATEST：最新的塵世筆記 ================= -->
     <section id="all-posts" class="paper sec archive">
       <div class="wrap">
         <div class="archive-head">
           <div>
             <div class="label">—— ARCHIVE ——</div>
-            <h2>所有的塵世筆記</h2>
-            <p class="sub">{totalPosts} 篇長文，慢慢讀，不必急。</p>
+            <h2>最新的塵世筆記</h2>
+            <p class="sub">最近寫下的 {LATEST_COUNT} 篇。全部 {totalPosts} 篇長文，慢慢讀，不必急。</p>
           </div>
-          <div class="filters" role="group" aria-label="文章分類">
-            <button type="button" class="filter-btn is-active" data-filter="all">全部<span>{totalPosts}</span></button>
-            {CATS.map((c) => <button type="button" class="filter-btn" data-filter={c}>{c}<span>{catCount[c]}</span></button>)}
-          </div>
+          <a class="btn btn-ghost" href="/blog">看全部 {totalPosts} 篇 →</a>
         </div>
         <div class="post-list">
-          {posts.map((p) => (
-            <a class="post-row" href={`/blog/${p.slug}`} data-tag={p.tag}>
+          {latestPosts.map((p) => (
+            <a class="post-row" href={`/blog/${p.slug}`}>
               <div class="post-date"><b>{p.date}</b><small>{p.year}</small></div>
               <div class="post-main"><h3>{p.title}</h3><p>{p.desc}</p></div>
               <span class="post-tag">{p.tag}</span>
@@ -675,64 +531,73 @@ const forYou: [string, string][] = [
           ))}
         </div>
       </div>
-      <script is:inline>
-        (function () {
-          var btns = document.querySelectorAll('.pv .filter-btn');
-          var rows = document.querySelectorAll('.pv .post-row');
-          btns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-              var f = btn.getAttribute('data-filter');
-              btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
-              rows.forEach(function (r) { r.hidden = !(f === 'all' || r.getAttribute('data-tag') === f); });
-            });
-          });
-        })();
-      </script>
     </section>
 
-    <!-- ================= FOR YOU（原文） ================= -->
-    <section class="paper sec foryou">
-      <div class="wrap">
-        <div class="foryou-box">
-          <div class="label">—— FOR YOU ——</div>
-          <h2>如果你正在轉職的路上 ——<br />這幾件事，我想先告訴你。</h2>
-          <div class="foryou-grid">
-            {forYou.map(([t, d]) => (
-              <div class="fy">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                <div><b>{t}</b><p>{d}</p></div>
-              </div>
-            ))}
-          </div>
-          <div class="fy-cta">
-            <a class="btn btn-cta" href={forYouLink}>從「Python 轉職指南」開始讀 →</a>
-            <span class="aside dark-aside">· 18 分鐘，慢慢看</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= FINAL SCENE ================= -->
-    <section class="dark grain final">
+    <!-- ================= FINAL SCENE：FOR YOU（原文）＋ 承諾 ＋ 三條路 ================= -->
+    <section id="book" class="dark grain final">
       <div class="glow center-glow" aria-hidden="true"></div>
       <div class="wrap">
         <div class="label center">FINAL SCENE · 下一場，換你</div>
         <h2 class="center">不用準備好才來。<br />帶著現在的卡關就好。</h2>
-        <div class="final-grid">
-          <div class="final-card">
-            <h3>訂閱電子報，獲得<br />AI 時代 DE 的生存指南與學習攻略</h3>
-            <p>一封關於程式、職涯、AI 的長思考。每兩週寄一次 —— 這封信不會販賣焦慮，只想陪你想清楚。</p>
-            <a class="btn btn-amber" href="/newsletter">免費領取 →</a>
-            <small>✓ 隨時可以退訂　✓ 不會被分享給任何人</small>
+
+        <div class="final-pre">
+          <div class="final-foryou">
+            <div class="label">—— FOR YOU ——</div>
+            <h3>如果你正在轉職的路上 ——<br />這幾件事，我想先告訴你。</h3>
+            <div class="foryou-grid">
+              {forYou.map(([t, d]) => (
+                <div class="fy">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0B45E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                  <div><b>{t}</b><p>{d}</p></div>
+                </div>
+              ))}
+            </div>
+            {forYouPost && (
+              <a class="final-read" href={`/blog/${forYouPost.slug}`}>從「Python 轉職指南」開始讀（約 {forYouPost.minutes} 分鐘）→</a>
+            )}
           </div>
-          <div class="final-card">
+          <div class="promises">
+            <div class="promises-label">—— 在這裡，我答應你 ——</div>
+            <ul>
+              {PROMISES.map((t) => (
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0B45E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div class="final-grid final-grid-3">
+          <div class="final-card final-card-main">
             <h3>1:1 諮詢，我陪你想清楚</h3>
-            <p>50 分鐘深度對談 —— 轉職策略、履歷與作品集、職涯卡關。我不會給你標準答案，但會幫你問對問題。</p>
+            <p>{CONSULT_MINUTES} 分鐘深度對談 —— 轉職策略、履歷與作品集、職涯卡關。我不會給你標準答案，但會幫你問對問題。</p>
+            <dl class="final-facts">
+              <div><dt>費用</dt><dd>{CONSULT_PRICE}／次（{CONSULT_MINUTES} 分鐘）</dd></div>
+              <div><dt>適合誰</dt><dd>想轉進軟體、資料或 AI 工作，或卡在作品集、履歷、人生轉折處的你</dd></div>
+              <div><dt>預約後</dt><dd>選好時段 → 寫信附上想聊的主題與背景 → 我會在諮詢前先看過</dd></div>
+            </dl>
             <div class="final-actions">
               <a class="btn btn-amber" href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer">看看時段 →</a>
               <a class="btn btn-line" href={FREE_CHAT_PERSONAL_URL} target="_blank" rel="noopener noreferrer">先免費聊 15 分鐘</a>
             </div>
-            <small>· 諮詢前如果你想先聊聊，寫信給我也可以。</small>
+            <small>「看看時段」將另開分頁，前往 SimplyBook 預約系統（AAPD 擺渡職涯代為收費與排程）。諮詢前如果你想先聊聊，<a href={`mailto:${PROFILE.email}`}>寫信給我</a>也可以。</small>
+          </div>
+          <div class="final-card">
+            <h3>訂閱電子報，免費領取<br />{LEAD_MAGNET}</h3>
+            <p>一封關於程式、職涯、AI 的長思考。每兩週寄一次 —— 這封信不會販賣焦慮，只想陪你想清楚。</p>
+            <a class="btn btn-line" href="/newsletter">免費領取 →</a>
+            <small>✓ 隨時可以退訂　✓ 不會被分享給任何人</small>
+          </div>
+          <div class="final-card">
+            <h3>機構／企業合作</h3>
+            <p>數位轉型與 AI 導入、企業內訓與學校講座。先寫信說說你的需求，我們約 30 分鐘免費對焦，再決定要不要往下走。</p>
+            <a class="btn btn-line" href={ORG_INQUIRY_HREF}>{ORG_INQUIRY_LABEL}</a>
+            <div class="final-org-links">
+              <a href="/consultant">AI 與資料自動化導入 →</a>
+              <a href="/instructor">企業內訓與學校講座 →</a>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,76 @@
+---
+// V2ContactCTA.astro — 服務頁底部聯絡 CTA（v2 版，深色段）
+// 文案同 blocks/ContactCTA.astro；另加「免費聊聊」入口（原副標已提到免費對焦／需求確認）
+// 需搭配 v2.css + v2-services.css
+import { PROFILE } from '../../data/profile';
+
+type Variant = 'coaching' | 'consultant' | 'instructor';
+
+interface Props {
+  variant: Variant;
+  chatHref: string;
+  title?: string;
+  subtitle?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+}
+
+const { variant, chatHref, title, subtitle, primaryLabel, primaryHref } = Astro.props;
+
+const defaults = {
+  coaching: {
+    title: '準備好了嗎？',
+    subtitle: '個人來諮詢，直接 AAPD 預約；機構合作，寫信給我聊聊脈絡。',
+    primaryLabel: '個人諮詢 · AAPD 預約',
+    primaryHref: PROFILE.aapdUrl,
+    primaryExternal: true,
+    chatLabel: '還不確定？先免費聊 15 分鐘',
+  },
+  consultant: {
+    title: '準備開始合作？',
+    subtitle: '請附背景 + 想討論的主題 + 預算 / 時程的初步想法，我會在 1–2 天內回覆。不確定哪個切入點？先約一次免費 30 分鐘對焦。',
+    primaryLabel: '寫信給 Dex',
+    primaryHref: `mailto:${PROFILE.email}?subject=顧問合作洽詢`,
+    primaryExternal: false,
+    chatLabel: '免費 30 分鐘對焦',
+  },
+  instructor: {
+    title: '邀請 Dex 演講 / 內訓 / 課程',
+    subtitle: '請附主辦單位 + 場合主題 + 預計時程的初步想法，我會在 1–2 天內回覆。不確定哪個主題？先約一次免費 30 分鐘需求確認。',
+    primaryLabel: '寫信給 Dex',
+    primaryHref: `mailto:${PROFILE.email}?subject=講座邀約洽詢`,
+    primaryExternal: false,
+    chatLabel: '免費 30 分鐘需求確認',
+  },
+} as const;
+
+const d = defaults[variant];
+const _title = title ?? d.title;
+const _subtitle = subtitle ?? d.subtitle;
+const _primaryLabel = primaryLabel ?? d.primaryLabel;
+const _primaryHref = primaryHref ?? d.primaryHref;
+const external = { target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<section class="dark grain sv-cta" aria-labelledby="sv-cta-h">
+  <div class="glow center-glow" aria-hidden="true"></div>
+  <div class="wrap narrow">
+    <span class="sv-cta-stamp" aria-hidden="true">ACTION!</span>
+    <h2 id="sv-cta-h">{_title}</h2>
+    <p class="sub">{_subtitle}</p>
+
+    <div class="sv-cta-actions">
+      <a class="btn btn-amber" href={_primaryHref} {...(d.primaryExternal ? external : {})}>{_primaryLabel} →</a>
+      <a class="btn btn-line" href={chatHref} {...external}>{d.chatLabel}</a>
+    </div>
+    <div class="sv-cta-actions">
+      <a class="btn btn-line btn-sm" href={`mailto:${PROFILE.email}`}>寫信給我</a>
+      <a class="btn btn-line btn-sm" href={`https://line.me/ti/p/~${PROFILE.lineId}`} {...external}>Line（{PROFILE.lineId}）</a>
+    </div>
+
+    <div class="sv-cta-sign">
+      <blockquote>「{PROFILE.quotes.signature}」</blockquote>
+      <small>{PROFILE.fullName} · Dex 的塵世哲學 · {PROFILE.email}</small>
+    </div>
+  </div>
+</section>
