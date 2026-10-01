@@ -67,7 +67,7 @@ const reel = [
   { year: '2021', org: 'LINE Bank', role: '資料工程師' },
   { year: '2021', org: '緯創資通', role: '後端 × 資料工程' },
   { year: '2025', org: '水球軟體學院', role: 'AI 課程行銷' },
-  { year: '2026', org: '哈馬星科技', role: 'Tech Leader' },
+  { year: '2026', org: '哈馬星科技', role: 'AI 技術總監' },
 ];
 
 // ===== 獎座櫃：指標性實績（依《Dex綜合履歷_領袖100》）；icon 用 pixelarticons =====
@@ -180,7 +180,7 @@ const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b
 
 // ===== FOR YOU（原文保留） =====
 const forYou: [string, string][] = [
-  ['你不孤單', '至少 200 個讀者跟你一樣 30+ 才開始學程式。'],
+  ['你不孤單', '我陪過的 50+ 位學員裡，很多人跟你一樣 30+ 才開始學程式。'],
   ['你不需要學完所有東西', '只需要學「對的那 20%」，我會帶你找到。'],
   ['你不必證明自己', '你願意開始，就已經夠勇敢了。'],
   ['你不會被 AI 取代', '只要你願意學會，如何跟 AI 一起工作。'],
@@ -242,7 +242,8 @@ const forYou: [string, string][] = [
             工程師 × 影評人 · {totalPosts} 篇給工程師的長信
           </div>
 
-          <h1>慢慢走，<br />一起把<em>轉職、轉型與人生</em><br />走成一條長路。</h1>
+          <h1>慢慢走，<br />把每一次<em>轉彎</em>，<br />都走成一條長路。</h1>
+          <p class="h1-sub">不管是<b>職涯轉換</b>，還是<b>數位轉型</b>。</p>
 
           <div class="scene">
             <div class="scene-label">SCENE 01 · 起點</div>
@@ -250,10 +251,9 @@ const forYou: [string, string][] = [
             <div class="scene-sub">—— 你可以讀遍世界所有的書，但要知道某一件事到底是怎麼回事，唯一的方法，是去試試看。《心靈捕手》</div>
           </div>
 
-          <div class="roles" aria-label="Dex 的三個身分">
+          <div class="roles" aria-label="Dex 的兩個身分">
             <span><b>01</b>轉職業師</span>
             <span><b>02</b>數據 &amp; AI 轉型顧問</span>
-            <span><b>03</b>人生教練</span>
           </div>
 
           <p class="lead">
@@ -274,6 +274,9 @@ const forYou: [string, string][] = [
             </a>
             <a class="quick" href="#doors">
               <span class="quick-k">企業／機構合作</span><span class="quick-v">AI 與資料自動化導入 →</span>
+            </a>
+            <a class="quick quick-life" href="/coaching">
+              <span class="quick-k">人生卡關了？</span><span class="quick-v">人生教練，陪你想清楚下一步 →</span>
             </a>
           </div>
 
@@ -418,7 +421,7 @@ const forYou: [string, string][] = [
         <div class="story-grid">
           <div class="bigquote">科系決定不了<br />你的命運，<br />能不能一直重新學，<br />才決定。<small>—— 每年回到高中、科大講職涯時，我最想說的一句</small></div>
           <div class="story">
-            <p>我是 Dex，現在是哈馬星科技的 <b>Tech Leader／AI 應用開發主任工程師</b>，也是職涯教練。材料所畢業，<b>不是資訊本科</b>。</p>
+            <p>我是 Dex，現在是 <b>AI 技術總監</b>，也是職涯教練與人生教練。材料所畢業，<b>不是資訊本科</b>。</p>
             <p>2016 年我在美光做 DRAM 缺陷分析，每天看的是晶圓上的瑕疵。後來自學跨進大數據：TutorABC 的資料湖與預測模型、LINE Bank 的資料管道、緯創全球工廠的 ESG 數據平台。</p>
             <p>技術做順了，我卻做了一個很多人不理解的決定：<b>去程式教育機構做行銷</b>。技術圈的解讀是「走偏了」。但我想搞懂一個產品從「被做出來」到「被需要」之間，到底發生了什麼 —— 那段路後來變成我最重要的能力：把技術講成別人聽得懂、也願意行動的話。</p>
             <p>跨界十年，做過四種專業，踩過你正在踩的那些坑。這幾年陪 50+ 位學員走過轉職這條路。如果你正在迷茫，<span class="mark">我想告訴你，慢慢來，真的會走到的</span>。</p>

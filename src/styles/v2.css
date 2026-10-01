@@ -645,3 +645,11 @@
 .pv .trophy-certs { margin: 4px 0 0; padding: 14px 18px; background: #1f1812; color: rgba(243,235,221,.85); font-family: var(--sans); font-size: 13.5px;
   border-radius: 0 0 8px 8px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
 .pv .trophy-certs span { font-family: var(--pixel); font-size: 10px; letter-spacing: .2em; color: var(--amber); }
+/* 品牌：DayDream Director Logo ＋ Dex 的塵世哲學 */
+.pv .brand-logo { height: 40px; width: auto; display: block; }
+.pv .brand-sep { width: 1px; height: 30px; background: rgba(243, 235, 221, 0.25); }
+.pv .foot-logo { height: 52px; width: auto; display: block; margin-bottom: 12px; }
+.pv .h1-sub { margin: 14px 0 0; font-family: var(--sans); font-size: clamp(17px, 1.6vw, 21px); color: var(--cream-dim); }
+.pv .h1-sub b { color: var(--amber); font-weight: 800; }
+@media (max-width: 640px) { .pv .brand-sep, .pv .brand small { display: none; } .pv .brand-logo { height: 32px; } .pv .brand b { font-size: 14px; } }
+@media (max-width: 380px) { .pv .brand > span:last-child { display: none; } }

@@ -30,7 +30,7 @@ export const PROFILE = {
     newsletterSubs: 320, // hero 預設值；首頁已接 Kit API 走真實
     discord: 1600,
     blogDailyTraffic: '70–100',
-    studentsCoached: 100, // 100+ 轉職學員指導
+    studentsCoached: 50, // 50+ 轉職學員指導
     talks: 10, // 10+ 主持與講座
     certs: 5,
   },
