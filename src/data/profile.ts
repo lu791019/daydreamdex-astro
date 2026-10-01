@@ -7,11 +7,11 @@ export const PROFILE = {
   brand: 'DayDreamDex 塵世哲學',
 
   // 聯絡
-  email: 'lu791019@gmail.com',
+  email: 'daydreamisexp@gmail.com',
   lineId: 'k77251',
   phone: '0919-519-809', // 顯示控制：頁面選擇是否露出
   aapdUrl: 'https://aapd.simplybook.asia/v2/#book/service/8/count/1/provider/32/',
-  consultingFee: 'NT$ 2,400 / 60 分鐘',
+  consultingFee: 'NT$ 2,400 / 50 分鐘',
   consultingHours: '平日晚上 / 假日早上 / 假日下午 · GMT+8',
 
   // 三句招牌語錄
@@ -30,7 +30,7 @@ export const PROFILE = {
     newsletterSubs: 320, // hero 預設值；首頁已接 Kit API 走真實
     discord: 1600,
     blogDailyTraffic: '70–100',
-    studentsCoached: 100, // 100+ 轉職學員指導
+    studentsCoached: 50, // 50+ 轉職學員指導
     talks: 10, // 10+ 主持與講座
     certs: 5,
   },

@@ -1,12 +1,15 @@
 ---
+// 文章內頁（v2 暖光放映廳）：深色開場（場記板標籤）→ 淺紙內文（長文閱讀優先）＋右側黏性目錄
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import SEO from '../components/SEO.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import TopBar from '../components/blocks/TopBar.astro';
-import Footer from '../components/blocks/Footer.astro';
 import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
+import V2Nav from '../components/v2/V2Nav.astro';
+import V2Footer from '../components/v2/V2Footer.astro';
 import { SITE_TITLE, SITE_URL, CTA_BOOKING_URL } from '../consts';
+import { dotDate } from '../utils/post-meta';
+import '../styles/v2.css';
+import '../styles/v2-post.css';
 
 type NavLink = { slug: string; title: string } | null;
 type Heading = { depth: number; slug: string; text: string };
@@ -14,31 +17,28 @@ type Props = CollectionEntry<'blog'>['data'] & {
   newer?: NavLink;
   older?: NavLink;
   headings?: Heading[];
+  category?: string;
+  readingMinutes?: number;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, newer = null, older = null, headings = [] } = Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  newer = null,
+  older = null,
+  headings = [],
+  category = '職涯',
+  readingMinutes = 5,
+} = Astro.props;
+
+const FREE_CHAT_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
 
 // 文章 OG 圖：有 heroImage 用之，否則 fallback 到預設 OG
 const ogImage = heroImage ? `${SITE_URL}${heroImage}` : '/og-default.png';
-
-// B Warm 設計 token
-const C = {
-  bg: '#FBFAF7',
-  bgSoft: '#F4F1EB',
-  ink: '#1F1B16',
-  ink2: '#3D3A33',
-  muted: '#6B6557',
-  faint: '#A39C8C',
-  rule: '#E8E2D4',
-  accent: '#5391FF',
-  accentDark: '#2F6FE0',
-  accentSoft: '#EAF1FF',
-  warm: '#D97706',
-  warmSoft: '#FEF3E7',
-  card: '#FFFFFF',
-};
-const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
-const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+const hasToc = headings.length > 0;
 ---
 
 <!doctype html>
@@ -54,354 +54,172 @@ const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
       image={heroImage ? ogImage : undefined}
     />
     <style is:global>
-      html {
-        scroll-behavior: smooth;
-        scroll-padding-top: 80px; /* 避開 sticky TopBar，點 TOC 跳轉留空間 */
-      }
-      body {
-        margin: 0;
-        background: #FBFAF7;
-        color: #1F1B16;
-        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-      }
-      a { color: inherit; }
-      .post-prose {
-        font-family: "Noto Serif TC", "Source Han Serif TC", serif;
-        font-size: 18px;
-        line-height: 1.95;
-        color: #3D3A33;
-      }
-      .post-prose h1,
-      .post-prose h2,
-      .post-prose h3,
-      .post-prose h4 {
-        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-        color: #1F1B16;
-        letter-spacing: -0.4px;
-        line-height: 1.4;
-        margin-top: 2.2em;
-        margin-bottom: 0.7em;
-      }
-      .post-prose h2 { font-size: 28px; font-weight: 700; }
-      .post-prose h3 { font-size: 22px; font-weight: 700; }
-      .post-prose h4 { font-size: 18px; font-weight: 600; }
-      .post-prose p { margin: 1.1em 0; }
-      .post-prose a {
-        color: #2F6FE0;
-        text-decoration: underline;
-        text-decoration-thickness: 1px;
-        text-underline-offset: 3px;
-      }
-      .post-prose a:hover { color: #5391FF; }
-      .post-prose blockquote {
-        margin: 1.6em 0;
-        padding: 1em 1.4em;
-        border-left: 3px solid #D97706;
-        background: #FEF3E7;
-        font-style: italic;
-        color: #1F1B16;
-        border-radius: 0 10px 10px 0;
-      }
-      .post-prose code {
-        font-family: "JetBrains Mono", "Fira Code", monospace;
-        font-size: 0.92em;
-        background: #F4F1EB;
-        padding: 0.15em 0.4em;
-        border-radius: 4px;
-        color: #1F1B16;
-      }
-      .post-prose pre {
-        background: #1F1B16;
-        color: #F4F1EB;
-        padding: 1.2em 1.4em;
-        border-radius: 12px;
-        overflow-x: auto;
-        line-height: 1.65;
-        font-size: 14px;
-        margin: 1.6em 0;
-      }
-      .post-prose pre code {
-        background: transparent;
-        color: inherit;
-        padding: 0;
-      }
-      .post-prose img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 12px;
-        margin: 1.6em auto;
-        display: block;
-      }
-      .post-prose ul,
-      .post-prose ol { padding-left: 1.6em; margin: 1.1em 0; }
-      .post-prose li { margin: 0.5em 0; }
-      .post-prose hr {
-        border: 0;
-        border-top: 1px dashed #E8E2D4;
-        margin: 2.4em 0;
-      }
-      .post-nav-card:hover {
-        transform: translateY(-2px);
-        border-color: #5391FF !important;
-      }
-      .post-prose table {
-        border-collapse: collapse;
-        width: 100%;
-        margin: 1.6em 0;
-        font-size: 15px;
-      }
-      .post-prose th,
-      .post-prose td {
-        border: 1px solid #E8E2D4;
-        padding: 0.6em 0.9em;
-        text-align: left;
-      }
-      .post-prose th {
-        background: #F4F1EB;
-        font-family: "Noto Sans TC", system-ui, sans-serif;
-      }
+      html { scroll-behavior: smooth; scroll-padding-top: 96px; }
     </style>
   </head>
-  <body>
-    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;`}>
+  <body class="pv post-page">
+    <V2Nav chatHref={FREE_CHAT_URL} hall="NOW READING" />
 
-      <TopBar activePage="文章" logoVariant="medium" />
+    <!-- ================= 開場：文章頭 ================= -->
+    <header class="dark grain post-hero">
+      <div class="beam" aria-hidden="true"></div>
+      <div class="wrap post-hero-in">
+        <a class="back-link" href="/blog">← 所有文章</a>
 
-      {/* ===================== TOC sticky 側欄（桌機 ≥1280px 才顯示）===================== */}
-      {headings.length > 0 && (
-        <aside class="toc-sidebar" aria-label="文章目錄">
-          <div class="toc-title">目錄</div>
-          <ul class="toc-list">
-            {headings.map((h) => (
-              <li>
-                <a href={`#${h.slug}`} class={`toc-link toc-h${h.depth}`} data-slug={h.slug}>
-                  {h.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </aside>
-      )}
+        <div class="slate" aria-label="文章資訊">
+          <div class="slate-sticks" aria-hidden="true"></div>
+          <dl class="slate-board">
+            <div><dt>SCENE</dt><dd><a href={`/blog#cat-${category}`}>{category}</a></dd></div>
+            <div><dt>DATE</dt><dd><time datetime={pubDate.toISOString()}>{dotDate(pubDate)}</time></dd></div>
+            <div><dt>RUNTIME</dt><dd>閱讀 {readingMinutes} 分鐘</dd></div>
+            <div><dt>DIRECTOR</dt><dd>Dex</dd></div>
+          </dl>
+        </div>
 
-      {/* ===================== Article ===================== */}
-      <main style="padding:60px 24px 40px;max-width:720px;margin:0 auto;">
-        <article>
-          {/* 文章頭 */}
-          <header style={`margin-bottom:36px;padding-bottom:28px;border-bottom:1px dashed ${C.rule};`}>
-            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:14px;`}>
-              —— A LETTER FROM DEX ——
-            </div>
-            <h1 style={`font-family:${sans};font-size:36px;line-height:1.35;font-weight:800;color:${C.ink};letter-spacing:-0.8px;margin:0 0 18px;`}>
-              {title}
-            </h1>
-            <p style={`font-family:${serif};font-size:17px;color:${C.muted};line-height:1.85;margin:0 0 20px;font-style:italic;`}>
-              {description}
-            </p>
-            <div style={`display:flex;align-items:center;gap:12px;font-family:${sans};font-size:13px;color:${C.muted};`}>
-              <span style="display:inline-flex;align-items:center;gap:6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-                </svg>
-                <FormattedDate date={pubDate} />
-              </span>
-              {updatedDate && (
-                <span style={`font-family:${serif};font-style:italic;color:${C.faint};`}>
-                  · 更新於 <FormattedDate date={updatedDate} />
-                </span>
-              )}
-              <span style="display:inline-flex;align-items:center;gap:6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                </svg>
-                Dex
-              </span>
-            </div>
-          </header>
+        <div class="post-kicker">A LETTER FROM DEX</div>
+        <h1 class="post-title">{title}</h1>
+        <p class="post-desc">{description}</p>
+        {updatedDate && (
+          <p class="post-updated">更新於 <time datetime={updatedDate.toISOString()}>{dotDate(updatedDate)}</time></p>
+        )}
+      </div>
+    </header>
+    <div class="sprocket" aria-hidden="true"></div>
 
+    <!-- ================= 內文 ================= -->
+    <main class="paper post-body">
+      <div class={`wrap post-layout ${hasToc ? 'has-toc' : ''}`}>
+        <article class="post-article">
           {heroImage && (
-            <div style="margin:0 0 36px;">
-              <img src={heroImage} alt={title} style={`width:100%;height:auto;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,0.08);border:1px solid ${C.rule};`} />
-            </div>
+            <figure class="post-cover">
+              <img src={heroImage} alt={title} loading="eager" />
+            </figure>
           )}
 
-          {/* 開頭 — ROLLING CTA（電影開拍 vibe） */}
-          <div style={`margin:0 0 40px;padding:22px 26px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;`}>
-            <div style="flex:1;min-width:200px;">
-              <div style={`font-family:${serif};font-size:12px;color:${C.warm};font-style:italic;letter-spacing:2px;margin-bottom:6px;font-weight:700;display:inline-flex;align-items:center;gap:8px;`}>
-                <span style={`display:inline-block;width:7px;height:7px;border-radius:50%;background:${C.warm};`}></span>
-                ROLLING · 開拍
-              </div>
-              <div style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};letter-spacing:-0.2px;line-height:1.55;`}>
-                先訂閱電子報 — 每兩週收到一封 Dex 的塵世筆記
-              </div>
+          <!-- 開頭 — ROLLING CTA（電影開拍 vibe） -->
+          <aside class="rolling" aria-label="訂閱電子報">
+            <div class="rolling-copy">
+              <div class="rolling-k"><span class="rec" aria-hidden="true"></span>ROLLING · 開拍</div>
+              <div class="rolling-t">先訂閱電子報 — 收到 Dex 的塵世筆記</div>
             </div>
-            <a href="/newsletter" style={`display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:${C.warm};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(217,119,6,0.30);white-space:nowrap;`}>
-              免費領取
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </a>
-          </div>
+            <a class="btn btn-cta" href="/newsletter">免費領取 →</a>
+          </aside>
+
+          {hasToc && (
+            <details class="toc-inline">
+              <summary>目錄 · {headings.length} 段</summary>
+              <ul>
+                {headings.map((h) => (
+                  <li class={`toc-d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
+                ))}
+              </ul>
+            </details>
+          )}
 
           <div class="post-prose">
             <slot />
           </div>
 
-          {/* 文章尾 — CTA 區 */}
-          <div style={`margin-top:60px;padding:28px;background:${C.card};border:1px solid ${C.rule};border-radius:16px;`}>
-            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:10px;`}>
-              —— THE END · 謝謝你讀完 ——
+          <!-- 文章尾 — CTA 區 -->
+          <section class="post-end dark grain" aria-label="讀完之後">
+            <div class="post-end-k">THE END · 謝謝你讀完</div>
+            <h2>如果你也正在這條路上</h2>
+            <p>我會寫信給你，聊聊程式、職涯與 AI。也歡迎預約 1:1 諮詢，50 分鐘陪你想清楚。</p>
+            <div class="post-end-actions">
+              <a class="btn btn-amber" href="/newsletter">免費領取電子報 →</a>
+              <a class="btn btn-line" href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer">預約諮詢</a>
+              <a class="btn btn-line" href="/about">認識 Dex</a>
             </div>
-            <h3 style={`font-family:${sans};font-size:20px;font-weight:700;color:${C.ink};margin:0 0 10px;letter-spacing:-0.3px;`}>
-              如果你也正在這條路上
-            </h3>
-            <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
-              我每兩週寫一封信給你，聊聊程式、職涯與 AI。也歡迎預約 1:1 諮詢，50 分鐘陪你想清楚。
-            </p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <a href="/newsletter" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.warm};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(217,119,6,0.30);`}>
-                免費領取電子報
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-              </a>
-              <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.ink};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;`}>
-                預約諮詢
-              </a>
-              <a href="/about" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.card};color:${C.ink};border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;border:1px solid ${C.rule};`}>
-                認識 Dex
-              </a>
-            </div>
-          </div>
+          </section>
 
-          {/* 上下篇導覽 */}
+          <!-- 上下篇導覽 -->
           {(newer || older) && (
-            <nav style={`margin-top:40px;padding-top:32px;border-top:1px dashed ${C.rule};display:grid;grid-template-columns:1fr 1fr;gap:16px;`} aria-label="文章導覽">
+            <nav class="post-nav" aria-label="文章導覽">
               {newer ? (
-                <a href={`/blog/${newer.slug}/`} style={`display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:${C.card};border:1px solid ${C.rule};border-radius:12px;text-decoration:none;transition:transform 200ms ease, border-color 200ms ease;`} class="post-nav-card">
-                  <span style={`font-family:${serif};font-size:11px;color:${C.faint};letter-spacing:1.5px;font-style:italic;display:inline-flex;align-items:center;gap:6px;`}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    上一篇（較新）
-                  </span>
-                  <span style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};line-height:1.5;letter-spacing:-0.2px;`}>{newer.title}</span>
+                <a class="post-nav-card" href={`/blog/${newer.slug}`} rel="prev">
+                  <span class="post-nav-k">← 上一篇（較新）</span>
+                  <span class="post-nav-t">{newer.title}</span>
                 </a>
-              ) : <div></div>}
+              ) : <span></span>}
               {older ? (
-                <a href={`/blog/${older.slug}/`} style={`display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:${C.card};border:1px solid ${C.rule};border-radius:12px;text-decoration:none;text-align:right;transition:transform 200ms ease, border-color 200ms ease;`} class="post-nav-card">
-                  <span style={`font-family:${serif};font-size:11px;color:${C.faint};letter-spacing:1.5px;font-style:italic;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;`}>
-                    下一篇（較舊）
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </span>
-                  <span style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};line-height:1.5;letter-spacing:-0.2px;`}>{older.title}</span>
+                <a class="post-nav-card is-next" href={`/blog/${older.slug}`} rel="next">
+                  <span class="post-nav-k">下一篇（較舊）→</span>
+                  <span class="post-nav-t">{older.title}</span>
                 </a>
-              ) : <div></div>}
+              ) : <span></span>}
             </nav>
           )}
         </article>
-      </main>
 
-      <Footer />
+        {hasToc && (
+          <aside class="toc-sidebar" aria-label="文章目錄">
+            <div class="toc-title">SCENES · 目錄</div>
+            <ul class="toc-list">
+              {headings.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`} class={`toc-link toc-h${h.depth}`} data-slug={h.slug}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+      </div>
+    </main>
 
-    </div>
-
+    <V2Footer />
     <NewsletterFloatingCTA />
 
-    {/* TOC 樣式 + active highlight 邏輯 */}
-    <style>
-      .toc-sidebar {
-        position: fixed;
-        left: 28px;
-        top: 100px;
-        width: 240px;
-        max-height: calc(100vh - 140px);
-        overflow-y: auto;
-        z-index: 40;
-        padding: 20px 18px;
-        background: #FFFFFF;
-        border: 1px solid #E8E2D4;
-        border-radius: 14px;
-        box-shadow: 0 8px 24px rgba(31,27,22,0.06);
-        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-      }
-      .toc-title {
-        font-size: 11px;
-        letter-spacing: 2px;
-        color: #6B6557;
-        font-weight: 700;
-        margin-bottom: 12px;
-        padding-left: 10px;
-        text-transform: uppercase;
-        font-style: italic;
-        font-family: "Noto Serif TC", serif;
-      }
-      .toc-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .toc-list li { margin: 0; }
-      .toc-link {
-        display: block;
-        padding: 6px 10px 6px 12px;
-        color: #3D3A33;
-        text-decoration: none;
-        border-left: 2px solid transparent;
-        line-height: 1.5;
-        font-size: 13px;
-        transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
-      }
-      .toc-link.toc-h3 {
-        padding-left: 24px;
-        font-size: 12.5px;
-        color: #6B6557;
-      }
-      .toc-link:hover {
-        color: #5391FF;
-      }
-      .toc-link.is-active {
-        color: #2F6FE0;
-        font-weight: 700;
-        border-left-color: #5391FF;
-        background: #F3F7FF;
-      }
-      /* 桌機 ≥1280px 顯示，以下隱藏（手機/平板用內文閱讀） */
-      @media (max-width: 1279px) {
-        .toc-sidebar { display: none; }
-      }
-    </style>
-
     <script is:inline>
+      // 表格包一層可橫向捲動的容器（手機不撐破版面）
+      document.querySelectorAll('.post-prose table').forEach(function (t) {
+        if (t.parentElement && t.parentElement.classList.contains('table-wrap')) return;
+        var w = document.createElement('div');
+        w.className = 'table-wrap';
+        t.parentNode.insertBefore(w, t);
+        w.appendChild(t);
+      });
+
+      // TOC：捲動時高亮目前段落（取「已捲過頁首下緣」的最後一個標題）
       (function () {
-        const links = document.querySelectorAll('.toc-link');
+        var links = Array.prototype.slice.call(document.querySelectorAll('.toc-link'));
         if (!links.length) return;
-        const map = new Map();
-        const ids = [];
-        links.forEach((a) => {
-          const slug = a.getAttribute('data-slug');
-          if (slug) {
-            map.set(slug, a);
-            ids.push(slug);
-          }
-        });
-
-        function setActive(slug) {
-          links.forEach((l) => l.classList.toggle('is-active', l.getAttribute('data-slug') === slug));
+        var heads = links
+          .map(function (a) { return document.getElementById(a.getAttribute('data-slug') || ''); })
+          .filter(Boolean);
+        var current = '';
+        function offset() {
+          var nav = document.querySelector('.pv .nav');
+          return (nav ? nav.getBoundingClientRect().height : 0) + 48;
         }
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            // 找最頂上正 intersect 的那個 heading
-            const visible = entries
-              .filter((e) => e.isIntersecting)
-              .sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
-            if (visible[0]) setActive(visible[0].target.id);
-          },
-          { rootMargin: '-15% 0px -70% 0px', threshold: 0 }
-        );
-
-        ids.forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) observer.observe(el);
-        });
-
-        // 初始：第一個段落
-        if (ids[0]) setActive(ids[0]);
+        function update() {
+          var line = offset();
+          var slug = heads.length ? heads[0].id : '';
+          for (var i = 0; i < heads.length; i++) {
+            if (heads[i].getBoundingClientRect().top <= line) slug = heads[i].id; else break;
+          }
+          if (slug === current) return;
+          current = slug;
+          links.forEach(function (l) {
+            var on = l.getAttribute('data-slug') === slug;
+            l.classList.toggle('is-active', on);
+            if (on) {
+              l.setAttribute('aria-current', 'location');
+              var box = l.closest('.toc-sidebar');
+              if (box) {
+                var lt = l.offsetTop, bh = box.clientHeight;
+                if (lt < box.scrollTop || lt > box.scrollTop + bh - 40) box.scrollTop = lt - bh / 3;
+              }
+            } else l.removeAttribute('aria-current');
+          });
+        }
+        var ticking = false;
+        window.addEventListener('scroll', function () {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function () { ticking = false; update(); });
+        }, { passive: true });
+        window.addEventListener('resize', update);
+        update();
       })();
     </script>
   </body>

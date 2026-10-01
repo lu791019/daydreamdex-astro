@@ -1,35 +1,43 @@
 import { test, expect } from '@playwright/test';
+import { CONTACT_EMAIL, findBrokenImages } from './helpers/site';
 
-test.describe('Coaching page', () => {
-  test('loads with correct title', async ({ page }) => {
+test.describe('Coaching page (v2)', () => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/coaching');
+  });
+
+  test('loads with correct title and h1', async ({ page }) => {
     await expect(page).toHaveTitle(/職涯諮詢.*Daydream Dex/);
+    await expect(page.locator('h1')).toContainText('陪你想清楚');
   });
 
-  test('shows consultant card (盧冠宏 + price + booking CTA)', async ({ page }) => {
-    await page.goto('/coaching');
-    await expect(page.getByText('盧冠宏', { exact: false }).first()).toBeVisible();
-    await expect(page.getByText(/NTD\s*\$?\s*2[,，]?400/).first()).toBeVisible();
-    await expect(page.getByText('前往預約', { exact: false }).first()).toBeVisible();
+  test('諮詢師卡片：盧冠宏 + NT$ 2,400 / 50 分鐘', async ({ page }) => {
+    await expect(page.getByText('盧冠宏').first()).toBeVisible();
+    await expect(page.getByText(/NT\$\s*2,400\s*\/\s*50 分鐘/).first()).toBeVisible();
   });
 
-  test('contains the sparkle (✨) feature blocks', async ({ page }) => {
-    await page.goto('/coaching');
-    const sparkles = await page.getByText('✨', { exact: false }).count();
-    // We expect at least 10 sparkle markers; allow >=8 to be tolerant of layout drift
-    expect(sparkles).toBeGreaterThanOrEqual(8);
+  test('主要預約 CTA 指向 AAPD SimplyBook 並另開分頁', async ({ page }) => {
+    const cta = page.locator('a[href*="aapd.simplybook.asia"]', { hasText: '立即預約諮詢' }).first();
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveAttribute('target', '_blank');
   });
 
-  test('booking CTA links to AAPD simplybook', async ({ page }) => {
-    await page.goto('/coaching');
-    const link = page.locator('a[href*="aapd.simplybook.asia"]').first();
-    await expect(link).toHaveCount(1);
-    const href = await link.getAttribute('href');
-    expect(href).toMatch(/aapd\.simplybook\.asia/);
+  test('有免費聊聊（Calendly）入口', async ({ page }) => {
+    await expect(page.locator('a[href^="https://calendly.com/daydreamisexp/"]').first()).toBeVisible();
+  });
+
+  test('機構專題陪跑入口用 mailto 寫信', async ({ page }) => {
+    const org = page.locator(`a[href^="mailto:${CONTACT_EMAIL}?subject="]`).first();
+    await expect(org).toHaveCount(1);
+    expect(decodeURIComponent((await org.getAttribute('href'))!)).toContain('專題陪跑');
+  });
+
+  test('no broken images', async ({ page }) => {
+    expect(await findBrokenImages(page)).toEqual([]);
   });
 
   test('screenshot for visual record', async ({ page }, testInfo) => {
-    await page.goto('/coaching', { waitUntil: 'networkidle' });
+    await page.waitForLoadState('networkidle');
     await page.screenshot({
       path: `tests/screenshots/coaching-${testInfo.project.name}.png`,
       fullPage: true,

@@ -1,50 +1,36 @@
 ---
+// 關於我（v2 暖光放映廳風格）— 原頁文字、CTA、SEO 全數保留，只換外觀與修正事實
+import { Icon } from 'astro-icon/components';
 import BaseHead from '../components/BaseHead.astro';
 import SEO from '../components/SEO.astro';
-import TopBar from '../components/blocks/TopBar.astro';
-import Footer from '../components/blocks/Footer.astro';
 import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
-import FilmStripDivider from '../components/blocks/FilmStripDivider.astro';
+import V2Nav from '../components/v2/V2Nav.astro';
+import V2Footer from '../components/v2/V2Footer.astro';
 import {
   SITE_TITLE,
   CTA_BOOKING_URL,
   CTA_COURSE_URL,
   CTA_COURSE_DISCOUNT_CODE,
 } from '../consts';
+import '../styles/v2.css';
+import '../styles/v2-about.css';
 
-// B Warm 設計 token
-const C = {
-  bg: '#FBFAF7',
-  bgSoft: '#F4F1EB',
-  ink: '#1F1B16',
-  ink2: '#3D3A33',
-  muted: '#6B6557',
-  faint: '#A39C8C',
-  rule: '#E8E2D4',
-  accent: '#5391FF',
-  accentDark: '#2F6FE0',
-  accentSoft: '#EAF1FF',
-  accentBg: '#F3F7FF',
-  warm: '#D97706',
-  warmSoft: '#FEF3E7',
-  card: '#FFFFFF',
-};
-const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
-const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+const FREE_CHAT_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
+const CONTACT_EMAIL = 'daydreamisexp@gmail.com'; // Dex 指定：全站對外信箱一律用這個
 
 // SEO
 const aboutTitle = `關於我 ｜ ${SITE_TITLE}`;
 const aboutDescription =
-  'Dex（盧冠宏），Daydream Dex 主理人。AI 應用開發主任工程師 × 轉職陪跑教練，10 年跨界 4 種專業，從半導體到資料工程、軟體、AI。100+ 轉職學員指導、320+ 電子報訂閱、3,962+ Threads 追蹤 — 陪你想清楚下一步。';
+  'Dex（盧冠宏），Dex 的塵世哲學主理人。AI 技術總監 × 轉職陪跑教練，10 年跨界 4 種專業，從半導體到資料工程、軟體、AI。50+ 轉職學員指導、320+ 電子報訂閱、3,962+ Threads 追蹤 — 陪你想清楚下一步。';
 
 // 職涯時間軸（電影膠片）— 對齊 facts.md 第 6 區
 const careerTimeline = [
-  { period: '2019 — 2020', company: '台灣美光', role: 'Defect Analyst Engineer', desc: '半導體製程，跨界的起點。', gradFrom: '#5391FF', gradTo: '#90B9FF', sceneNo: '01' },
-  { period: '2019 — 2021', company: 'TutorABC', role: 'Big Data Engineer', desc: '走進資料工程的第一站。', gradFrom: '#0891B2', gradTo: '#67E8F9', sceneNo: '02' },
-  { period: '2021', company: 'LINE Bank', role: 'Data Engineer', desc: '金融級資料管線實戰。', gradFrom: '#7C3AED', gradTo: '#C4B5FD', sceneNo: '03' },
-  { period: '2021 — 2025', company: '緯創資通', role: 'Data Engineer & Back-End Developer', desc: '資料工程 × 後端 × ESG 全球工廠數據平台。', gradFrom: '#DB2777', gradTo: '#F9A8D4', sceneNo: '04' },
-  { period: '2025 — 2026', company: '水球軟體學院', role: '行銷與技術雙棲（正職）', desc: '從技術走進品牌與成長 — 1 月百萬營收實戰。', gradFrom: '#D97706', gradTo: '#FCD34D', sceneNo: '05' },
-  { period: '2026 — Now', company: 'Hamastar Tech', role: 'AI 應用開發主任工程師 & AI 技術負責人', desc: '帶領 AI 開發，做想做的事。', gradFrom: '#1F1B16', gradTo: '#5391FF', sceneNo: '06', highlight: true },
+  { period: '2016 — 2019', company: '台灣美光', role: 'Defect Analyst Engineer', desc: '半導體製程，跨界的起點。', sceneNo: '01' },
+  { period: '2019 — 2021', company: 'TutorABC', role: 'Big Data Engineer', desc: '走進資料工程的第一站。', sceneNo: '02' },
+  { period: '2021', company: 'LINE Bank', role: 'Data Engineer', desc: '金融級資料管線實戰。', sceneNo: '03' },
+  { period: '2021 — 2025', company: '緯創資通', role: 'Data Engineer & Back-End Developer', desc: '資料工程 × 後端 × ESG 全球工廠數據平台。', sceneNo: '04' },
+  { period: '2025 — 2026', company: '水球軟體學院', role: '行銷與技術雙棲（正職）', desc: '從技術走進品牌與成長 — 1 月百萬營收實戰。', sceneNo: '05' },
+  { period: '2026 — Now', company: 'Hamastar Tech', role: 'AI 技術總監', desc: '帶領 AI 開發，做想做的事。', sceneNo: '06', highlight: true },
 ];
 
 // 兼任 / 業師 / 教練合作（依 facts.md 7b + 8 區）
@@ -60,34 +46,10 @@ const sideRoles = [
 
 // 教練風格 4 大特色
 const coachingStyles = [
-  {
-    title: '結構化引導',
-    desc: '把模糊的問題拆成可理解的步驟，讓你看得見全貌、走得出第一步。',
-    icon: 'compass',
-    color: '#7C3AED',
-    bg: '#F5F3FF',
-  },
-  {
-    title: '為什麼而學',
-    desc: '不只教技術，更聚焦目標與應用情境 —— 讓每一份學習，都有理由。',
-    icon: 'seed',
-    color: '#10B981',
-    bg: '#ECFDF5',
-  },
-  {
-    title: '技術 × 職涯 × 生涯',
-    desc: '把能力，轉成職涯與生涯機會 —— 不只活下來，是活成你想要的樣子。',
-    icon: 'lamp',
-    color: '#D97706',
-    bg: '#FEF3E7',
-  },
-  {
-    title: '明確下一步行動',
-    desc: '每次對談都帶走可執行的 next action 。不畫大餅，談的是這週怎麼動。',
-    icon: 'paperplane',
-    color: '#5391FF',
-    bg: '#EAF1FF',
-  },
+  { title: '結構化引導', desc: '把模糊的問題拆成可理解的步驟，讓你看得見全貌、走得出第一步。', icon: 'compass' },
+  { title: '為什麼而學', desc: '不只教技術，更聚焦目標與應用情境 —— 讓每一份學習，都有理由。', icon: 'target' },
+  { title: '技術 × 職涯 × 生涯', desc: '把能力，轉成職涯與生涯機會 —— 不只活下來，是活成你想要的樣子。', icon: 'lightbulb' },
+  { title: '明確下一步行動', desc: '每次對談都帶走可執行的 next action 。不畫大餅，談的是這週怎麼動。', icon: 'send' },
 ];
 
 // 5 大痛點
@@ -99,12 +61,53 @@ const painPoints = [
   { problem: '技術學習卡關', solution: '從「應用情境 × 整體脈絡」理解技術如何被使用' },
 ];
 
-// 興趣
-const interests = {
-  movies: ['昆汀塔倫提諾', '大智若魚', '我的完美日常'],
-  music: ['落日飛車', 'Deca joins', '無妄合作社'],
-  podcasts: ['只能喝酒的圖書館', '台灣通勤第一品牌'],
-};
+// 鏡頭外（螢幕之外的 Dex）
+const offSet = [
+  { icon: 'movie', k: '看電影', v: '昆丁塔倫提諾、大智若魚、我的完美日常' },
+  { icon: 'music', k: '聽音樂', v: '落日飛車、Deca joins、無妄合作社' },
+  { icon: 'mic', k: '聽 Podcast', v: '只能喝酒的圖書館、台灣通勤第一品牌' },
+  { icon: 'car', k: '跨界冒險', v: '5 天 4 夜開露營車環島北海道' },
+];
+
+// 興趣（OFF DUTY 三張票）
+const interests = [
+  { en: 'MOVIES', zh: '電影', icon: 'movie', items: ['昆汀塔倫提諾', '大智若魚', '我的完美日常'] },
+  { en: 'MUSIC', zh: '音樂', icon: 'music', items: ['落日飛車', 'Deca joins', '無妄合作社'] },
+  { en: 'PODCAST', zh: 'Podcast', icon: 'headphone', items: ['只能喝酒的圖書館', '台灣通勤第一品牌'] },
+];
+
+// 成就解鎖（片尾名單 CREDITS）
+const credits = [
+  {
+    role: 'CAREER SWITCH',
+    title: '跨界轉職',
+    items: [
+      '半導體 QA → Big Data Engineer（人生第一次跨界）',
+      '工程師 → 成長行銷顧問（橫向跨界，少見路徑）',
+      '跨界 4 種專業 10 年（半導體 → 大數據 → 軟體 → AI）',
+    ],
+  },
+  {
+    role: 'TEACHING & COACHING',
+    title: '教學陪跑',
+    items: [
+      'Tibame 雲端資料工程師線上班 講師 + 專題導師',
+      '緯創資通數據工程學院 內訓講師（資料治理 / DataOps）',
+      'CDA 職涯諮詢師 / AndAction Life Coach 認證',
+      'Alpha Camp / 六角學院 / 學米 / 無限學院 業師',
+    ],
+  },
+  {
+    role: 'CONTENT',
+    title: '內容創作',
+    items: ['Podcaster「沒走歪的才奇怪」上線 Spotify', 'Dex 的塵世哲學部落格 — 寫給每個還在路上的工程師'],
+  },
+  {
+    role: 'ADVENTURE',
+    title: '人生冒險',
+    items: ['5 天 4 夜開露營車環島北海道', '從單一工程師 → 教練 × 講師 × 創作者 混合身份'],
+  },
+];
 ---
 
 <!doctype html>
@@ -112,625 +115,313 @@ const interests = {
   <head>
     <BaseHead />
     <SEO title={aboutTitle} description={aboutDescription} type="website" />
-    <style is:global>
-      body {
-        margin: 0;
-        background: #FBFAF7;
-        color: #1F1B16;
-        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-      }
-      a { color: inherit; }
-    </style>
   </head>
-  <body>
-    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100%;`}>
+  <body class="pv about-v2">
+    <V2Nav chatHref={FREE_CHAT_URL} hall="HALL 02" />
 
-      <TopBar activePage="關於我" logoVariant="medium" />
+    <!-- ================= HERO：角色介紹 ================= -->
+    <header class="dark grain ab-hero">
+      <div class="beam" aria-hidden="true"></div>
+      <div class="glow" aria-hidden="true"></div>
+      <svg class="cam-watermark" width="560" height="560" viewBox="0 0 32 32" aria-hidden="true">
+        <g fill="none" stroke="#F3EBDD" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="6" r="3.2" /><circle cx="9" cy="6" r="0.9" />
+          <circle cx="17" cy="6" r="3.2" /><circle cx="17" cy="6" r="0.9" />
+          <path d="M9 9.2v2M17 9.2v2" /><rect x="3" y="11" width="18" height="11" rx="1.4" />
+          <circle cx="12" cy="16.5" r="3" />
+        </g>
+      </svg>
 
-      {/* ===================== Hero ===================== */}
-      <section style="padding:90px 56px 60px;max-width:1240px;margin:0 auto;position:relative;overflow:hidden;">
-        {/* 背景手繪小裝飾 */}
-        <svg width="180" height="60" viewBox="0 0 180 60" style="position:absolute;top:60px;left:30px;opacity:0.5;">
-          <path d="M5 30 Q 30 10, 60 28 T 120 28 T 175 25" fill="none" stroke={C.accent} stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
-        </svg>
+      <div class="wrap ab-hero-grid">
+        <div>
+          <div class="ab-kicker">ABOUT · SCENE 03 · <span>角色介紹</span></div>
+          <h1 class="ab-h1">一個從<em>半導體</em>跨到 <em>AI</em> 的<br />長期主義者。</h1>
+          <p class="ab-lead">
+            我是 Dex，Dex 的塵世哲學創辦人。轉職顧問 × AI 技術總監，10 年跨界 4 種專業，從半導體到資料工程、軟體、AI。
+          </p>
+          <p class="ab-lead-sub">輔導學員打造作品集、撰寫履歷、規劃職涯 —— 陪你達到軟體和資料職涯目標。</p>
 
-        {/* 背景大號攝影機水印 */}
-        <svg width="560" height="560" viewBox="0 0 32 32" style="position:absolute;top:-40px;right:-100px;opacity:0.05;pointer-events:none;">
-          <g fill="none" stroke={C.ink} stroke-width="0.4" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="9" cy="6" r="3.2"/><circle cx="9" cy="6" r="0.9"/>
-            <circle cx="17" cy="6" r="3.2"/><circle cx="17" cy="6" r="0.9"/>
-            <path d="M9 9.2v2M17 9.2v2"/>
-            <rect x="3" y="11" width="18" height="11" rx="1.4"/>
-            <circle cx="12" cy="16.5" r="3"/>
-          </g>
-        </svg>
-
-        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:56px;align-items:center;position:relative;">
-          <div>
-            <div style={`display:inline-flex;align-items:center;gap:10px;padding:8px 16px;background:${C.warmSoft};color:${C.warm};border-radius:999px;font-family:${sans};font-size:12px;font-weight:500;margin-bottom:24px;`}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3l-5 7h10z"/>
-                <ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2"/>
-                <path d="M12 10v3"/>
-              </svg>
-              ABOUT · SCENE 03 · 角色介紹
-            </div>
-
-            <h1 style={`font-family:${sans};font-size:54px;line-height:1.15;font-weight:800;color:${C.ink};letter-spacing:-1.5px;margin:0 0 24px;`}>
-              一個從<span style={`background:linear-gradient(135deg, ${C.accent} 0%, ${C.accentDark} 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;`}>半導體</span>跨到 <span style={`color:${C.warm};`}>AI</span> 的<br/>
-              長期主義者。
-            </h1>
-
-            <p style={`font-family:${serif};font-size:19px;line-height:1.95;color:${C.ink2};margin:0 0 28px;max-width:580px;`}>
-              我是 Dex，Daydream Dex 創辦人。轉職顧問 × AI 技術總監，10 年跨界 4 種專業，從半導體到資料工程、軟體、AI。<br/>
-              <span style={`color:${C.muted};font-size:17px;`}>輔導學員打造作品集、撰寫履歷、規劃職涯 —— 陪你達到軟體和資料職涯目標。</span>
-            </p>
-
-            <div style={`display:flex;gap:12px;font-family:${sans};align-items:center;flex-wrap:wrap;`}>
-              <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:${C.accent};color:#fff;font-size:14px;font-weight:600;border-radius:10px;text-decoration:none;box-shadow:0 6px 20px rgba(83, 145, 255, 0.32);`}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-                </svg>
-                預約一場諮詢
-              </a>
-              <a href={`mailto:hamastarkh@gmail.com`} style={`display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:${C.card};color:${C.ink};font-size:14px;font-weight:600;border-radius:10px;border:1px solid ${C.rule};text-decoration:none;`}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.ink} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-                </svg>
-                寫封信給我
-              </a>
-              <span style={`font-family:${serif};font-size:13px;color:${C.faint};font-style:italic;margin-left:4px;`}>· 50 分鐘，不催促</span>
-            </div>
-          </div>
-
-          {/* 右側 — Dex 大頭像區（真實照片）*/}
-          <div style="position:relative;height:420px;display:flex;align-items:center;justify-content:center;">
-            {/* 漸層光暈背景 */}
-            <div style={`position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:340px;height:340px;border-radius:50%;background:radial-gradient(circle, ${C.accentSoft} 0%, ${C.warmSoft} 60%, transparent 100%);opacity:0.7;`}></div>
-
-            {/* 真實照片 — 圓角矩形 */}
-            <div style={`position:relative;width:300px;height:380px;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(83,145,255,0.22), 0 8px 16px rgba(0,0,0,0.12);border:4px solid #fff;`}>
-              <img src="/photos/dex-portrait-1.png" alt="Dex" style="width:100%;height:100%;object-fit:cover;display:block;" />
-              <div style={`position:absolute;bottom:0;left:0;right:0;padding:14px 18px 12px;background:linear-gradient(transparent, rgba(0,0,0,0.55));color:#fff;font-family:${sans};font-size:10.5px;letter-spacing:2px;font-weight:600;`}>DAYDREAM · DEX</div>
-            </div>
-
-            {/* 浮動小卡 — 38 歲 */}
-            <div style={`position:absolute;top:30px;right:-10px;padding:12px 16px;background:${C.card};border-radius:12px;border:1px solid ${C.rule};box-shadow:0 8px 24px rgba(0,0,0,0.08);transform:rotate(4deg);font-family:${sans};font-size:12px;color:${C.ink};display:flex;align-items:center;gap:10px;`}>
-              <span style={`width:8px;height:8px;border-radius:50%;background:${C.warm};`}></span>
-              <div>
-                <div style={`font-weight:600;color:${C.ink};`}>跨界 10 年</div>
-                <div style={`font-family:${serif};font-size:11px;color:${C.muted};font-style:italic;margin-top:2px;`}>4 種專業 · 還在路上</div>
-              </div>
-            </div>
-
-            {/* 浮動小卡 — 諮詢狀態 */}
-            <div style={`position:absolute;bottom:40px;left:-20px;padding:12px 16px;background:${C.ink};color:#fff;border-radius:12px;font-family:${sans};font-size:12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);transform:rotate(-3deg);`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-              </svg>
-              <div>
-                <div style="font-weight:600;">本月還有時段</div>
-                <div style="opacity:0.7;font-size:10px;margin-top:1px;">不勉強，有需要再來</div>
-              </div>
-            </div>
+          <div class="ctas">
+            <a class="btn btn-amber" href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer">
+              <Icon name="pixelarticons:calendar" width={16} height={16} />預約一場諮詢
+            </a>
+            <a class="btn btn-line" href={`mailto:${CONTACT_EMAIL}`}>
+              <Icon name="pixelarticons:mail" width={16} height={16} />寫封信給我
+            </a>
+            <span class="aside">· 50 分鐘，不催促</span>
           </div>
         </div>
-      </section>
 
-      {/* ===================== 膠捲分隔線 ===================== */}
-      <div style="max-width:1120px;margin:0 auto;padding:0 56px;">
-        <FilmStripDivider />
+        <div class="hero-visual ab-visual">
+          <div class="film-frame">
+            <picture>
+              <source type="image/avif" srcset="/photos/dex-portrait-1-640.avif" />
+              <img src="/photos/dex-portrait-1-640.webp" alt="Dex" width="340" height="340" loading="eager" fetchpriority="high" />
+            </picture>
+            <span class="ab-frame-cap">DAYDREAM · DEX</span>
+          </div>
+          <div class="card ab-card-years">
+            <span class="ab-dot" aria-hidden="true"></span>
+            <div><b>跨界 10 年</b><small>4 種專業 · 還在路上</small></div>
+          </div>
+          <div class="card card-chair">
+            <Icon name="pixelarticons:send" width={18} height={18} />
+            <div><b>諮詢開放預約中</b><small>不勉強，有需要再來</small></div>
+          </div>
+        </div>
       </div>
+    </header>
 
-      {/* ===================== 自介長版 (CV-Story) ===================== */}
-      <section style="padding:60px 56px 40px;max-width:880px;margin:0 auto;position:relative;">
-        <div style={`display:inline-flex;align-items:center;gap:10px;font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;letter-spacing:3px;margin-bottom:24px;`}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.muted} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/>
-            <circle cx="12" cy="12" r="1.6" fill={C.muted}/>
-            <circle cx="12" cy="6" r="1.4"/><circle cx="12" cy="18" r="1.4"/>
-            <circle cx="6" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>
-          </svg>
-          —— MY STORY ——
-        </div>
-        <div style={`font-family:${serif};font-size:18px;line-height:2;color:${C.ink2};max-width:760px;`}>
-          <p style="margin:0 0 1.4em;">
-            6 年多前我從<span style={`color:${C.ink};font-weight:600;`}>半導體設備工程師</span>轉職，經歷大數據、軟體後端開發，到現在成為<span style={`color:${C.ink};font-weight:600;`}>AI 技術開發的 Tech Lead</span>。
-          </p>
-          <p style="margin:0 0 1.4em;">
-            這段過程讓我理解「<span style={`background:linear-gradient(transparent 70%, ${C.warmSoft} 70%);`}>學習技術</span>」到「<span style={`background:linear-gradient(transparent 70%, ${C.warmSoft} 70%);`}>進入職場</span>」之間的落差，因此我開始投入職涯輔導，協助作品集指導、專題陪跑與轉職策略 —— 把能力轉化為具體成果與職場價值。
-          </p>
-          <p style="margin:0 0 1.4em;">
-            過去曾在 Alpha Camp、六角學院、學米等協助學員成長，也是緯育「雲端資料工程師線上班」的課程講師與專題導師。
-          </p>
-          <p style="margin:0;">
-            因為自己的親身經歷，我了解在不同階段會遇到的迷惘。我會陪伴在各種層面卡關的人 —— 無論是學習方向、作品集、斜槓專案或求職轉職問題 —— 一起把問題釐清、整合技能，<span style={`color:${C.ink};font-weight:600;`}>逐步走出一條清晰可行的路</span>。
-          </p>
-        </div>
-      </section>
+    <div class="sprocket" aria-hidden="true"></div>
 
-      {/* ===================== 職涯時間軸（電影膠片）===================== */}
-      <section style="padding:60px 56px 40px;max-width:1240px;margin:0 auto;position:relative;">
-        {/* 場記板裝飾 */}
-        <div style="position:absolute;top:24px;right:48px;transform:rotate(8deg);opacity:0.7;">
-          <svg width="120" height="90" viewBox="0 0 200 150">
-            <rect x="6" y="0" width="188" height="36" rx="3" fill={C.ink}/>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <polygon points={`${10 + i * 24},2 ${28 + i * 24},2 ${22 + i * 24},34 ${4 + i * 24},34`} fill="white"/>
-            ))}
-            <rect x="6" y="42" width="188" height="100" rx="3" fill={C.ink}/>
-            <text x="20" y="72" font-family={sans} font-size="10" fill="#fff" letter-spacing="1" opacity="0.6">SCENE</text>
-            <text x="20" y="98" font-family={sans} font-size="18" font-weight="700" fill="#fff">CAREER</text>
-            <text x="20" y="118" font-family={sans} font-size="9" fill="#fff" opacity="0.6">DIRECTOR · DEX</text>
-          </svg>
+    <!-- ================= MY STORY ================= -->
+    <section class="paper ab-story">
+      <div class="wrap narrow">
+        <div class="ab-tag">MY STORY</div>
+        <h2 class="ab-h2">我的故事</h2>
+        <div class="ab-story-body">
+          <p>6 年多前我從<b>半導體設備工程師</b>轉職，經歷大數據、軟體後端開發，到現在成為 <b>AI 技術總監</b>，帶領 AI 技術開發。</p>
+          <p>這段過程讓我理解「<span class="mark">學習技術</span>」到「<span class="mark">進入職場</span>」之間的落差，因此我開始投入職涯輔導，協助作品集指導、專題陪跑與轉職策略 —— 把能力轉化為具體成果與職場價值。</p>
+          <p>過去曾在 Alpha Camp、六角學院、學米等協助學員成長，也是緯育「雲端資料工程師線上班」的課程講師與專題導師。</p>
+          <p>因為自己的親身經歷，我了解在不同階段會遇到的迷惘。我會陪伴在各種層面卡關的人 —— 無論是學習方向、作品集、斜槓專案或求職轉職問題 —— 一起把問題釐清、整合技能，<b>逐步走出一條清晰可行的路</b>。</p>
         </div>
+      </div>
+    </section>
 
-        <div style="margin-bottom:36px;">
-          <div style={`font-family:${serif};font-size:13px;color:${C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— TIMELINE · 跨界 10 年 ——</div>
-          <h2 style={`font-family:${sans};font-size:34px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>從半導體到 AI，我走過的這條路</h2>
-          <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;`}>
-            6 家公司、4 種專業 —— 每一段都不是速成，但都教了我一些關鍵的事。每一格都是一場戲。
-          </p>
-        </div>
-
-        {/* 電影膠片：橫向滾動容器 */}
-        <div style={`position:relative;background:${C.ink};border-radius:14px;padding:18px 0;box-shadow:0 12px 36px rgba(0,0,0,0.18);`}>
-          {/* 上排齒孔 */}
-          <div style="display:flex;justify-content:space-around;padding:0 12px 10px;">
-            {Array.from({ length: 24 }).map(() => (
-              <div style={`width:14px;height:10px;background:${C.bg};border-radius:2px;flex-shrink:0;`}></div>
-            ))}
+    <!-- ================= REEL：職涯時間軸 ================= -->
+    <section class="dark grain ab-reel-sec">
+      <div class="wrap">
+        <div class="ab-reel-head">
+          <div>
+            <div class="ab-tag">REEL A · TIMELINE · <span>跨界 10 年</span></div>
+            <h2 class="ab-h2">從半導體到 AI，我走過的這條路</h2>
+            <p class="sub">6 家公司、4 種專業 —— 每一段都不是速成，但都教了我一些關鍵的事。每一格都是一場戲。</p>
           </div>
-
-          {/* 影格列 */}
-          <div style="overflow-x:auto;padding:0 16px;">
-            <div style="display:flex;gap:14px;min-width:max-content;padding:6px 0;">
-              {careerTimeline.map((row) => (
-                <div style={`width:230px;flex-shrink:0;background:#fff;border-radius:8px;overflow:hidden;border:3px solid ${row.highlight ? C.warm : '#fff'};box-shadow:0 4px 14px rgba(0,0,0,0.25);position:relative;`}>
-                  {/* 影格頂部色帶 */}
-                  <div style={`height:96px;background:linear-gradient(135deg, ${row.gradFrom} 0%, ${row.gradTo} 100%);position:relative;display:flex;align-items:center;justify-content:center;`}>
-                    {/* SCENE 標記 */}
-                    <div style={`position:absolute;top:8px;left:8px;padding:3px 8px;background:rgba(0,0,0,0.55);color:#fff;font-family:${sans};font-size:9px;font-weight:700;letter-spacing:1.5px;border-radius:3px;`}>SCENE {row.sceneNo}</div>
-                    {row.highlight && (
-                      <div style={`position:absolute;top:8px;right:8px;padding:3px 8px;background:${C.warm};color:#fff;font-family:${sans};font-size:9px;font-weight:800;letter-spacing:1.5px;border-radius:3px;transform:rotate(4deg);box-shadow:0 2px 6px rgba(217,119,6,0.5);`}>NOW</div>
-                    )}
-                    {/* 公司大字 */}
-                    <div style={`font-family:${serif};font-size:22px;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);text-align:center;padding:0 12px;line-height:1.25;`}>{row.company}</div>
-                  </div>
-                  {/* 資訊區 */}
-                  <div style="padding:14px 16px 16px;">
-                    <div style={`font-family:${serif};font-size:11px;color:${row.highlight ? C.warm : C.faint};font-style:italic;letter-spacing:1px;margin-bottom:6px;font-weight:${row.highlight ? 600 : 500};`}>{row.period}</div>
-                    <div style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};margin-bottom:4px;letter-spacing:-0.2px;`}>{row.role}</div>
-                    <div style={`font-family:${serif};font-size:12px;color:${C.muted};line-height:1.6;`}>{row.desc}</div>
-                  </div>
-                  {/* 影格編號 */}
-                  <div style={`position:absolute;bottom:8px;right:10px;font-family:${serif};font-size:10px;color:${C.faint};font-style:italic;`}>—— {row.sceneNo} / 06 ——</div>
-                </div>
+          <div class="ab-clapper" aria-hidden="true">
+            <svg width="150" height="112" viewBox="0 0 200 150">
+              <rect x="6" y="0" width="188" height="36" rx="3" fill="#F3EBDD" />
+              {Array.from({ length: 8 }).map((_, i) => (
+                <polygon points={`${10 + i * 24},2 ${28 + i * 24},2 ${22 + i * 24},34 ${4 + i * 24},34`} fill="#16100C" />
               ))}
-            </div>
-          </div>
-
-          {/* 下排齒孔 */}
-          <div style="display:flex;justify-content:space-around;padding:10px 12px 0;">
-            {Array.from({ length: 24 }).map(() => (
-              <div style={`width:14px;height:10px;background:${C.bg};border-radius:2px;flex-shrink:0;`}></div>
-            ))}
-          </div>
-        </div>
-
-        {/* 膠片底部說明 */}
-        <div style={`margin-top:18px;display:flex;align-items:center;justify-content:space-between;font-family:${serif};font-size:12px;color:${C.faint};font-style:italic;`}>
-          <span>—— ROLL · A · 2019 ~ 2026 · 6 SCENES ——</span>
-          <span style="display:inline-flex;align-items:center;gap:6px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.faint} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 9l-3 3 3 3"/><path d="M19 9l3 3-3 3"/><path d="M2 12h20" opacity="0.5"/>
+              <rect x="6" y="42" width="188" height="100" rx="3" fill="#F3EBDD" />
+              <g fill="#16100C" font-family="'Noto Sans TC','PingFang TC',sans-serif">
+                <text x="20" y="70" font-size="10" opacity="0.6" letter-spacing="1">SCENE</text>
+                <text x="20" y="100" font-size="22" font-weight="800">CAREER</text>
+                <text x="20" y="124" font-size="10" opacity="0.6" letter-spacing="1">DIRECTOR · DEX</text>
+              </g>
             </svg>
-            橫向滑動 →
-          </span>
-        </div>
-      </section>
-
-      {/* ===================== 斜槓區（從原 timeline 拆出）===================== */}
-      <section style="padding:20px 56px 60px;max-width:1120px;margin:0 auto;">
-        <div style="display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start;">
-          {/* 左：螢幕之外的 Dex（圓形大頭像浮動右上）*/}
-          <div style={`position:relative;padding:24px 26px 26px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            {/* 圓形大頭像浮動右上 */}
-            <img src="/photos/dex-portrait-2.png" alt="Dex" loading="lazy" style={`position:absolute;top:22px;right:26px;width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:50% 25%;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,0.14);z-index:2;`} />
-
-            {/* 鏡頭外 標籤 */}
-            <div style={`display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:${C.ink};color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:1.5px;border-radius:4px;margin-bottom:12px;`}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="6" width="13" height="12" rx="2"/>
-                <path d="M16 10l5-3v10l-5-3z"/>
-              </svg>
-              鏡頭外
-            </div>
-
-            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-bottom:6px;`}>—— OFF SET ——</div>
-            <div style={`font-family:${sans};font-size:19px;font-weight:700;color:${C.ink};margin-bottom:18px;letter-spacing:-0.3px;max-width:200px;line-height:1.4;`}>螢幕之外的 Dex</div>
-
-            <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:16px;">
-              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
-                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🎬</span>
-                <span><strong style={`font-weight:600;color:${C.ink};`}>看電影</strong>　昆丁塔倫提諾、大智若魚、我的完美日常</span>
-              </div>
-              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
-                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🎵</span>
-                <span><strong style={`font-weight:600;color:${C.ink};`}>聽音樂</strong>　落日飛車、Deca joins、無妄合作社</span>
-              </div>
-              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
-                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🎙️</span>
-                <span><strong style={`font-weight:600;color:${C.ink};`}>聽 Podcast</strong>　只能喝酒的圖書館、台灣通勤第一品牌</span>
-              </div>
-              <div style={`display:flex;gap:10px;align-items:flex-start;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:1.7;`}>
-                <span style="flex-shrink:0;font-size:16px;line-height:1.2;">🚐</span>
-                <span><strong style={`font-weight:600;color:${C.ink};`}>跨界冒險</strong>　5 天 4 夜開露營車環島北海道</span>
-              </div>
-            </div>
-
-            <div style={`padding-top:14px;border-top:1px dashed ${C.rule};font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;line-height:1.75;`}>
-              工程師也需要離開螢幕，才看得清楚自己要去哪裡。
-            </div>
           </div>
+        </div>
 
-          {/* 右：斜槓 */}
-          <div style={`padding:32px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            <div style={`display:inline-block;padding:4px 10px;background:${C.warmSoft};color:${C.warm};font-size:11px;font-weight:600;border-radius:4px;font-family:${sans};letter-spacing:0.5px;margin-bottom:14px;`}>斜槓身份</div>
-            <h3 style={`font-family:${sans};font-size:20px;font-weight:700;color:${C.ink};margin:0 0 16px;letter-spacing:-0.3px;`}>主業之外，我也在做這些事</h3>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              {sideRoles.map((role) => (
-                <div style={`display:flex;align-items:flex-start;gap:10px;font-family:${sans};font-size:15px;color:${C.ink2};`}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.accent} stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:4px;">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  {role}
+        <div class="ab-reel" tabindex="0" aria-label="職涯膠捲，可左右捲動">
+          <ol class="ab-reel-track">
+            {careerTimeline.map((row) => (
+              <li class={`ab-frame ${row.highlight ? 'is-now' : ''}`}>
+                <div class="ab-frame-top">
+                  <span class="ab-scene-no">SCENE {row.sceneNo}</span>
+                  {row.highlight && <span class="ab-now">NOW</span>}
+                  <b class="ab-company">{row.company}</b>
                 </div>
-              ))}
+                <div class="ab-frame-body">
+                  <span class="ab-period">{row.period}</span>
+                  <h3>{row.role}</h3>
+                  <p>{row.desc}</p>
+                </div>
+                <span class="ab-frame-no">{row.sceneNo} / 06</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="ab-reel-foot">
+          <span>ROLL · A · 2016 ~ 2026 · 6 SCENES</span>
+          <span class="ab-swipe">← 橫向滑動 →</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OFF SET + 斜槓身份 ================= -->
+    <section class="paper sec ab-offset">
+      <div class="wrap ab-offset-grid">
+        <div class="ab-offset-card">
+          <div class="ab-offset-head">
+            <div>
+              <span class="ab-chip"><Icon name="pixelarticons:video" width={14} height={14} />鏡頭外</span>
+              <div class="ab-tag">OFF SET</div>
+              <h3>螢幕之外的 Dex</h3>
             </div>
-            <div style={`margin-top:24px;padding-top:18px;border-top:1px dashed ${C.rule};font-family:${serif};font-size:13px;color:${C.muted};font-style:italic;line-height:1.85;`}>
-              不是斜槓焦慮 —— 是因為「教別人」就是把自己學過的路再走一次。
+            <div class="ab-polaroid">
+              <img src="/photos/dex-portrait-2.png" alt="Dex" loading="lazy" width="120" height="120" />
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ===================== 教練風格 4 大特色 ===================== */}
-      <section style="padding:40px 56px 60px;max-width:1120px;margin:0 auto;">
-        <div style="margin-bottom:36px;">
-          <div style={`font-family:${serif};font-size:13px;color:${C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— COACHING STYLE ——</div>
-          <h2 style={`font-family:${sans};font-size:34px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>我陪你走的方式</h2>
-          <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;`}>
-            不是給你標準答案 —— 是幫你問對問題，找到屬於你的下一步。
-          </p>
+          <ul class="ab-offset-list">
+            {offSet.map((o) => (
+              <li>
+                <span class="ab-ico" aria-hidden="true"><Icon name={`pixelarticons:${o.icon}`} width={20} height={20} /></span>
+                <span><b>{o.k}</b>{o.v}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="ab-note">工程師也需要離開螢幕，才看得清楚自己要去哪裡。</p>
         </div>
 
-        <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:20px;">
-          {coachingStyles.map((s) => (
-            <div style={`padding:32px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};position:relative;overflow:hidden;`}>
-              <div style={`width:52px;height:52px;border-radius:14px;background:${s.bg};display:flex;align-items:center;justify-content:center;margin-bottom:18px;`}>
-                {s.icon === 'compass' && (
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={s.color} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-                  </svg>
-                )}
-                {s.icon === 'seed' && (
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={s.color} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-12a8 8 0 10-16 0c0 8 8 12 8 12z"/>
-                    <path d="M12 13c0-3 1.5-5 4-6"/>
-                  </svg>
-                )}
-                {s.icon === 'lamp' && (
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={s.color} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 18h6"/><path d="M10 22h4"/>
-                    <path d="M12 2a7 7 0 00-4 12.7c.8.6 1 1.3 1 2.3v1h6v-1c0-1 .2-1.7 1-2.3A7 7 0 0012 2z"/>
-                  </svg>
-                )}
-                {s.icon === 'paperplane' && (
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={s.color} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-                  </svg>
-                )}
+        <div class="ab-side">
+          <div class="case-sheet"><span>CAST LIST</span><span>斜槓身份</span></div>
+          <h3>主業之外，我也在做這些事</h3>
+          <ul class="ab-side-list">
+            {sideRoles.map((role) => (
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                {role}
+              </li>
+            ))}
+          </ul>
+          <p class="ab-note">不是斜槓焦慮 —— 是因為「教別人」就是把自己學過的路再走一次。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COACHING STYLE ================= -->
+    <section class="dark grain ab-coach">
+      <div class="wrap">
+        <div class="ab-tag">COACHING STYLE</div>
+        <h2 class="ab-h2">我陪你走的方式</h2>
+        <p class="sub">不是給你標準答案 —— 是幫你問對問題，找到屬於你的下一步。</p>
+        <div class="ab-coach-grid">
+          {coachingStyles.map((s, i) => (
+            <div class="ab-coach-card">
+              <div class="act-strip" aria-hidden="true"></div>
+              <div class="ab-coach-top">
+                <span class="ab-take">TAKE 0{i + 1}</span>
+                <span class="ab-coach-ico" aria-hidden="true"><Icon name={`pixelarticons:${s.icon}`} width={26} height={26} /></span>
               </div>
-              <h3 style={`font-family:${sans};font-size:20px;font-weight:700;color:${C.ink};margin:0 0 10px;letter-spacing:-0.3px;`}>{s.title}</h3>
-              <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.85;margin:0;`}>{s.desc}</p>
+              <h3>{s.title}</h3>
+              <p>{s.desc}</p>
             </div>
           ))}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* ===================== 適合幫助的人 5 大痛點 ===================== */}
-      <section style={`padding:60px 56px;background:${C.bgSoft};`}>
-        <div style="max-width:1120px;margin:0 auto;">
-          <div style="margin-bottom:36px;">
-            <div style={`font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— FOR WHOM ——</div>
-            <h2 style={`font-family:${sans};font-size:34px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>如果你正在這些卡關的時刻</h2>
-            <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;`}>
-              我懂這些迷惘 —— 因為我自己都走過。
-            </p>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr;gap:14px;max-width:880px;">
+    <!-- ================= FOR WHOM：5 大痛點 ================= -->
+    <section class="paper sec ab-whom">
+      <div class="wrap">
+        <div class="ab-tag">FOR WHOM</div>
+        <h2 class="ab-h2">如果你正在這些卡關的時刻</h2>
+        <p class="sub">我懂這些迷惘 —— 因為我自己都走過。</p>
+        <div class="ab-pain-sheet">
+          <div class="case-sheet"><span>CALL SHEET · 卡關清單</span><span>05 SCENES</span></div>
+          <ol class="ab-pain-list">
             {painPoints.map((p, i) => (
-              <div style={`padding:24px 28px;background:${C.card};border-radius:14px;border:1px solid ${C.rule};display:grid;grid-template-columns:auto 1fr 1fr;gap:24px;align-items:center;`}>
-                <div style={`font-family:${serif};font-size:32px;color:${C.faint};font-style:italic;font-weight:600;letter-spacing:-1px;`}>0{i + 1}</div>
+              <li>
+                <span class="ab-pain-no">0{i + 1}</span>
                 <div>
-                  <div style={`font-family:${sans};font-size:11px;color:${C.muted};font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;`}>痛點</div>
-                  <div style={`font-family:${sans};font-size:16px;color:${C.ink};font-weight:600;line-height:1.5;`}>{p.problem}</div>
+                  <span class="ab-pain-k">痛點</span>
+                  <b>{p.problem}</b>
                 </div>
-                <div style={`padding-left:24px;border-left:1px dashed ${C.rule};`}>
-                  <div style={`font-family:${sans};font-size:11px;color:${C.warm};font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;`}>解方</div>
-                  <div style={`font-family:${serif};font-size:15px;color:${C.ink2};line-height:1.7;`}>{p.solution}</div>
+                <div class="ab-pain-sol">
+                  <span class="ab-pain-k is-warm">解方</span>
+                  <span>{p.solution}</span>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* ===================== 電影台詞 SCENE ===================== */}
-      <section style="padding:80px 56px;max-width:880px;margin:0 auto;">
-        <div style={`padding:36px 40px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};position:relative;box-shadow:0 12px 40px rgba(0,0,0,0.06);`}>
-          <div style={`position:absolute;top:-14px;left:32px;padding:6px 14px;background:${C.ink};color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:2px;border-radius:4px;`}>SCENE 04 · 信念</div>
-          <div style={`display:flex;align-items:center;gap:8px;font-family:${serif};font-size:11px;color:${C.warm};font-style:italic;letter-spacing:1.5px;margin-top:8px;margin-bottom:18px;`}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3l-5 7h10z"/>
-              <ellipse cx="12" cy="16" rx="6" ry="4" opacity="0.5" stroke-dasharray="2 2"/>
-              <path d="M12 10v3"/>
-            </svg>
-            《心靈捕手》Good Will Hunting · 1997
-          </div>
-          <div style={`font-family:${serif};font-size:22px;color:${C.ink};line-height:1.65;font-style:italic;font-weight:500;`}>
-            “Now you can know everything in the world, but the only way you're finding out that one is by giving it a shot.”
-          </div>
-          <div style={`margin-top:14px;font-family:${serif};font-size:15px;color:${C.muted};font-style:italic;`}>
-            —— 你可以讀遍世界所有的書，但要知道某一件事到底是怎麼回事，唯一的方法，是去試試看。
-          </div>
+    <!-- ================= SCENE 04 · 信念 ================= -->
+    <section class="dark grain ab-belief">
+      <div class="wrap narrow">
+        <div class="final-scene ab-belief-card">
+          <span class="final-tag">SCENE 04 · 信念</span>
+          <div class="ab-film-src">《心靈捕手》Good Will Hunting · 1997</div>
+          <div class="scene-line">“Now you can know everything in the world, but the only way you're finding out that one is by giving it a shot.”</div>
+          <div class="scene-sub">—— 你可以讀遍世界所有的書，但要知道某一件事到底是怎麼回事，唯一的方法，是去試試看。</div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* ===================== 興趣愛好 ===================== */}
-      <section style="padding:40px 56px 60px;max-width:1120px;margin:0 auto;">
-        <div style="margin-bottom:36px;">
-          <div style={`font-family:${serif};font-size:13px;color:${C.accent};font-style:italic;letter-spacing:2px;margin-bottom:8px;`}>—— OFF DUTY ——</div>
-          <h2 style={`font-family:${sans};font-size:34px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-1px;`}>不寫程式的時候，我在這裡</h2>
-          <p style={`font-family:${serif};font-size:15px;color:${C.muted};margin:10px 0 0;max-width:580px;line-height:1.7;`}>
-            部落格寫的是工程師的事，但我也是一個會看電影、會聽歌、會在 Podcast 裡笑出聲的人。
+    <!-- ================= OFF DUTY：興趣 ================= -->
+    <section class="paper sec ab-duty">
+      <div class="wrap">
+        <div class="ab-tag">OFF DUTY</div>
+        <h2 class="ab-h2">不寫程式的時候，我在這裡</h2>
+        <p class="sub">部落格寫的是工程師的事，但我也是一個會看電影、會聽歌、會在 Podcast 裡笑出聲的人。</p>
+        <div class="ab-ticket-grid">
+          {interests.map((t, i) => (
+            <div class="ab-ticket">
+              <div class="ab-ticket-stub">
+                <span>ADMIT ONE</span>
+                <span>No. {String(i + 1).padStart(3, '0')}</span>
+              </div>
+              <div class="ab-ticket-main">
+                <div class="ab-ticket-head">
+                  <span class="ab-ico" aria-hidden="true"><Icon name={`pixelarticons:${t.icon}`} width={22} height={22} /></span>
+                  <div><small>{t.en}</small><b>{t.zh}</b></div>
+                </div>
+                <ul>{t.items.map((m) => <li>{m}</li>)}</ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CREDITS：成就解鎖 ================= -->
+    <section class="dark grain ab-credits">
+      <div class="wrap narrow">
+        <div class="ab-credits-badge"><Icon name="pixelarticons:trophy" width={16} height={16} />ACHIEVEMENTS</div>
+        <h2 class="ab-h2 center">成就解鎖</h2>
+        <p class="sub center">十年跨界，不是衝刺、不是規劃完美，是一段又一段真實走過的路。</p>
+        <div class="ab-credits-roll">
+          <div class="ab-credits-title">— END CREDITS —</div>
+          {credits.map((c) => (
+            <div class="ab-credit">
+              <div class="ab-credit-role">{c.role}</div>
+              <h3>{c.title}</h3>
+              <ul>{c.items.map((it) => <li>{it}</li>)}</ul>
+            </div>
+          ))}
+          <p class="ab-credits-end">
+            <Icon name="pixelarticons:send" width={16} height={16} />在路上，比抵達更重要。
           </p>
         </div>
+      </div>
+    </section>
 
-        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;">
-          {/* 電影 */}
-          <div style={`padding:28px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-              <div style={`width:44px;height:44px;border-radius:12px;background:${C.warmSoft};color:${C.warm};display:flex;align-items:center;justify-content:center;`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2.5" y="8" width="19" height="12" rx="1.4"/>
-                  <path d="M2.5 8L5 4l3 3.6L8.5 4l3 3.6L12 4l3 3.6L15.5 4l3 3.6L19 4l2.5 4"/>
-                  <path d="M2.5 12h19" opacity="0.4"/>
-                </svg>
-              </div>
-              <div>
-                <div style={`font-family:${sans};font-size:11px;color:${C.faint};font-weight:600;letter-spacing:1.5px;`}>MOVIES</div>
-                <div style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};`}>電影</div>
-              </div>
+    <!-- ================= CTA ================= -->
+    <section class="paper sec ab-cta">
+      <div class="wrap">
+        <div class="case-grid">
+          <article class="case">
+            <span class="tape tape-l" aria-hidden="true"></span>
+            <span class="tape tape-r" aria-hidden="true"></span>
+            <div class="case-sheet"><span>AAPD 教練陪跑</span><span>1:1</span></div>
+            <span class="ab-cta-ico" aria-hidden="true"><Icon name="pixelarticons:lightbulb" width={24} height={24} /></span>
+            <h3>1:1 諮詢 — 我陪你想清楚</h3>
+            <p>50 分鐘深度對談 —— 轉職策略、履歷與作品集、職涯卡關。我不會給你標準答案，但會幫你問對問題。</p>
+            <div class="ab-cta-actions">
+              <a class="btn btn-cta" href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer">看看時段 →</a>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              {interests.movies.map((m) => (
-                <div style={`font-family:${serif};font-size:15px;color:${C.ink2};font-style:italic;`}>· {m}</div>
-              ))}
-            </div>
-          </div>
+          </article>
 
-          {/* 音樂 */}
-          <div style={`padding:28px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-              <div style={`width:44px;height:44px;border-radius:12px;background:#F5F3FF;color:#7C3AED;display:flex;align-items:center;justify-content:center;`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                </svg>
-              </div>
-              <div>
-                <div style={`font-family:${sans};font-size:11px;color:${C.faint};font-weight:600;letter-spacing:1.5px;`}>MUSIC</div>
-                <div style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};`}>音樂</div>
-              </div>
+          <article class="case">
+            <span class="tape tape-l" aria-hidden="true"></span>
+            <span class="tape tape-r" aria-hidden="true"></span>
+            <div class="case-sheet"><span>Tibame 雲端資料工程師</span><span>COURSE</span></div>
+            <span class="ab-cta-ico" aria-hidden="true"><Icon name="pixelarticons:teach" width={24} height={24} /></span>
+            <h3>專題轉職班 —— 從零到第一份工作</h3>
+            <p>我擔任課程講師與專題導師。完整路徑、實作專題、職涯陪跑 —— 把你的學習，轉成企業看得懂的能力。</p>
+            <div class="ab-coupon"><span>折扣碼</span>{CTA_COURSE_DISCOUNT_CODE} · 折 5,000 元</div>
+            <div class="ab-cta-actions">
+              <a class="btn btn-cta" href={CTA_COURSE_URL} target="_blank" rel="noopener noreferrer">看課程內容 →</a>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              {interests.music.map((m) => (
-                <div style={`font-family:${serif};font-size:15px;color:${C.ink2};font-style:italic;`}>· {m}</div>
-              ))}
-            </div>
-          </div>
-
-          {/* Podcast */}
-          <div style={`padding:28px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-              <div style={`width:44px;height:44px;border-radius:12px;background:${C.accentSoft};color:${C.accentDark};display:flex;align-items:center;justify-content:center;`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.accentDark} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M9 21h6"/>
-                </svg>
-              </div>
-              <div>
-                <div style={`font-family:${sans};font-size:11px;color:${C.faint};font-weight:600;letter-spacing:1.5px;`}>PODCAST</div>
-                <div style={`font-family:${sans};font-size:18px;font-weight:700;color:${C.ink};`}>Podcast</div>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              {interests.podcasts.map((m) => (
-                <div style={`font-family:${serif};font-size:15px;color:${C.ink2};font-style:italic;`}>· {m}</div>
-              ))}
-            </div>
-          </div>
+          </article>
         </div>
+      </div>
+    </section>
 
-        {/* 成就解鎖（4 大類）*/}
-        <div style={`margin-top:32px;padding:36px;background:${C.warmSoft};border-radius:16px;position:relative;overflow:hidden;`}>
-          {/* 背景裝飾：獎章 */}
-          <svg width="180" height="180" viewBox="0 0 24 24" style="position:absolute;top:-20px;right:-30px;opacity:0.06;pointer-events:none;">
-            <path d="M5 17l-2 4 4-2 4 2-2-4M19 17l2 4-4-2-4 2 2-4" fill="none" stroke={C.warm} stroke-width="0.8"/>
-            <circle cx="12" cy="9" r="6" fill="none" stroke={C.warm} stroke-width="0.8"/>
-          </svg>
-
-          <div style={`display:inline-flex;align-items:center;gap:8px;padding:5px 12px;background:${C.ink};color:#fff;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:1.5px;border-radius:4px;margin-bottom:8px;position:relative;`}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 17l-2 4 4-2 4 2-2-4M19 17l2 4-4-2-4 2 2-4"/>
-              <circle cx="12" cy="9" r="6"/>
-            </svg>
-            ACHIEVEMENTS
-          </div>
-          <h3 style={`font-family:${sans};font-size:26px;font-weight:700;color:${C.ink};margin:8px 0 6px;letter-spacing:-0.5px;position:relative;`}>成就解鎖</h3>
-          <p style={`font-family:${serif};font-size:14px;color:${C.muted};font-style:italic;margin:0 0 28px;line-height:1.7;position:relative;`}>
-            十年跨界，不是衝刺、不是規劃完美，是一段又一段真實走過的路。
-          </p>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 32px;position:relative;">
-            {/* 跨界轉職 */}
-            <div>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                <span style="font-size:24px;line-height:1;">🎯</span>
-                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>跨界轉職</h4>
-              </div>
-              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>半導體 QA → Big Data Engineer（人生第一次跨界）</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>工程師 → 成長行銷顧問（橫向跨界，少見路徑）</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>跨界 4 種專業 10 年（半導體 → 大數據 → 軟體 → AI）</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* 教學陪跑 */}
-            <div>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                <span style="font-size:24px;line-height:1;">🎓</span>
-                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>教學陪跑</h4>
-              </div>
-              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>Tibame 雲端資料工程師線上班 講師 + 專題導師</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>緯創資通數據工程學院 內訓講師（資料治理 / DataOps）</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>CDA 職涯諮詢師 / AndAction Life Coach 認證</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>Alpha Camp / 六角學院 / 學米 / 無限學院 業師</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* 內容創作 */}
-            <div>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                <span style="font-size:24px;line-height:1;">🎙️</span>
-                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>內容創作</h4>
-              </div>
-              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>Podcaster「沒走歪的才奇怪」上線 Spotify</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>Daydream Dex 部落格 — 寫給每個還在路上的工程師</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* 人生冒險 */}
-            <div>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                <span style="font-size:24px;line-height:1;">🚐</span>
-                <h4 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0;letter-spacing:-0.3px;`}>人生冒險</h4>
-              </div>
-              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>5 天 4 夜開露營車環島北海道</span>
-                </li>
-                <li style={`font-family:${serif};font-size:14px;color:${C.ink2};line-height:1.7;display:flex;gap:8px;align-items:flex-start;`}>
-                  <span style={`color:${C.warm};font-weight:700;flex-shrink:0;`}>·</span>
-                  <span>從單一工程師 → 教練 × 講師 × 創作者 混合身份</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div style={`margin-top:24px;padding-top:18px;border-top:1px dashed ${C.rule};font-family:${serif};font-size:13px;color:${C.warm};font-style:italic;line-height:1.7;display:flex;align-items:center;gap:10px;position:relative;`}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
-              <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
-            在路上，比抵達更重要。
-          </div>
-        </div>
-      </section>
-
-      {/* ===================== CTA 區 ===================== */}
-      <section style="padding:60px 56px 80px;max-width:1120px;margin:0 auto;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-          {/* AAPD 諮詢 */}
-          <div style={`padding:36px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            <div style={`width:48px;height:48px;border-radius:12px;background:${C.warmSoft};color:${C.warm};display:flex;align-items:center;justify-content:center;margin-bottom:20px;`}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.warm} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 18h6"/><path d="M10 22h4"/>
-                <path d="M12 2a7 7 0 00-4 12.7c.8.6 1 1.3 1 2.3v1h6v-1c0-1 .2-1.7 1-2.3A7 7 0 0012 2z"/>
-              </svg>
-            </div>
-            <div style={`display:inline-block;padding:4px 10px;background:${C.warmSoft};color:${C.warm};font-size:11px;font-weight:600;border-radius:4px;font-family:${sans};letter-spacing:0.5px;margin-bottom:12px;`}>AAPD 教練陪跑</div>
-            <h3 style={`font-family:${sans};font-size:22px;font-weight:700;color:${C.ink};margin:0 0 8px;letter-spacing:-0.3px;`}>1:1 諮詢 — 我陪你想清楚</h3>
-            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 18px;`}>
-              50 分鐘深度對談 —— 轉職策略、履歷與作品集、職涯卡關。我不會給你標準答案，但會幫你問對問題。
-            </p>
-            <a href={CTA_BOOKING_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.ink};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;`}>
-              看看時段
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </a>
-          </div>
-
-          {/* Tibame 課程 */}
-          <div style={`padding:36px;background:${C.card};border-radius:16px;border:1px solid ${C.rule};`}>
-            <div style={`width:48px;height:48px;border-radius:12px;background:${C.accentSoft};color:${C.accentDark};display:flex;align-items:center;justify-content:center;margin-bottom:20px;`}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.accentDark} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11v5c3.5 2 8.5 2 12 0v-5"/>
-              </svg>
-            </div>
-            <div style={`display:inline-block;padding:4px 10px;background:${C.accentSoft};color:${C.accentDark};font-size:11px;font-weight:600;border-radius:4px;font-family:${sans};letter-spacing:0.5px;margin-bottom:12px;`}>Tibame 雲端資料工程師</div>
-            <h3 style={`font-family:${sans};font-size:22px;font-weight:700;color:${C.ink};margin:0 0 8px;letter-spacing:-0.3px;`}>專題轉職班 —— 從零到第一份工作</h3>
-            <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0 0 14px;`}>
-              我擔任課程講師與專題導師。完整路徑、實作專題、職涯陪跑 —— 把你的學習，轉成企業看得懂的能力。
-            </p>
-            <div style={`padding:10px 14px;background:${C.warmSoft};border-radius:8px;font-family:${sans};font-size:13px;color:${C.warm};font-weight:600;margin-bottom:16px;display:inline-flex;align-items:center;gap:8px;`}>
-              <span style={`padding:2px 6px;background:${C.warm};color:#fff;border-radius:3px;font-size:11px;`}>折扣碼</span>
-              {CTA_COURSE_DISCOUNT_CODE} · 折 5,000 元
-            </div>
-            <div>
-              <a href={CTA_COURSE_URL} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:${C.accent};color:#fff;border-radius:10px;font-family:${sans};font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 6px 16px rgba(83, 145, 255, 0.32);`}>
-                看課程內容
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer taglineComma="full" />
-
-    </div>
-
+    <V2Footer />
     <NewsletterFloatingCTA />
   </body>
 </html>

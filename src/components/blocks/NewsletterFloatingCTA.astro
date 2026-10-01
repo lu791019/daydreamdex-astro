@@ -1,6 +1,6 @@
 ---
 // NewsletterFloatingCTA.astro — 右下角浮動電子報訂閱 CTA
-// - 5s 後從畫面下方彈跳滑入（cubic-bezier overshoot）
+// - 頁面有 [data-newsletter-trigger] 時：捲過該區塊後才滑入；沒有時：5s 後滑入（舊行為）
 // - 可收合到右側小標籤（信封圖示）
 // - 不持久化（每次進站重新彈出主卡）
 // - 手機自動隱藏
@@ -21,21 +21,21 @@ const C = {
 };
 ---
 
-<aside class="floating-cta" id="newsletterCTA">
+<aside class="floating-cta" id="newsletterCTA" aria-label="電子報訂閱">
   <button class="cta-collapse" type="button" id="ctaCollapse" aria-label="收合到右側">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M9 6l6 6-6 6"/>
     </svg>
   </button>
 
   <a href="/newsletter" class="cta-link" aria-label="免費領取 AI 工程師與資料工程師的轉職指南">
-    <div class="filmstrip">
+    <div class="filmstrip" aria-hidden="true">
       {Array.from({ length: 8 }).map(() => <span class="hole"></span>)}
     </div>
 
     <div class="cta-body">
       <div class="badge">
-        <span class="pulse-dot"></span>
+        <span class="pulse-dot" aria-hidden="true"></span>
         <span>FREE · 限時免費</span>
       </div>
 
@@ -48,7 +48,7 @@ const C = {
 
       <span class="cta-button">
         立即免費領取
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
           <path d="M5 12h14M13 5l7 7-7 7"/>
         </svg>
       </span>
@@ -57,7 +57,7 @@ const C = {
 </aside>
 
 <button class="cta-tab" type="button" id="newsletterTab" aria-label="展開電子報訂閱">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <rect x="2" y="5" width="20" height="14" rx="2"/>
     <path d="m2 7 10 6 10-6"/>
   </svg>
@@ -70,6 +70,33 @@ const C = {
     const tab = document.getElementById('newsletterTab');
     const close = document.getElementById('ctaCollapse');
     if (!cta || !tab || !close) return;
+
+    // 出場時機：有觸發區塊就等使用者捲過它；沒有就維持 5 秒後出現
+    var FALLBACK_DELAY_MS = 5000;
+    function show() { cta.classList.add('is-in'); }
+    var trigger = document.querySelector('[data-newsletter-trigger]');
+    if (!trigger) {
+      setTimeout(show, FALLBACK_DELAY_MS);
+    } else if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+            show();
+            io.disconnect();
+          }
+        });
+      });
+      io.observe(trigger);
+    } else {
+      var onScroll = function () {
+        if (trigger.getBoundingClientRect().bottom < 0) {
+          show();
+          window.removeEventListener('scroll', onScroll);
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
 
     close.addEventListener('click', function (e) {
       e.preventDefault();
@@ -103,10 +130,16 @@ const C = {
     text-decoration: none;
     overflow: hidden;
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     transform: translateY(160%) rotate(0deg);
+  }
+  .floating-cta.is-in {
+    visibility: visible;
+    pointer-events: auto;
     animation:
-      ctaSlideIn 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 5s forwards,
-      ctaFloat 3.6s ease-in-out 5.7s infinite;
+      ctaSlideIn 700ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+      ctaFloat 3.6s ease-in-out 0.7s infinite;
   }
 
   @keyframes ctaSlideIn {
@@ -187,10 +220,10 @@ const C = {
   }
 
   .cta-subtitle {
-    font-family: "Noto Serif TC", serif;
+    font-family: "Noto Sans TC", "PingFang TC", sans-serif;
     font-size: 14px;
-    color: rgba(255,255,255,0.7);
-    font-style: italic;
+    color: rgba(255,255,255,0.8);
+    font-style: normal;
     margin-bottom: 18px;
   }
 
@@ -247,7 +280,8 @@ const C = {
     opacity: 0 !important;
     transform: translateX(140%) rotate(0deg) !important;
     pointer-events: none !important;
-    transition: transform 320ms cubic-bezier(0.55, 0, 1, 0.45), opacity 280ms ease;
+    visibility: hidden;
+    transition: visibility 0s linear 320ms, transform 320ms cubic-bezier(0.55, 0, 1, 0.45), opacity 280ms ease;
   }
 
   .cta-tab {
@@ -294,11 +328,12 @@ const C = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .floating-cta {
+    .floating-cta.is-in {
       animation: none !important;
       opacity: 1;
       transform: translateY(0) rotate(-1.5deg);
     }
+    .floating-cta, .cta-tab { transition: none !important; }
     .pulse-dot { animation: none !important; }
   }
 </style>

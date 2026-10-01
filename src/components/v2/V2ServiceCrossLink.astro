@@ -1,0 +1,57 @@
+---
+// V2ServiceCrossLink.astro — 服務頁底部「也許你也想看」互推卡（v2 版，淺色紙段）
+// 文案同 blocks/ServiceCrossLink.astro；傳 current 排除自己，渲染另外兩個
+// 需搭配 v2.css + v2-services.css
+type ServiceKey = 'coaching' | 'consultant' | 'instructor';
+interface Props { current: ServiceKey; }
+const { current } = Astro.props;
+
+const services: Record<ServiceKey, { href: string; hall: string; tag: string; title: string; desc: string }> = {
+  coaching: {
+    href: '/coaching',
+    hall: 'HALL 03',
+    tag: '個人 · 諮詢陪跑',
+    title: '職涯諮詢與陪跑',
+    desc: '1on1 深度對談 50 分鐘 · CDA + Life Coach + 50+ 學員陪跑經驗。轉職、作品集、履歷、技術卡關都聊。',
+  },
+  consultant: {
+    href: '/consultant',
+    hall: 'HALL 04',
+    tag: '企業 · 顧問內訓',
+    title: 'AI 與資料自動化導入',
+    desc: '技術顧問 × 資料工程 × AI 落地 × 數位行銷。10 年技術職涯（Hamastar / 緯創 / LINE Bank）。',
+  },
+  instructor: {
+    href: '/instructor',
+    hall: 'HALL 05',
+    tag: '機構 · 講座邀約',
+    title: '企業內訓與學校講座',
+    desc: '5 大核心主題（AI 職涯戰略 / 資料工程 / AI 工具 / 個人品牌 / AI Coding）。10+ 主持與講座。',
+  },
+};
+
+const others = (Object.keys(services) as ServiceKey[]).filter((k) => k !== current);
+---
+
+<section class="paper sv-sec sv-cross" aria-labelledby="sv-cross-h">
+  <div class="wrap">
+    <div class="sv-head center">
+      <div class="sv-reel">COMING NEXT · 其他合作方式</div>
+      <h2 id="sv-cross-h">也許你也想看</h2>
+    </div>
+    <div class="sv-grid sv-grid-2">
+      {others.map((k) => {
+        const s = services[k];
+        return (
+          <a class="sv-card" href={s.href}>
+            <span class="sv-no">NOW PLAYING · {s.hall}</span>
+            <span class="sv-cross-tag">{s.tag}</span>
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+            <span class="sv-go">看詳細 →</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>

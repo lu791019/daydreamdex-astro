@@ -36,3 +36,8 @@ walkthrough.md
 
 # WebP 轉檔備份 (本地保留 PNG 原檔)
 public/images/.original-png/
+
+# 測試產物
+tests/coverage/
+tests/playwright-report/
+tests/screenshots/

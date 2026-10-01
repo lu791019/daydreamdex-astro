@@ -1,0 +1,60 @@
+---
+// 單篇影評
+import { getCollection, render } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import SEO from '../../components/SEO.astro';
+import V2Nav from '../../components/v2/V2Nav.astro';
+import V2Footer from '../../components/v2/V2Footer.astro';
+import NewsletterFloatingCTA from '../../components/blocks/NewsletterFloatingCTA.astro';
+import '../../styles/v2.css';
+
+export async function getStaticPaths() {
+  const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b.data.order);
+  return reviews.map((r, i) => ({
+    params: { slug: r.id },
+    props: { review: r, next: reviews[(i + 1) % reviews.length] },
+  }));
+}
+
+const { review, next } = Astro.props;
+const { Content } = await render(review);
+const CHAT_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead />
+    <SEO title={`《${review.data.title}》影評｜Dex 的塵世哲學`} description={review.data.description} type="article" />
+  </head>
+  <body class="pv">
+    <V2Nav homeHref="/" chatHref={CHAT_URL} />
+
+    <article class="review-page">
+      <header class="dark grain review-page-head">
+        <div class="cinema-strip" aria-hidden="true"></div>
+        <div class="wrap narrow">
+          <a class="back-link" href="/reviews">← 影評放映室</a>
+          <div class="now-showing">● REVIEW · 影評</div>
+          <h1 class="page-h1">《{review.data.title}》<small>{review.data.en}</small></h1>
+          <div class="review-page-meta">導演｜{review.data.director}　·　文｜Dex</div>
+          <blockquote class="review-page-pull">「{review.data.pull}」</blockquote>
+        </div>
+      </header>
+      <div class="paper review-page-body">
+        <div class="wrap narrow prose-v2">
+          <Content />
+        </div>
+      </div>
+      <div class="dark grain review-page-next">
+        <div class="wrap narrow">
+          <span class="label">NEXT SCREENING · 下一部</span>
+          <a class="next-film" href={`/reviews/${next.id}`}>《{next.data.title}》<small>{next.data.en} · {next.data.director}</small> →</a>
+        </div>
+      </div>
+    </article>
+
+    <V2Footer />
+    <NewsletterFloatingCTA />
+  </body>
+</html>

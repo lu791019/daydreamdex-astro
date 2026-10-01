@@ -1,46 +1,33 @@
 ---
+// 職涯諮詢與陪跑（v2 暖光放映廳版）
+// 版型（三服務頁共用）：hero → 適合誰 → 怎麼進行 → 方案 → 實績 → 其他服務 → CTA
+import { Icon } from 'astro-icon/components';
 import BaseHead from '../components/BaseHead.astro';
 import SEO from '../components/SEO.astro';
-import TopBar from '../components/blocks/TopBar.astro';
-import Footer from '../components/blocks/Footer.astro';
-import ContactCTA from '../components/blocks/ContactCTA.astro';
-import ServiceCrossLink from '../components/blocks/ServiceCrossLink.astro';
+import V2Nav from '../components/v2/V2Nav.astro';
+import V2Footer from '../components/v2/V2Footer.astro';
+import V2ContactCTA from '../components/v2/V2ContactCTA.astro';
+import V2ServiceCrossLink from '../components/v2/V2ServiceCrossLink.astro';
 import NewsletterFloatingCTA from '../components/blocks/NewsletterFloatingCTA.astro';
 import { SITE_TITLE } from '../consts';
 import { PROFILE } from '../data/profile';
+import '../styles/v2.css';
+import '../styles/v2-services.css';
+
+const FREE_CHAT_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
 
 // SEO
 const pageTitle = `職涯諮詢與轉職陪跑 ｜ ${SITE_TITLE}`;
-const pageDescription = '1on1 諮詢與專題陪跑業師。陪你想清楚轉職、作品集、履歷與技術卡關 — 60 分鐘深度對談。Dex（CDA 國際生涯發展諮詢師 + Life Coach + 100+ 學員 1on1 陪跑經驗）。';
-
-// B Warm tokens
-const C = {
-  bg: '#FBFAF7',
-  bgSoft: '#F4F1EB',
-  ink: '#1F1B16',
-  ink2: '#3D3A33',
-  muted: '#6B6557',
-  faint: '#A39C8C',
-  rule: '#E8E2D4',
-  accent: '#5391FF',
-  accentDark: '#2F6FE0',
-  accentSoft: '#EAF1FF',
-  warm: '#D97706',
-  warmSoft: '#FEF3E7',
-  card: '#FFFFFF',
-};
-const sans = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif';
-const serif = '"Noto Serif TC", "Source Han Serif TC", serif';
+const pageDescription = '1on1 諮詢與專題陪跑業師。陪你想清楚轉職、作品集、履歷與技術卡關 — 50 分鐘深度對談。Dex（CDA 國際生涯發展諮詢師 + Life Coach + 50+ 學員 1on1 陪跑經驗）。';
 
 // 找我聊什麼（2 個入口）
 const entries = [
   {
     tag: 'A · 個人',
     title: '我想找 1on1 諮詢 / 陪跑',
-    desc: '轉職、作品集、履歷、技術卡關 — 60 分鐘深度對談，AAPD 直接預約。',
+    desc: '轉職、作品集、履歷、技術卡關 — 50 分鐘深度對談，AAPD 直接預約。',
     cta: '立即預約',
     href: PROFILE.aapdUrl,
-    color: C.accent,
   },
   {
     tag: 'B · 機構',
@@ -48,7 +35,6 @@ const entries = [
     desc: 'Bootcamp / 大學 / 企業學習單位 — 學員專題 mentor、評鑑、收斂。',
     cta: '寫信聊聊',
     href: `mailto:${PROFILE.email}?subject=專題陪跑業師合作洽詢`,
-    color: C.warm,
   },
 ];
 
@@ -61,24 +47,48 @@ const audience = [
   { n: '05', t: '技術學習卡關', d: '從「應用情境 × 整體脈絡」理解技術使用' },
 ];
 
-// 教練風格
-const styles = [
-  { icon: '🧩', t: '結構化引導', d: '把模糊的問題拆成可理解的步驟，不在迷霧裡瞎走。' },
-  { icon: '🎯', t: '為什麼而學', d: '聚焦目標與應用情境，避免學了技術卻用不上。' },
-  { icon: '🔗', t: '技術 × 職涯 × 生涯', d: '把能力轉成具體機會，讓技術成為職涯的支點。' },
-  { icon: '👣', t: '明確下一步行動', d: '不畫大餅，只談這週能怎麼動 — 小步快走勝過完美規劃。' },
+// 兩種身分：職涯諮詢師 × 人生教練
+const roles = [
+  {
+    k: 'ROLE 01 · CAREER',
+    t: '職涯諮詢師',
+    cert: 'CDA 國際生涯發展諮詢師',
+    d: '當問題是「下一份工作、下一個方向」：用生涯發展的工具，把興趣、能力、市場需求放在同一張地圖上。',
+    items: ['轉職路徑與學習順序', '作品集、履歷與求職策略', '技術卡關時，找回整體脈絡'],
+  },
+  {
+    k: 'ROLE 02 · LIFE',
+    t: '人生教練',
+    cert: 'Life Coach 生涯教練認證',
+    d: '當問題不只是工作，而是「我到底想要什麼」：用教練式提問，陪你在人生轉折處把自己的答案說出來。',
+    items: ['人生轉彎時的方向感與節奏', '在選擇與取捨之間，看清自己真正在意的', '從想清楚，到願意跨出第一步'],
+  },
 ];
+
+// 教練風格（pixelarticons）
+const styles = [
+  { icon: 'bulletlist', t: '結構化引導', d: '把模糊的問題拆成可理解的步驟，不在迷霧裡瞎走。' },
+  { icon: 'target', t: '為什麼而學', d: '聚焦目標與應用情境，避免學了技術卻用不上。' },
+  { icon: 'link', t: '技術 × 職涯 × 生涯', d: '把能力轉成具體機會，讓技術成為職涯的支點。' },
+  { icon: 'human-run', t: '明確下一步行動', d: '不畫大餅，只談這週能怎麼動 — 小步快走勝過完美規劃。' },
+];
+
+// 機構合作
+const orgFit = ['資料工程 / AI Bootcamp', '大學資工 / 資管 / 統計專題課', '企業內部人才培育（DataOps、AI 導入）', '政府計畫（職訓局、產學合作）', '線上學習平台 / 線上學院'];
+const orgRoles = ['專題業師 — 主題訂定、收斂、技術指導', '作品集陪跑 mentor — 1on1 多次回饋', '評審 / 評鑑委員 — Demo Day、結業評分', '主題講座 — 業界視角、職涯方向', '履歷檢診 — 集體場次或 1on1'];
+const orgFormats = ['單次講座（2-3 hr）', '系列課程（4-12 週）', '學期 mentor（一屆學員 / 數月）', '專題評審（單場或結業整批）', '客製化方案（依貴單位需求）'];
 
 // 機構合作分群
 const orgGroups = [
-  { tag: '🏫 Bootcamp / 學院', items: PROFILE.trustOrgs.coachingBootcamp },
-  { tag: '🏢 企業 / 內訓', items: PROFILE.trustOrgs.coachingEnterprise },
-  { tag: '🎓 大學 / 研究單位', items: PROFILE.trustOrgs.coachingUniversity },
-  { tag: '👥 職涯陪跑 / 履歷', items: PROFILE.trustOrgs.coachingCareer },
+  { icon: 'teach', tag: 'Bootcamp / 學院', items: PROFILE.trustOrgs.coachingBootcamp },
+  { icon: 'building-community', tag: '企業 / 內訓', items: PROFILE.trustOrgs.coachingEnterprise },
+  { icon: 'book-open', tag: '大學 / 研究單位', items: PROFILE.trustOrgs.coachingUniversity },
+  { icon: 'users', tag: '職涯陪跑 / 履歷', items: PROFILE.trustOrgs.coachingCareer },
 ];
 
 // 證照（教練頁優先列 CDA + Life Coach，技術 3 張收尾）
 const certs = PROFILE.certs;
+const students = PROFILE.stats.studentsCoached;
 ---
 
 <!doctype html>
@@ -86,245 +96,200 @@ const certs = PROFILE.certs;
   <head>
     <BaseHead />
     <SEO title={pageTitle} description={pageDescription} type="website" />
-    <style is:global>
-      body {
-        margin: 0;
-        background: #FBFAF7;
-        color: #1F1B16;
-        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-      }
-      a { color: inherit; }
-    </style>
   </head>
-  <body>
-    <div style={`background:${C.bg};color:${C.ink};font-family:${sans};min-height:100vh;`}>
+  <body class="pv">
+    <V2Nav chatHref={FREE_CHAT_URL} hall="HALL 03" />
 
-      <TopBar activePage="職涯諮詢與陪跑" logoVariant="minimal" />
-
-      {/* ===================== Hero ===================== */}
-      <section style="padding:80px 56px 60px;max-width:1100px;margin:0 auto;text-align:center;position:relative;">
-        <div style={`display:inline-flex;align-items:center;gap:10px;background:${C.ink};color:${C.bg};padding:6px 16px;border-radius:6px;font-family:${sans};font-weight:700;letter-spacing:2px;font-size:12px;margin-bottom:24px;`}>
-          <span style={`width:7px;height:7px;border-radius:50%;background:${C.warm};`}></span>
-          SCENE · 職涯諮詢與轉職陪跑
+    <!-- ================= HERO ================= -->
+    <header class="dark grain sv-hero">
+      <div class="beam" aria-hidden="true"></div>
+      <div class="glow" aria-hidden="true"></div>
+      <div class="wrap sv-hero-grid">
+        <div>
+          <div class="sv-tag">SCENE 03 <b>職涯諮詢與轉職陪跑</b></div>
+          <h1>陪你<em>想清楚</em><br />下一步</h1>
+          <p class="sv-hero-sub">職涯諮詢師 <span>×</span> 人生教練 <span>×</span> 轉職陪跑業師</p>
+          <div class="scene">
+            <div class="scene-label">SCENE · 我的承諾</div>
+            <div class="scene-line sv-quote-zh">「{PROFILE.quotes.coach}」</div>
+          </div>
+          <div class="sv-cred">
+            <span>CDA 國際生涯發展諮詢師</span>
+            <span>Life Coach 認證</span>
+            <span><b>{students}+</b>位學員 1on1 陪跑經驗</span>
+          </div>
+          <p class="sv-hero-note">現職 AI 技術總監，材料所畢業、非本科轉進資料與 AI。轉職卡關可以找我，人生卡關也可以 —— 我同時是職涯諮詢師和人生教練。</p>
+          <div class="ctas">
+            <a class="btn btn-amber" href={PROFILE.aapdUrl} target="_blank" rel="noopener noreferrer">立即預約諮詢 →</a>
+            <a class="btn btn-line" href={FREE_CHAT_URL} target="_blank" rel="noopener noreferrer">先免費聊 15 分鐘</a>
+          </div>
         </div>
 
-        <h1 style={`font-family:${sans};font-size:60px;font-weight:800;letter-spacing:-1.5px;line-height:1.18;margin:0 0 22px;`}>
-          陪你<span style={`color:${C.accent};`}>想清楚</span><br/>下一步
-        </h1>
+        <aside class="sv-slate" aria-label="1on1 諮詢資訊">
+          <div class="sv-slate-top" aria-hidden="true"></div>
+          <div class="sv-slate-k"><span>CALL SHEET</span><span>TAKE 1on1</span></div>
+          <span class="sv-slate-stamp" aria-hidden="true">開放<br />預約中</span>
+          <h2>1on1 諮詢</h2>
+          <dl>
+            <div><dt>費用</dt><dd>{PROFILE.consultingFee}</dd></div>
+            <div><dt>時段</dt><dd>{PROFILE.consultingHours}<small>台灣 / 香港 / 新加坡 / 馬來西亞</small></dd></div>
+            <div><dt>聊什麼</dt><dd>轉職、作品集、履歷、技術卡關、人生轉折</dd></div>
+          </dl>
+          <div class="sv-slate-foot">
+            <a class="btn btn-cta" href={PROFILE.aapdUrl} target="_blank" rel="noopener noreferrer">AAPD 預約 →</a>
+          </div>
+        </aside>
+      </div>
+    </header>
 
-        <p style={`font-family:${serif};font-size:18px;color:${C.ink2};line-height:1.95;max-width:640px;margin:0 auto 18px;font-style:italic;`}>
-          「{PROFILE.quotes.coach}」
-        </p>
-        <p style={`font-family:${sans};font-size:14px;color:${C.muted};max-width:640px;margin:0 auto;`}>
-          CDA 國際生涯發展諮詢師 · Life Coach 認證 · {PROFILE.stats.studentsCoached}+ 位學員 1on1 陪跑經驗
-        </p>
-      </section>
+    <div class="sprocket" aria-hidden="true"></div>
 
-      {/* ===================== 找我聊什麼（兩個入口）===================== */}
-      <section style="padding:40px 56px 80px;max-width:1100px;margin:0 auto;">
-        <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 36px;`}>
-          找我聊什麼？
-        </h2>
-        <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:24px;">
+    <!-- ================= REEL 01 適合誰 ================= -->
+    <section class="paper sv-sec">
+      <div class="wrap">
+        <div class="sv-head">
+          <div class="sv-reel">REEL 01 · 適合誰</div>
+          <h2>找我聊什麼？</h2>
+        </div>
+        <div class="sv-grid sv-grid-2">
           {entries.map((e) => (
-            <a href={e.href} target={e.href.startsWith('mailto') ? '_self' : '_blank'} rel="noopener noreferrer" style={`display:block;padding:32px;background:${C.card};border:1px solid ${C.rule};border-radius:16px;text-decoration:none;transition:transform 220ms ease, box-shadow 220ms ease;`} class="entry-card">
-              <div style={`font-family:${serif};font-size:12px;color:${e.color};letter-spacing:2px;font-weight:700;margin-bottom:14px;font-style:italic;`}>
-                {e.tag}
-              </div>
-              <h3 style={`font-family:${sans};font-size:22px;font-weight:700;color:${C.ink};letter-spacing:-0.4px;margin:0 0 12px;line-height:1.4;`}>
-                {e.title}
-              </h3>
-              <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.85;margin:0 0 22px;`}>
-                {e.desc}
-              </p>
-              <span style={`display:inline-flex;align-items:center;gap:6px;color:${e.color};font-family:${sans};font-size:14px;font-weight:700;`}>
-                {e.cta}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-              </span>
+            <a class="sv-card" href={e.href} target={e.href.startsWith('mailto') ? undefined : '_blank'} rel="noopener noreferrer">
+              <span class="sv-no">{e.tag}</span>
+              <h3>{e.title}</h3>
+              <p>{e.desc}</p>
+              <span class="sv-go">{e.cta} →</span>
             </a>
           ))}
         </div>
-      </section>
 
-      {/* ===================== 適合來找我的人 ===================== */}
-      <section style={`background:${C.bgSoft};padding:80px 56px;`}>
-        <div style="max-width:1000px;margin:0 auto;">
-          <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 14px;`}>
-            適合來找我的人
-          </h2>
-          <p style={`font-family:${serif};font-size:15px;color:${C.muted};text-align:center;font-style:italic;margin:0 0 40px;`}>
-            如果你在這些卡關時刻，正是我能幫上忙的地方。
-          </p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;">
-            {audience.map((a) => (
-              <div style={`padding:24px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
-                <div style={`font-family:${serif};font-size:13px;color:${C.warm};letter-spacing:1.5px;font-weight:700;margin-bottom:10px;font-style:italic;`}>
-                  {a.n}
-                </div>
-                <h3 style={`font-family:${sans};font-size:17px;font-weight:700;color:${C.ink};letter-spacing:-0.3px;margin:0 0 8px;line-height:1.5;`}>
-                  {a.t}
-                </h3>
-                <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0;`}>
-                  {a.d}
-                </p>
-              </div>
-            ))}
-          </div>
+        <h3 class="sv-sub-h">適合來找我的人</h3>
+        <p class="sv-sub-p">如果你在這些卡關時刻，正是我能幫上忙的地方。</p>
+        <div class="sv-rows">
+          {audience.map((a) => (
+            <div class="sv-row">
+              <span class="sv-row-n">{a.n}</span>
+              <div><h3>{a.t}</h3><p>{a.d}</p></div>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* ===================== Dex 的教練風格 ===================== */}
-      <section style="padding:80px 56px;max-width:1100px;margin:0 auto;">
-        <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 40px;`}>
-          Dex 的教練風格
-        </h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;">
+    <!-- ================= REEL 02 怎麼進行 ================= -->
+    <section id="two-roles" class="dark grain sv-sec">
+      <div class="wrap">
+        <div class="sv-head">
+          <div class="sv-reel">REEL 02 · 怎麼進行</div>
+          <h2>兩種陪伴：職涯諮詢師 × 人生教練</h2>
+          <p class="sub">有時候卡住的是工作，有時候卡住的是人生。50 分鐘裡，我會先聽你說，再判斷今天要戴哪一頂帽子 —— 或兩頂一起。</p>
+        </div>
+        <div class="sv-roles">
+          {roles.map((r) => (
+            <div class="sv-role">
+              <div class="sv-role-k">{r.k}</div>
+              <h3>{r.t}</h3>
+              <p class="sv-role-cert">{r.cert}</p>
+              <p>{r.d}</p>
+              <ul class="sv-list">{r.items.map((x) => <li>{x}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="sv-sub-h">Dex 的教練風格</h3>
+        <div class="sv-grid sv-grid-4">
           {styles.map((s) => (
-            <div style={`padding:28px 24px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;text-align:center;`}>
-              <div style="font-size:36px;margin-bottom:14px;">{s.icon}</div>
-              <h3 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};letter-spacing:-0.2px;margin:0 0 10px;`}>{s.t}</h3>
-              <p style={`font-family:${serif};font-size:14px;color:${C.muted};line-height:1.85;margin:0;`}>{s.d}</p>
+            <div class="sv-card sv-card-d">
+              <span class="sv-icon" aria-hidden="true"><Icon name={`pixelarticons:${s.icon}`} width={26} height={26} /></span>
+              <h3>{s.t}</h3>
+              <p>{s.d}</p>
             </div>
           ))}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* ===================== 1on1 諮詢方案（價格 + 預約）===================== */}
-      <section style={`background:${C.ink};color:${C.bg};padding:80px 56px;`}>
-        <div style="max-width:800px;margin:0 auto;text-align:center;">
-          <div style={`display:inline-flex;align-items:center;gap:10px;background:${C.warm};color:#fff;padding:6px 16px;border-radius:6px;font-family:${sans};font-weight:700;letter-spacing:2px;font-size:12px;margin-bottom:24px;`}>
-            NOW SHOWING · A · 個人諮詢
+    <!-- ================= REEL 03 方案 ================= -->
+    <section class="paper sv-sec">
+      <div class="wrap">
+        <div class="sv-head">
+          <div class="sv-reel">REEL 03 · 方案</div>
+          <h2>1on1 諮詢方案</h2>
+        </div>
+        <div class="sv-plan">
+          <div class="sv-plan-main">
+            <div class="sv-plan-k">NOW SHOWING · A · 個人諮詢</div>
+            <h3>1on1 深度對談</h3>
+            <div class="sv-plan-price">{PROFILE.consultingFee}</div>
+            <p>{PROFILE.consultingHours}（台灣 / 香港 / 新加坡 / 馬來西亞）</p>
+            <p>預約後可先寫信給我，附上你想聊的主題與背景脈絡，我會在諮詢前先看過。</p>
           </div>
-          <h2 style={`font-family:${sans};font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.3;margin:0 0 24px;`}>
-            1on1 諮詢方案
-          </h2>
-          <div style={`background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:36px;margin-bottom:28px;`}>
-            <div style={`font-family:${sans};font-size:36px;font-weight:800;color:#fff;letter-spacing:-0.8px;margin-bottom:8px;`}>
-              {PROFILE.consultingFee}
+          <div class="sv-plan-stub">
+            <a class="btn btn-amber" href={PROFILE.aapdUrl} target="_blank" rel="noopener noreferrer">立即預約諮詢（AAPD）→</a>
+            <small>透過 AAPD 平台預約，由擺渡職涯統一收費與排程，安心對接。</small>
+            <a class="btn btn-line btn-sm" href={FREE_CHAT_URL} target="_blank" rel="noopener noreferrer">還不確定？先免費聊 15 分鐘</a>
+          </div>
+        </div>
+
+        <div class="sv-head" style="margin-top:88px;">
+          <div class="sv-reel">B · 機構合作</div>
+          <h2>專題陪跑業師 / 學員 Mentor</h2>
+          <p class="sub">過去 5+ 年，固定為 Bootcamp、大學課程與企業學習單位擔任專題業師、Mentor、評審。不是「教完一門課就走」，而是陪學員把專題真的做到能放上履歷、講得出來、面試官聽得懂。</p>
+        </div>
+        <div class="sv-grid sv-grid-2">
+          <div class="sv-card">
+            <span class="sv-no">WHO</span>
+            <h3>適合的合作對象</h3>
+            <ul class="sv-list">{orgFit.map((x) => <li>{x}</li>)}</ul>
+          </div>
+          <div class="sv-card">
+            <span class="sv-no">ROLE</span>
+            <h3>可以提供的角色</h3>
+            <ul class="sv-list">{orgRoles.map((x) => <li>{x}</li>)}</ul>
+          </div>
+        </div>
+        <div class="sv-tip">
+          <div>
+            <div style="margin-bottom:12px;">常見合作方式</div>
+            <div class="sv-chips">{orgFormats.map((x) => <span>{x}</span>)}</div>
+          </div>
+          <a class="btn btn-cta" href={`mailto:${PROFILE.email}?subject=專題陪跑業師合作洽詢`}>寫信聊聊 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= REEL 04 實績 ================= -->
+    <section class="dark grain sv-sec">
+      <div class="wrap">
+        <div class="sv-head">
+          <div class="sv-reel">REEL 04 · 實績</div>
+          <h2>過往機構合作經歷</h2>
+          <p class="sub">累積 {students}+ 位學員 1on1 陪跑 — 不只在「教方法」，更在「陪一個人慢慢長出方向」。</p>
+        </div>
+        <div class="sv-grid sv-grid-2">
+          {orgGroups.map((g) => (
+            <div class="sv-card sv-card-d sv-group">
+              <h3><Icon name={`pixelarticons:${g.icon}`} width={22} height={22} />{g.tag}</h3>
+              <ul class="sv-list">{g.items.map((it) => <li>{it}</li>)}</ul>
             </div>
-            <p style={`font-family:${serif};font-size:14px;color:rgba(255,255,255,0.7);margin:0 0 22px;font-style:italic;`}>
-              {PROFILE.consultingHours}（台灣 / 香港 / 新加坡 / 馬來西亞）
-            </p>
-            <p style={`font-family:${serif};font-size:15px;color:rgba(255,255,255,0.8);line-height:1.95;margin:0 0 26px;`}>
-              預約後可先寫信給我，附上你想聊的主題與背景脈絡，我會在諮詢前先看過。
-            </p>
-            <a href={PROFILE.aapdUrl} target="_blank" rel="noopener noreferrer" style={`display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:${C.warm};color:#fff;border-radius:12px;font-family:${sans};font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(217,119,6,0.45);`}>
-              📅 立即預約諮詢（AAPD）
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </a>
-            <p style={`font-family:${serif};font-size:12px;color:rgba(255,255,255,0.5);margin:18px 0 0;font-style:italic;`}>
-              透過 AAPD 平台預約，由擺渡職涯統一收費與排程，安心對接。
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================== B · 機構合作 ===================== */}
-      <section style="padding:80px 56px;max-width:1100px;margin:0 auto;">
-        <div style="text-align:center;margin-bottom:48px;">
-          <div style={`display:inline-flex;align-items:center;gap:10px;background:${C.warmSoft};color:${C.warm};padding:6px 16px;border-radius:6px;font-family:${sans};font-weight:700;letter-spacing:2px;font-size:12px;margin-bottom:18px;`}>
-            B · 機構合作
-          </div>
-          <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;margin:0 0 14px;`}>
-            專題陪跑業師 / 學員 Mentor
-          </h2>
-          <p style={`font-family:${serif};font-size:15px;color:${C.muted};line-height:1.95;max-width:640px;margin:0 auto;font-style:italic;`}>
-            過去 5+ 年，固定為 Bootcamp、大學課程與企業學習單位擔任專題業師、Mentor、評審。<br/>
-            不是「教完一門課就走」，而是陪學員把專題真的做到能放上履歷、講得出來、面試官聽得懂。
-          </p>
-        </div>
-
-        <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:24px;margin-bottom:36px;">
-          <div style={`padding:28px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
-            <h3 style={`font-family:${sans};font-size:17px;font-weight:700;color:${C.ink};margin:0 0 18px;letter-spacing:-0.2px;`}>🎓 適合的合作對象</h3>
-            <ul style={`list-style:none;padding:0;margin:0;font-family:${serif};font-size:14px;color:${C.ink2};line-height:2.1;`}>
-              <li>· 資料工程 / AI Bootcamp</li>
-              <li>· 大學資工 / 資管 / 統計專題課</li>
-              <li>· 企業內部人才培育（DataOps、AI 導入）</li>
-              <li>· 政府計畫（職訓局、產學合作）</li>
-              <li>· 線上學習平台 / 線上學院</li>
-            </ul>
-          </div>
-          <div style={`padding:28px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
-            <h3 style={`font-family:${sans};font-size:17px;font-weight:700;color:${C.ink};margin:0 0 18px;letter-spacing:-0.2px;`}>🛠 可以提供的角色</h3>
-            <ul style={`list-style:none;padding:0;margin:0;font-family:${serif};font-size:14px;color:${C.ink2};line-height:2.1;`}>
-              <li>· 專題業師 — 主題訂定、收斂、技術指導</li>
-              <li>· 作品集陪跑 mentor — 1on1 多次回饋</li>
-              <li>· 評審 / 評鑑委員 — Demo Day、結業評分</li>
-              <li>· 主題講座 — 業界視角、職涯方向</li>
-              <li>· 履歷檢診 — 集體場次或 1on1</li>
-            </ul>
-          </div>
-        </div>
-
-        <div style={`padding:28px;background:${C.warmSoft};border-radius:14px;`}>
-          <h3 style={`font-family:${sans};font-size:16px;font-weight:700;color:${C.ink};margin:0 0 14px;letter-spacing:-0.2px;`}>📦 常見合作方式</h3>
-          <div style={`display:flex;flex-wrap:wrap;gap:10px;font-family:${sans};font-size:13px;`}>
-            {['單次講座（2-3 hr）', '系列課程（4-12 週）', '學期 mentor（一屆學員 / 數月）', '專題評審（單場或結業整批）', '客製化方案（依貴單位需求）'].map((x) => (
-              <span style={`padding:7px 14px;background:#fff;color:${C.warm};border-radius:999px;border:1px solid ${C.warm};font-weight:600;`}>
-                {x}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===================== 過往機構合作經歷 ===================== */}
-      <section style={`background:${C.bgSoft};padding:80px 56px;`}>
-        <div style="max-width:1000px;margin:0 auto;">
-          <h2 style={`font-family:${sans};font-size:32px;font-weight:800;color:${C.ink};letter-spacing:-0.6px;text-align:center;margin:0 0 14px;`}>
-            過往機構合作經歷
-          </h2>
-          <p style={`font-family:${serif};font-size:14px;color:${C.muted};text-align:center;font-style:italic;margin:0 0 40px;`}>
-            累積 {PROFILE.stats.studentsCoached}+ 位學員 1on1 陪跑 — 不只在「教方法」，更在「陪一個人慢慢長出方向」。
-          </p>
-          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:20px;">
-            {orgGroups.map((g) => (
-              <div style={`padding:24px;background:${C.card};border:1px solid ${C.rule};border-radius:14px;`}>
-                <h3 style={`font-family:${sans};font-size:14px;font-weight:700;color:${C.ink};letter-spacing:0.5px;margin:0 0 14px;`}>{g.tag}</h3>
-                <ul style={`list-style:none;padding:0;margin:0;font-family:${sans};font-size:13.5px;color:${C.ink2};line-height:2;`}>
-                  {g.items.map((it) => <li>· {it}</li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===================== 專業背景（證照）===================== */}
-      <section style="padding:60px 56px;max-width:900px;margin:0 auto;text-align:center;">
-        <h2 style={`font-family:${sans};font-size:26px;font-weight:800;color:${C.ink};letter-spacing:-0.5px;margin:0 0 24px;`}>
-          專業背景
-        </h2>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:32px;">
-          {certs.map((c) => (
-            <span style={`padding:9px 18px;background:${C.card};color:${C.ink};border:1px solid ${C.rule};border-radius:999px;font-family:${sans};font-size:13px;font-weight:600;`}>
-              {c.label}
-            </span>
           ))}
         </div>
-        <p style={`font-family:${serif};font-size:16px;color:${C.ink};font-style:italic;line-height:1.95;max-width:600px;margin:0 auto;`}>
-          「{PROFILE.quotes.coachBelief}」<br/>
-          <span style={`font-size:13px;color:${C.muted};`}>—— 也是我陪每一位學員的核心信念</span>
-        </p>
-      </section>
 
-      {/* ===================== Footer CTA ===================== */}
-      <ServiceCrossLink current="coaching" />
+        <div class="sv-certs" aria-label="專業背景">
+          <span>專業背景 · CERTIFIED</span>
+          {certs.map((c) => <b>{c.label}</b>)}
+        </div>
 
-      <ContactCTA variant="coaching" />
+        <div class="final-scene sv-belief">
+          <span class="final-tag">FINAL SCENE</span>
+          <div class="scene-line">“{PROFILE.quotes.coachBelief}”</div>
+          <div class="scene-sub">—— 也是我陪每一位學員的核心信念</div>
+        </div>
+      </div>
+    </section>
 
-      <Footer taglineComma="full" />
-
-    </div>
-
+    <V2ServiceCrossLink current="coaching" />
+    <V2ContactCTA variant="coaching" chatHref={FREE_CHAT_URL} />
+    <V2Footer />
     <NewsletterFloatingCTA />
-
-    <style>
-      .entry-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 40px rgba(31,27,22,0.10);
-      }
-    </style>
   </body>
 </html>

@@ -1,94 +1,71 @@
 import { test, expect } from '@playwright/test';
+import { CONTACT_EMAIL, POST_SLUGS, findBrokenImages } from './helpers/site';
 
-test.describe('Homepage', () => {
-  test('loads with correct title', async ({ page }) => {
+test.describe('Homepage (v2)', () => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/');
+  });
+
+  test('loads with correct title', async ({ page }) => {
     await expect(page).toHaveTitle(/Daydream Dex/);
   });
 
-  test('renders all 11 main sections', async ({ page }) => {
-    await page.goto('/');
-
-    // Landmarks identified from production HTML
-    const expectedTexts = [
-      '寫信給我',           // TopBar tagline
-      '影評 × 職涯',         // Hero / brand line
-      '不寫 SEO 廢文',        // Values block
-      '如果你只能讀五篇',     // Featured section heading
-      '電影裡的職涯隱喻',     // Cinema section
-      '所有的塵世筆記',       // AllPosts section
-      '正在訂閱本月電子報',   // Newsletter
-    ];
-
-    for (const text of expectedTexts) {
-      await expect(page.getByText(text, { exact: false }).first()).toBeVisible();
-    }
-
-    // Footer present (Dex brand mark or copyright)
-    await expect(page.locator('body')).toContainText('Daydream Dex');
+  test('hero h1 是「把每一次轉彎」主標', async ({ page }) => {
+    const h1 = page.locator('h1');
+    await expect(h1).toHaveCount(1);
+    await expect(h1).toContainText('把每一次轉彎');
+    await expect(h1).toBeVisible();
   });
 
-  test('has 5 social icons with correct hrefs', async ({ page }) => {
-    await page.goto('/');
-
-    const expectedHosts = [
-      'threads.com',
-      'instagram.com',
-      'facebook.com',
-      'linkedin.com',
-      'open.spotify.com',
-    ];
-
-    for (const host of expectedHosts) {
-      const link = page.locator(`a[href*="${host}"]`).first();
-      await expect(link).toHaveCount(1);
-      await expect(link).toHaveAttribute('href', new RegExp(host));
+  test('hero CTA 指向文章區與預約區，且錨點存在', async ({ page }) => {
+    await expect(page.locator('.hero a[href="#reads"]').first()).toBeVisible();
+    await expect(page.locator('.hero a[href="#book"]').first()).toBeVisible();
+    for (const id of ['reads', 'doors', 'all-posts', 'book']) {
+      await expect(page.locator(`section#${id}`)).toHaveCount(1);
     }
   });
 
-  test('5 featured article hero images load (no broken images)', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'networkidle' });
-
-    // images that fail return naturalWidth === 0
-    const brokenCount = await page.evaluate(() => {
-      const imgs = Array.from(document.querySelectorAll('img'));
-      return imgs.filter((img) => img.complete && img.naturalWidth === 0).length;
-    });
-
-    expect(brokenCount).toBe(0);
+  test('ARCHIVE 最新文章列表連到真實文章，並有「看全部」入口', async ({ page }) => {
+    const rows = page.locator('#all-posts .post-row');
+    expect(await rows.count()).toBeGreaterThan(0);
+    for (const href of await rows.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
+      expect(POST_SLUGS).toContain(href!.replace('/blog/', ''));
+    }
+    await expect(page.locator('#all-posts a[href="/blog"]')).toContainText(`${POST_SLUGS.length}`);
   });
 
-  test('category filter works (all / 轉職 / 資料工程)', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'networkidle' });
+  test('FINAL SCENE 有機構／企業合作入口（mailto + 兩個服務頁）', async ({ page }) => {
+    const final = page.locator('section#book');
+    await expect(final).toContainText('FINAL SCENE');
+    const orgCard = final.locator('.final-card', { hasText: '機構／企業合作' });
+    await expect(orgCard).toHaveCount(1);
+    await expect(orgCard.locator(`a[href^="mailto:${CONTACT_EMAIL}"]`)).toHaveCount(1);
+    await expect(orgCard.locator('a[href="/consultant"]')).toBeVisible();
+    await expect(orgCard.locator('a[href="/instructor"]')).toBeVisible();
+  });
 
-    // Confirm filter buttons exist (5 buttons)
-    const filters = page.locator('[data-filter]');
-    await expect(filters).toHaveCount(5);
+  test('FINAL SCENE 有 1:1 諮詢預約與免費聊聊', async ({ page }) => {
+    const final = page.locator('section#book');
+    await expect(final.locator('a[href*="aapd.simplybook.asia"]').first()).toBeVisible();
+    await expect(final.locator('a[href*="calendly.com/daydreamisexp"]').first()).toBeVisible();
+  });
 
-    const cards = page.locator('[data-tag]');
-    await expect(cards).toHaveCount(14);
+  test('nav 有 5 個社群連結', async ({ page }) => {
+    const hosts = ['threads.com', 'instagram.com', 'facebook.com', 'linkedin.com', 'open.spotify.com'];
+    for (const host of hosts) {
+      await expect(page.locator(`nav a[href*="${host}"]`).first()).toHaveAttribute(
+        'href',
+        new RegExp(host.replace('.', '\\.')),
+      );
+    }
+  });
 
-    // Click "轉職" -> only 4 cards visible
-    await page.locator('[data-filter="轉職"]').click();
-    await expect.poll(async () => {
-      return await page.locator('[data-tag="轉職"]:visible').count();
-    }).toBe(4);
-
-    // Click "資料工程" -> only 4
-    await page.locator('[data-filter="資料工程"]').click();
-    await expect.poll(async () => {
-      return await page.locator('[data-tag="資料工程"]:visible').count();
-    }).toBe(4);
-
-    // Click "all" -> 14
-    await page.locator('[data-filter="all"]').click();
-    await expect.poll(async () => {
-      return await page.locator('[data-tag]:visible').count();
-    }).toBe(14);
+  test('no broken images', async ({ page }) => {
+    expect(await findBrokenImages(page)).toEqual([]);
   });
 
   test('screenshot for visual record', async ({ page }, testInfo) => {
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.waitForLoadState('networkidle');
     await page.screenshot({
       path: `tests/screenshots/homepage-${testInfo.project.name}.png`,
       fullPage: true,

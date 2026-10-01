@@ -15,7 +15,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-  overflow-x: hidden;
+  overflow-x: clip; /* clip 不會建立捲動容器，position: sticky 才不會失效 */
   max-width: 100vw;
 }
 
