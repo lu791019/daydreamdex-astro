@@ -20,6 +20,19 @@ tags:
   - "軟體工程師"
   - "面試"
 heroImage: "/images/資料工程師完整入門指南與求職攻略：從必備技術能力到利害關係人Stakeholder-的溝通與人際管理，從作品集打造到面試準備.webp"
+gym:
+  - label: "資料工程師職位指南"
+    href: "https://learn.daydreamdex.com/guides/de"
+    note: "職責、必備技能、面試會問什麼、怎麼跟獵頭談"
+  - label: "SQL 練功房"
+    href: "https://learn.daydreamdex.com/problems/sql"
+    note: "JOIN、聚合、視窗函數到 MERGE，25 卷"
+  - label: "資料工程題庫"
+    href: "https://learn.daydreamdex.com/problems/de"
+    note: "爬蟲、去重、重試、排程、串流、SCD、CDC 情境題"
+  - label: "演算法題庫"
+    href: "https://learn.daydreamdex.com/problems/algo"
+    note: "面試常見的雜湊、雙指標、滑動視窗"
 ---
 
 許多人在轉職資料工程師時，總會聽到最常見的建議：「你要先學 Python 和 SQL！」但真正踏上這條路後，才發現自己早已迷失在 Spark、Flink、Iceberg、BigQuery 等複雜技術名稱之中，甚至刷了無數題 Leetcode，卻仍然收不到面試邀約。

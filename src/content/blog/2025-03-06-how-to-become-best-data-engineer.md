@@ -15,6 +15,16 @@ tags:
   - "資料工程師"
   - "軟體工程師"
 heroImage: "/images/成為更好的資料工程師.webp"
+gym:
+  - label: "資料工程師職位指南"
+    href: "https://learn.daydreamdex.com/guides/de"
+    note: "職責、必備技能、面試會問什麼、怎麼跟獵頭談"
+  - label: "SQL 練功房"
+    href: "https://learn.daydreamdex.com/problems/sql"
+    note: "JOIN、聚合、視窗函數到 MERGE，25 卷"
+  - label: "資料工程題庫"
+    href: "https://learn.daydreamdex.com/problems/de"
+    note: "爬蟲、去重、重試、排程、串流、SCD、CDC 情境題"
 ---
 
 在與一位剛成功轉職的資料工程師交流時，他說道：「我每天寫 ETL，技術不算差，但感覺自己只是個資料搬運工，完全沒有影響力，這樣下去真的能升職嗎？」

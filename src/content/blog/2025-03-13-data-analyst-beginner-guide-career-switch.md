@@ -18,6 +18,16 @@ tags:
   - "資料分析師"
   - "資料視覺化"
 heroImage: "/images/DALL·E-2025-03-14-11.20.28-A-bright-and-modern-digital-illustration-for-a-Data-Analyst-Beginners-Guide_-Strategies-for-a-Successful-Career-Transition-Without-a-Degree.-The-de.webp"
+gym:
+  - label: "資料分析師職位指南"
+    href: "https://learn.daydreamdex.com/guides/da"
+    note: "從業務問題出發的分析師要會什麼"
+  - label: "SQL 練功房"
+    href: "https://learn.daydreamdex.com/problems/sql"
+    note: "JOIN、聚合、視窗函數到 MERGE，25 卷"
+  - label: "Pandas 題庫"
+    href: "https://learn.daydreamdex.com/problems/pandas"
+    note: "篩選、合併、樞紐、時間序列"
 ---
 
 在大數據時代，「**資料分析師**」已成為熱門話題。許多行銷、金融、業務等非資訊背景的人都希望投入數據分析領域。然而，沒有相關學位是否能踏上這條路？

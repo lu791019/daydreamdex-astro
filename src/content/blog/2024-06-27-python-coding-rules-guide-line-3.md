@@ -17,6 +17,13 @@ tags:
   - "程式碼靜態分析"
   - "程式設計"
 heroImage: "/images/S__155033605_0.webp"
+gym:
+  - label: "Python 基本功題庫"
+    href: "https://learn.daydreamdex.com/problems/python"
+    note: "45 題，初階三卷免登入試閱"
+  - label: "資料工程題庫"
+    href: "https://learn.daydreamdex.com/problems/de"
+    note: "爬蟲、去重、重試、排程、串流、SCD、CDC 情境題"
 ---
 
 ## 契機

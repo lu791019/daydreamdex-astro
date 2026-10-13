@@ -15,6 +15,13 @@ tags:
   - "面試"
   - "面試作品集"
 heroImage: "/images/ba1795ac-9f0e-49f2-9659-a9ab4264d927_11zon.webp"
+gym:
+  - label: "Python 基本功題庫"
+    href: "https://learn.daydreamdex.com/problems/python"
+    note: "45 題，初階三卷免登入試閱"
+  - label: "五條路的職位指南"
+    href: "https://learn.daydreamdex.com/guides"
+    note: "資料工程／分析／科學／ML／AI 應用，先選方向"
 ---
 
 

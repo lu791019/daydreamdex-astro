@@ -16,6 +16,16 @@ tags:
   - "資料庫選型"
   - "關聯式資料庫"
 heroImage: "/images/CleanShot-2024-06-16-at-11.33.242x.png"
+gym:
+  - label: "資料工程題庫"
+    href: "https://learn.daydreamdex.com/problems/de"
+    note: "爬蟲、去重、重試、排程、串流、SCD、CDC 情境題"
+  - label: "SQL 練功房"
+    href: "https://learn.daydreamdex.com/problems/sql"
+    note: "JOIN、聚合、視窗函數到 MERGE，25 卷"
+  - label: "資料工程師職位指南"
+    href: "https://learn.daydreamdex.com/guides/de"
+    note: "職責、必備技能、面試會問什麼、怎麼跟獵頭談"
 ---
 
 ## 思考情境和需求

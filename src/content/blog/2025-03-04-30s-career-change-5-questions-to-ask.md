@@ -12,6 +12,13 @@ tags:
   - "職涯過度"
   - "轉職"
 heroImage: "/images/30-多歲想轉職？先問自己這-5-個問題.webp"
+gym:
+  - label: "五條路的職位指南"
+    href: "https://learn.daydreamdex.com/guides"
+    note: "資料工程／分析／科學／ML／AI 應用，先選方向"
+  - label: "第一週路線圖"
+    href: "https://learn.daydreamdex.com/start"
+    note: "新來練功房的第一週怎麼走"
 ---
 
 「我是不是該轉職？」這個念頭你是否曾經想過，甚至在心中反覆揣摩過？

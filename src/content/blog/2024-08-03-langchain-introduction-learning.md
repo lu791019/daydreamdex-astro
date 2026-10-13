@@ -6,6 +6,13 @@ draft: false
 categories: 
   - "ai-趨勢與應用"
 heroImage: "/images/DALL·E-2024-08-04-12.18.32-A-horizontal-illustration-representing-LangChain-featuring-key-elements-like-Prompt-Templates-LLMChain-OutputParsers-Agents-and-ConversationChain-1.jpg"
+gym:
+  - label: "AI 應用工程師職位指南"
+    href: "https://learn.daydreamdex.com/guides/aie"
+    note: "LLM、RAG、Agent 落地要會什麼"
+  - label: "Python 基本功題庫"
+    href: "https://learn.daydreamdex.com/problems/python"
+    note: "45 題，初階三卷免登入試閱"
 ---
 
 > > 最近在上LLM線上課 來分享我所學到的 LangChain LangChian是把ChatGPT API 轉換為物件導向的形式來使用我所學到 LangChain 的五個方法 : Prompt Template / LLMChain / OutputParser / Agent / ConversationChain
