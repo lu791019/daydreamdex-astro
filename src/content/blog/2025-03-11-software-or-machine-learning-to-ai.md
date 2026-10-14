@@ -15,6 +15,16 @@ tags:
   - "資料工程師"
   - "軟體工程師"
 heroImage: "/images/想進入-AI-領域還是成為程式開發者？軟體工程與機器學習工程師的技能與發展方向指南.webp"
+gym:
+  - label: "機器學習工程師職位指南"
+    href: "https://learn.daydreamdex.com/guides/mle"
+    note: "訓練、部署、監控模型的人"
+  - label: "AI 應用工程師職位指南"
+    href: "https://learn.daydreamdex.com/guides/aie"
+    note: "LLM、RAG、Agent 落地要會什麼"
+  - label: "演算法題庫"
+    href: "https://learn.daydreamdex.com/problems/algo"
+    note: "面試常見的雜湊、雙指標、滑動視窗"
 ---
 
 在AI技術迅速崛起的時代，越來越多人開始認真思考：「到底該選擇軟體工程（Software Engineering）還是機器學習（Machine Learning, ML），哪一個較為合適呢？」

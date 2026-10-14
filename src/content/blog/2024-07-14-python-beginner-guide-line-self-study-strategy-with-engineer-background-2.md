@@ -14,6 +14,16 @@ tags:
   - "程式入門"
   - "資料工程師"
 heroImage: "/images/c82bd45d-c2a7-4e6b-a80d-e1af95d871c6_11zon.webp"
+gym:
+  - label: "Python 練習卷 1"
+    href: "https://learn.daydreamdex.com/problems/python/set01"
+    note: "條件與迴圈開場，五題先試手感"
+  - label: "Python 基本功題庫"
+    href: "https://learn.daydreamdex.com/problems/python"
+    note: "45 題，初階三卷免登入試閱"
+  - label: "第一週路線圖"
+    href: "https://learn.daydreamdex.com/start"
+    note: "新來練功房的第一週怎麼走"
 ---
 
 

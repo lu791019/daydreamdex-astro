@@ -32,6 +32,7 @@ const {
   headings = [],
   category = '職涯',
   readingMinutes = 5,
+  gym = [],
 } = Astro.props;
 
 const FREE_CHAT_URL = 'https://calendly.com/daydreamisexp/meet-with-me';
@@ -54,6 +55,17 @@ const hasToc = headings.length > 0;
       image={heroImage ? ogImage : undefined}
     />
     <style is:global>
+      /* 練功房互連卡（2026-10-13）：暖白卡＋主藍邊、橘色 ACTION 標 */
+      .gym{margin:40px 0 8px;padding:22px 24px;background:#FBFAF7;border:1.5px solid #5391FF;border-radius:14px;box-shadow:0 6px 24px rgba(83,145,255,.10)}
+      .gym-k{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.16em;font-weight:700;color:#D97706;margin-bottom:8px}
+      .gym-rec{width:9px;height:9px;border-radius:50%;background:#D97706;box-shadow:0 0 0 3px rgba(217,119,6,.18)}
+      .gym-t{font-size:1.25rem;margin:0 0 6px;color:#1F1B16}
+      .gym-p{margin:0 0 14px;color:#4b4540;font-size:.95rem;line-height:1.75}
+      .gym-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+      .gym-link{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border:1px solid rgba(83,145,255,.35);border-radius:10px;background:#fff;text-decoration:none;color:#1F1B16;transition:border-color .15s,transform .15s}
+      .gym-link:hover{border-color:#5391FF;transform:translateY(-1px)}
+      .gym-link-t{font-weight:700;color:#2b5fbf}
+      .gym-link-n{font-size:.82rem;color:#6b6560;line-height:1.5}
       html { scroll-behavior: smooth; scroll-padding-top: 96px; }
     </style>
   </head>
@@ -119,6 +131,23 @@ const hasToc = headings.length > 0;
           <div class="post-prose">
             <slot />
           </div>
+
+          <!-- 練功房互連（2026-10-13）：frontmatter gym[] 有東西才出現；題庫試閱免登入，登入後能作答記 XP -->
+          {gym.length > 0 && (
+            <aside class="gym" aria-label="到練功房練這題">
+              <div class="gym-k"><span class="gym-rec" aria-hidden="true"></span>ACTION · 到練功房練這題</div>
+              <h2 class="gym-t">讀完了，動手拍一條</h2>
+              <p class="gym-p">這篇對應的練功房題庫與職位指南，不用登入就能試閱題幹；登入後可以在瀏覽器裡作答、對答案、累積 XP。</p>
+              <div class="gym-links">
+                {gym.map((g) => (
+                  <a class="gym-link" href={g.href} target="_blank" rel="noopener">
+                    <span class="gym-link-t">{g.label} →</span>
+                    {g.note && <span class="gym-link-n">{g.note}</span>}
+                  </a>
+                ))}
+              </div>
+            </aside>
+          )}
 
           <!-- 文章尾 — CTA 區 -->
           <section class="post-end dark grain" aria-label="讀完之後">

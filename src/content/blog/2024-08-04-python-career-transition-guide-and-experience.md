@@ -15,6 +15,16 @@ tags:
   - "程式轉職"
   - "資料工程師"
 heroImage: "/images/Python-Career-Translation-1.jpg"
+gym:
+  - label: "Python 基本功題庫"
+    href: "https://learn.daydreamdex.com/problems/python"
+    note: "45 題，初階三卷免登入試閱"
+  - label: "SQL 練功房"
+    href: "https://learn.daydreamdex.com/problems/sql"
+    note: "JOIN、聚合、視窗函數到 MERGE，25 卷"
+  - label: "五條路的職位指南"
+    href: "https://learn.daydreamdex.com/guides"
+    note: "資料工程／分析／科學／ML／AI 應用，先選方向"
 ---
 
 > 轉職的決策來自對現有職涯的成長瓶頸與未來發展的思考。隨著AI技術的崛起，半導體代工業面臨技能固化與工作壓力的困境，因此轉職成為尋求更廣泛、精深且具可攜性的技術的出路。
