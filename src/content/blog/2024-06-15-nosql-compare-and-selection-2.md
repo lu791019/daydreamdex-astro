@@ -96,4 +96,3 @@ gym:
 
 ![](/images/NoSQLCompare-1024x507-1.webp "NoSQLCompare")
 
-\[calendly url="https://calendly.com/daydreamisexp/meet-with-me" type="1" form\_height="600" form\_width="400" hide\_cookie\_banner="0"\]

@@ -148,4 +148,3 @@ Git Pull Request (PR) 流程範例涵蓋了以下關鍵步驟：
 
 在實踐中，我們應該不斷反思和改進這些過程，確保每個團隊成員都能夠熟練掌握並應用這些技巧，真正做到提升整體的開發效率和產品質量。彼此通過不斷學習和分享來成長。
 
-\[calendly url="https://calendly.com/daydreamisexp/meet-with-me" type="1" form\_height="600" form\_width="400" hide\_cookie\_banner="0"\]
