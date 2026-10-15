@@ -1,6 +1,6 @@
 ---
 // V2ContactCTA.astro — 服務頁底部聯絡 CTA（v2 版，深色段）
-// 文案同 blocks/ContactCTA.astro；另加「免費聊聊」入口（原副標已提到免費對焦／需求確認）
+// 文案同 blocks/ContactCTA.astro；另加「預約諮詢」入口（simplybook 50 分鐘，10/15 起不再寫免費）
 // 需搭配 v2.css + v2-services.css
 import { PROFILE } from '../../data/profile';
 
@@ -24,23 +24,23 @@ const defaults = {
     primaryLabel: '個人諮詢 · AAPD 預約',
     primaryHref: PROFILE.aapdUrl,
     primaryExternal: true,
-    chatLabel: '還不確定？先免費聊 15 分鐘',
+    chatLabel: '還不確定？先約 50 分鐘對焦',
   },
   consultant: {
     title: '準備開始合作？',
-    subtitle: '請附背景 + 想討論的主題 + 預算 / 時程的初步想法，我會在 1–2 天內回覆。不確定哪個切入點？先約一次免費 30 分鐘對焦。',
+    subtitle: '請附背景 + 想討論的主題 + 預算 / 時程的初步想法，我會在 1–2 天內回覆。不確定哪個切入點？先約一次 50 分鐘對焦。',
     primaryLabel: '寫信給 Dex',
     primaryHref: `mailto:${PROFILE.email}?subject=顧問合作洽詢`,
     primaryExternal: false,
-    chatLabel: '免費 30 分鐘對焦',
+    chatLabel: '約 50 分鐘對焦',
   },
   instructor: {
     title: '邀請 Dex 演講 / 內訓 / 課程',
-    subtitle: '請附主辦單位 + 場合主題 + 預計時程的初步想法，我會在 1–2 天內回覆。不確定哪個主題？先約一次免費 30 分鐘需求確認。',
+    subtitle: '請附主辦單位 + 場合主題 + 預計時程的初步想法，我會在 1–2 天內回覆。不確定哪個主題？先約一次 50 分鐘需求確認。',
     primaryLabel: '寫信給 Dex',
     primaryHref: `mailto:${PROFILE.email}?subject=講座邀約洽詢`,
     primaryExternal: false,
-    chatLabel: '免費 30 分鐘需求確認',
+    chatLabel: '約 50 分鐘需求確認',
   },
 } as const;
 
