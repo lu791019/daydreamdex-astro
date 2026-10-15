@@ -1,8 +1,8 @@
 ---
 // V2ServiceCrossLink.astro — 服務頁底部「也許你也想看」互推卡（v2 版，淺色紙段）
-// 文案同 blocks/ServiceCrossLink.astro；傳 current 排除自己，渲染另外兩個
+// 文案同 blocks/ServiceCrossLink.astro；傳 current 排除自己，渲染其餘三張（10/15 加練功房：官網連回平台）
 // 需搭配 v2.css + v2-services.css
-type ServiceKey = 'coaching' | 'consultant' | 'instructor';
+type ServiceKey = 'coaching' | 'consultant' | 'instructor' | 'gym';
 interface Props { current: ServiceKey; }
 const { current } = Astro.props;
 
@@ -28,6 +28,13 @@ const services: Record<ServiceKey, { href: string; hall: string; tag: string; ti
     title: '企業內訓與學校講座',
     desc: '5 大核心主題（AI 職涯戰略 / 資料工程 / AI 工具 / 個人品牌 / AI Coding）。10+ 主持與講座。',
   },
+  gym: {
+    href: 'https://learn.daydreamdex.com',
+    hall: 'HALL 06',
+    tag: '學員 · 免費練功房',
+    title: '練功房：Python、SQL、資料工程題庫',
+    desc: 'Google 登入就能練 Python、SQL 第 1 卷；串接 Discord 開全部題庫、寶箱、每日通告。導演班學員在這裡拍專題、找 Dex 聊。',
+  },
 };
 
 const others = (Object.keys(services) as ServiceKey[]).filter((k) => k !== current);
@@ -39,7 +46,7 @@ const others = (Object.keys(services) as ServiceKey[]).filter((k) => k !== curre
       <div class="sv-reel">COMING NEXT · 其他合作方式</div>
       <h2 id="sv-cross-h">也許你也想看</h2>
     </div>
-    <div class="sv-grid sv-grid-2">
+    <div class="sv-grid sv-grid-3">
       {others.map((k) => {
         const s = services[k];
         return (
